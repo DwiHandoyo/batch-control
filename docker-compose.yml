@@ -1,0 +1,200 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # PostgreSQL - Write Database
+  # ============================================
+  postgres:
+    image: postgres:15
+    container_name: postgres-write
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-cqrs_write}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init/init-postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+      - "-c"
+      - "max_replication_slots=4"
+      - "-c"
+      - "max_wal_senders=4"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cqrs_network
+
+  # ============================================
+  # Elasticsearch - Read Database
+  # ============================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: elasticsearch-read
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - cqrs_network
+
+  # ============================================
+  # Zookeeper - Kafka Coordination
+  # ============================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+    networks:
+      - cqrs_network
+
+  # ============================================
+  # Kafka - Message Broker
+  # ============================================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - cqrs_network
+
+  # ============================================
+  # CDC Streamer - PostgreSQL to Kafka
+  # ============================================
+  cdc-streamer:
+    build:
+      context: ./cdc-streamer
+      dockerfile: Dockerfile
+    container_name: cdc-streamer
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-cqrs_write}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-cdc.postgres.changes}
+      REPLICATION_SLOT_NAME: ${REPLICATION_SLOT_NAME:-cdc_slot}
+      POLL_INTERVAL_SEC: ${CDC_POLL_INTERVAL_SEC:-1}
+    restart: unless-stopped
+    networks:
+      - cqrs_network
+
+  # ============================================
+  # Message Sink - Kafka to Elasticsearch
+  # ============================================
+  message-sink:
+    build:
+      context: ./message-sink
+      dockerfile: Dockerfile
+    container_name: message-sink
+    depends_on:
+      kafka:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      cadvisor:
+        condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-cdc.postgres.changes}
+      KAFKA_GROUP_ID: ${KAFKA_GROUP_ID:-message-sink-group}
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      ELASTICSEARCH_INDEX: ${ELASTICSEARCH_INDEX:-cqrs_read}
+      CADVISOR_URL: http://cadvisor:8080
+      ELASTICSEARCH_CONTAINER_NAME: elasticsearch-read
+      # Control parameters
+      CONTROL_MODE: ${CONTROL_MODE:-static}
+      DEFAULT_BATCH_SIZE: ${DEFAULT_BATCH_SIZE:-100}
+      DEFAULT_POLL_INTERVAL_MS: ${DEFAULT_POLL_INTERVAL_MS:-1000}
+      MIN_BATCH_SIZE: ${MIN_BATCH_SIZE:-1}
+      MAX_BATCH_SIZE: ${MAX_BATCH_SIZE:-1000}
+      MIN_POLL_INTERVAL_MS: ${MIN_POLL_INTERVAL_MS:-100}
+      MAX_POLL_INTERVAL_MS: ${MAX_POLL_INTERVAL_MS:-10000}
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      METRICS_LOG_INTERVAL_SEC: ${METRICS_LOG_INTERVAL_SEC:-5}
+    volumes:
+      - ./message-sink/logs:/app/logs
+      - ./init:/app/init:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    networks:
+      - cqrs_network
+
+  # ============================================
+  # cAdvisor - Container Monitoring
+  # ============================================
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    privileged: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    networks:
+      - cqrs_network
+
+networks:
+  cqrs_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  elasticsearch_data:
+  zookeeper_data:
+  zookeeper_log:
+  kafka_data:

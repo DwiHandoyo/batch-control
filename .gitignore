@@ -1,0 +1,21 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+
+# OS
+.DS_Store
+
+# Experiment results (generated output)
+experiments/results/*.csv
+experiments/results/*.png
+experiments/results/*.npy
+experiments/results/*.json
+experiments/results/*.txt
+
+# Runtime logs
+message-sink/logs/*
+!message-sink/logs/.gitkeep

@@ -1,0 +1,6 @@
+psycopg2-binary==2.9.9
+requests==2.31.0
+requests-unixsocket==0.3.0
+kafka-python==2.0.2
+numpy==1.26.2
+pandas==2.1.3

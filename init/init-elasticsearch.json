@@ -1,0 +1,63 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "refresh_interval": "1s"
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "customer_name": {
+        "type": "keyword"
+      },
+      "customer_email": {
+        "type": "keyword"
+      },
+      "product_name": {
+        "type": "text",
+        "fields": {
+          "keyword": { "type": "keyword" }
+        }
+      },
+      "quantity": {
+        "type": "integer"
+      },
+      "unit_price": {
+        "type": "float"
+      },
+      "total_price": {
+        "type": "float"
+      },
+      "status": {
+        "type": "keyword"
+      },
+      "shipping_address": {
+        "type": "text"
+      },
+      "metadata": {
+        "type": "object",
+        "enabled": true
+      },
+      "created_at": {
+        "type": "date",
+        "format": "strict_date_optional_time||yyyy-MM-dd HH:mm:ss.SSSSSSx||yyyy-MM-dd HH:mm:ss.SSSSSx||yyyy-MM-dd HH:mm:ssx||epoch_millis"
+      },
+      "updated_at": {
+        "type": "date",
+        "format": "strict_date_optional_time||yyyy-MM-dd HH:mm:ss.SSSSSSx||yyyy-MM-dd HH:mm:ss.SSSSSx||yyyy-MM-dd HH:mm:ssx||epoch_millis"
+      },
+      "synced_at": {
+        "type": "date",
+        "format": "strict_date_optional_time||yyyy-MM-dd HH:mm:ss.SSSSSSx||yyyy-MM-dd HH:mm:ss.SSSSSx||yyyy-MM-dd HH:mm:ssx||epoch_millis"
+      },
+      "_operation": {
+        "type": "keyword"
+      },
+      "_source_lsn": {
+        "type": "keyword"
+      }
+    }
+  }
+}
