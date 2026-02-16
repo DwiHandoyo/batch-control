@@ -86,11 +86,33 @@ def compute_step_deltas(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
-    """Heatmap of state variable per (batch_size, poll_interval) combination.
-    Uses delta for accumulating vars, mean for instantaneous vars."""
-    fig, axes = plt.subplots(2, 2, figsize=(14, 11))
+    """
+    Heatmap of state variable per (batch_size, poll_interval) combination.
+    Uses delta for accumulating vars, mean for instantaneous vars.
+    Dynamically sizes figure based on grid dimensions.
+    """
+    # Detect grid size
+    n_batch = df_steps['batch_size'].nunique()
+    n_poll = df_steps['poll_interval'].nunique()
+
+    # Dynamic figure size: scale with grid size, minimum 14×11
+    width = max(14, n_batch * 0.7)
+    height = max(11, n_poll * 0.6)
+
+    fig, axes = plt.subplots(2, 2, figsize=(width, height))
     fig.suptitle('State Variables per Control Combination (delta for queue/mem, mean for cpu/io)',
                  fontsize=12, fontweight='bold')
+
+    # Disable annotations for very large grids (reduces clutter)
+    annot = True
+    fmt = '.1f'
+    annot_fontsize = 8
+
+    if n_batch * n_poll > 100:
+        annot = False
+        print(f"Large grid detected ({n_batch}×{n_poll}): disabling heatmap annotations")
+    elif n_batch * n_poll > 50:
+        annot_fontsize = 6  # Smaller font for medium-large grids
 
     for idx, state_var in enumerate(STATE_VARS):
         ax = axes[idx // 2][idx % 2]
@@ -101,8 +123,9 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
         pivot_table = pivot_table.sort_index(ascending=False)
 
         sns.heatmap(
-            pivot_table, ax=ax, annot=True, fmt='.1f', cmap='YlOrRd',
-            linewidths=0.5, cbar_kws={'label': STATE_LABELS[state_var]}
+            pivot_table, ax=ax, annot=annot, fmt=fmt, cmap='YlOrRd',
+            linewidths=0.5, cbar_kws={'label': STATE_LABELS[state_var]},
+            annot_kws={'fontsize': annot_fontsize} if annot else {}
         )
         ax.set_title(STATE_LABELS[state_var], fontsize=11)
         ax.set_xlabel('Batch Size')
@@ -112,7 +135,7 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
     path = os.path.join(output_dir, 'heatmap_state_vs_control.png')
     fig.savefig(path, dpi=150)
     plt.close(fig)
-    print(f"Saved: {path}")
+    print(f"Saved heatmap for {n_batch}×{n_poll} grid: {path}")
 
 
 def plot_scatter_regression(df_steps: pd.DataFrame, output_dir: str):

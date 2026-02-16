@@ -198,33 +198,40 @@ class SysIdExperiment:
         self.metrics.close()
 
 
-def build_phase_steps():
-    """Build control steps for each experiment phase."""
+def build_phase_steps(config=None):
+    """
+    Build control steps for each experiment phase.
+
+    Args:
+        config: GridConfig instance. If None, uses default 5×5 configuration
+                for backward compatibility.
+
+    Returns:
+        dict with keys 'vary_batch', 'vary_poll', 'vary_both'
+    """
+    # Import GridConfig here to avoid circular imports
+    from grid_config import GridConfig
+
+    if config is None:
+        config = GridConfig()  # Default 5×5 for backward compatibility
+
+    # Generate grid values
+    batch_values = config.generate_batch_values()
+    poll_values = config.generate_poll_values()
+
+    # Compute baseline (middle value)
+    baseline_batch = batch_values[len(batch_values) // 2]
+    baseline_poll = poll_values[len(poll_values) // 2]
+
     # Phase 1: Vary batch_size, keep poll_interval constant
-    fixed_poll = 1000  # ms
-    batch_steps = [
-        (10, fixed_poll),
-        (50, fixed_poll),
-        (100, fixed_poll),
-        (200, fixed_poll),
-        (500, fixed_poll),
-        (100, fixed_poll),  # return to baseline
-    ]
+    batch_steps = [(b, baseline_poll) for b in batch_values]
+    batch_steps.append((baseline_batch, baseline_poll))  # return to baseline
 
     # Phase 2: Vary poll_interval, keep batch_size constant
-    fixed_batch = 100
-    poll_steps = [
-        (fixed_batch, 200),
-        (fixed_batch, 500),
-        (fixed_batch, 1000),
-        (fixed_batch, 2000),
-        (fixed_batch, 5000),
-        (fixed_batch, 1000),  # return to baseline
-    ]
+    poll_steps = [(baseline_batch, p) for p in poll_values]
+    poll_steps.append((baseline_batch, baseline_poll))  # return to baseline
 
-    # Phase 3: Cartesian product of all values (n x m)
-    batch_values = [10, 50, 100, 200, 500]
-    poll_values = [200, 500, 1000, 2000, 5000]
+    # Phase 3: Cartesian product of all values (full grid)
     combined_steps = [(b, p) for b in batch_values for p in poll_values]
 
     return {
@@ -237,8 +244,14 @@ def build_phase_steps():
 AVAILABLE_PHASES = ['vary_batch', 'vary_poll', 'vary_both']
 
 
-def run_full_sysid(args):
-    """Run the system identification experiment for selected phases."""
+def run_full_sysid(args, config=None):
+    """
+    Run the system identification experiment for selected phases.
+
+    Args:
+        args: Parsed command-line arguments
+        config: GridConfig instance (optional, defaults to 5×5)
+    """
     exp = SysIdExperiment(
         cadvisor_url=args.cadvisor_url,
         kafka_servers=args.kafka_servers,
@@ -250,7 +263,7 @@ def run_full_sysid(args):
     )
 
     phases_to_run = args.phases
-    all_steps = build_phase_steps()
+    all_steps = build_phase_steps(config)
 
     try:
         for phase_name in phases_to_run:
@@ -271,8 +284,131 @@ def run_full_sysid(args):
         exp.cleanup()
 
 
+def build_grid_config_from_args(args):
+    """
+    Build GridConfig from command-line arguments.
+
+    Args:
+        args: Parsed command-line arguments
+
+    Returns:
+        GridConfig instance
+    """
+    from grid_config import GridConfig, PRESETS
+
+    # Priority: preset > individual args
+    if hasattr(args, 'preset') and args.preset:
+        return PRESETS[args.preset]
+
+    return GridConfig(
+        batch_min=args.batch_min,
+        batch_max=args.batch_max,
+        batch_points=args.batch_points,
+        poll_min=args.poll_min,
+        poll_max=args.poll_max,
+        poll_points=args.poll_points,
+        spacing=args.spacing,
+    )
+
+
+def print_grid_info(config, step_duration, settle_duration):
+    """
+    Print formatted grid information.
+
+    Args:
+        config: GridConfig instance
+        step_duration: Duration of each step (seconds)
+        settle_duration: Settling time between steps (seconds)
+    """
+    batch_vals = config.generate_batch_values()
+    poll_vals = config.generate_poll_values()
+
+    print("=" * 70)
+    print("GRID CONFIGURATION")
+    print("=" * 70)
+    print(f"\nBatch Size Values ({len(batch_vals)} points, {config.spacing} spacing):")
+    print(f"  Range: {batch_vals[0]} - {batch_vals[-1]}")
+    print(f"  Values: {batch_vals}")
+
+    print(f"\nPoll Interval Values ({len(poll_vals)} points, {config.spacing} spacing):")
+    print(f"  Range: {poll_vals[0]} - {poll_vals[-1]} ms")
+    print(f"  Values: {poll_vals}")
+
+    print(f"\nGrid Size: {len(batch_vals)} × {len(poll_vals)} = {len(batch_vals) * len(poll_vals)} combinations")
+
+    durations = config.estimate_duration(step_duration, settle_duration)
+    print(f"\nEstimated Duration (step={step_duration}s, settle={settle_duration}s):")
+    print(f"  Phase 1 (vary_batch): {durations['vary_batch']//60} min")
+    print(f"  Phase 2 (vary_poll): {durations['vary_poll']//60} min")
+    print(f"  Phase 3 (vary_both): {durations['vary_both']//60} min ({durations['vary_both']//3600:.1f} hr)")
+    print(f"  TOTAL: {durations['total']//60} min ({durations['total']//3600:.1f} hr)")
+    print("=" * 70)
+
+
+def print_experiment_plan(config, args):
+    """
+    Print experiment plan for dry-run.
+
+    Args:
+        config: GridConfig instance
+        args: Parsed command-line arguments
+    """
+    print_grid_info(config, args.step_duration, args.settle_duration)
+
+    print("\nPHASES TO RUN:")
+    for phase in args.phases:
+        print(f"  - {phase}")
+
+    steps = build_phase_steps(config)
+    print("\nSTEPS PREVIEW:")
+    for phase in args.phases:
+        phase_steps = steps[phase]
+        print(f"\n{phase}: {len(phase_steps)} steps")
+        if len(phase_steps) <= 10:
+            for i, (b, p) in enumerate(phase_steps):
+                print(f"  {i+1}. batch_size={b}, poll_interval={p}ms")
+        else:
+            # Show first 3 and last 3
+            for i, (b, p) in enumerate(phase_steps[:3]):
+                print(f"  {i+1}. batch_size={b}, poll_interval={p}ms")
+            print(f"  ... ({len(phase_steps) - 6} more steps)")
+            for i, (b, p) in enumerate(phase_steps[-3:], start=len(phase_steps)-2):
+                print(f"  {i}. batch_size={b}, poll_interval={p}ms")
+
+
 def main():
-    parser = argparse.ArgumentParser(description='System Identification Experiment')
+    parser = argparse.ArgumentParser(
+        description='System Identification Experiment with Configurable Grid',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Use default 5×5 grid (backward compatible)
+  python sysid_experiment.py
+
+  # Use preset configurations
+  python sysid_experiment.py --preset quick    # 3×3 grid, fast testing
+  python sysid_experiment.py --preset 10x10    # 10×10 grid, ~2.4 hours
+  python sysid_experiment.py --preset 20x20    # 20×20 grid, ~8.6 hours
+
+  # Custom grid with CLI arguments
+  python sysid_experiment.py --batch-points 15 --poll-points 15
+
+  # Logarithmic spacing for wide ranges
+  python sysid_experiment.py --batch-min 1 --batch-max 1000 \\
+                             --batch-points 20 --spacing log
+
+  # Show grid without running
+  python sysid_experiment.py --preset 20x20 --show-grid
+
+  # Dry run to see experiment plan
+  python sysid_experiment.py --preset 20x20 --dry-run
+
+  # Run only Phase 3 (grid validation)
+  python sysid_experiment.py --preset 20x20 --phases vary_both
+        """
+    )
+
+    # Existing arguments
     parser.add_argument('--cadvisor-url', default='http://localhost:8080')
     parser.add_argument('--kafka-servers', default='localhost:29092')
     parser.add_argument('--kafka-topic', default='cdc.postgres.changes')
@@ -291,8 +427,60 @@ def main():
                         choices=AVAILABLE_PHASES,
                         help='Phases to run (default: all)')
 
+    # NEW: Grid configuration arguments
+    grid_group = parser.add_argument_group('Grid Configuration')
+
+    grid_group.add_argument(
+        '--preset',
+        choices=['5x5', '10x10', '20x20', 'quick'],
+        help='Use preset grid configuration (overrides other grid args)'
+    )
+
+    grid_group.add_argument('--batch-min', type=int, default=10,
+                           help='Minimum batch_size value (default: 10)')
+    grid_group.add_argument('--batch-max', type=int, default=500,
+                           help='Maximum batch_size value (default: 500)')
+    grid_group.add_argument('--batch-points', type=int, default=5,
+                           help='Number of batch_size values (default: 5)')
+
+    grid_group.add_argument('--poll-min', type=int, default=200,
+                           help='Minimum poll_interval in ms (default: 200)')
+    grid_group.add_argument('--poll-max', type=int, default=5000,
+                           help='Maximum poll_interval in ms (default: 5000)')
+    grid_group.add_argument('--poll-points', type=int, default=5,
+                           help='Number of poll_interval values (default: 5)')
+
+    grid_group.add_argument('--spacing', choices=['linear', 'log'], default='linear',
+                           help='Grid spacing method (default: linear)')
+
+    # Utility arguments
+    grid_group.add_argument('--show-grid', action='store_true',
+                           help='Print grid values and exit')
+    grid_group.add_argument('--dry-run', action='store_true',
+                           help='Show experiment plan without running')
+
     args = parser.parse_args()
-    run_full_sysid(args)
+
+    # Build GridConfig from arguments
+    config = build_grid_config_from_args(args)
+
+    # Validate configuration
+    is_valid, error = config.validate()
+    if not is_valid:
+        logger.error(f"Invalid configuration: {error}")
+        sys.exit(1)
+
+    # Handle utility modes
+    if args.show_grid:
+        print_grid_info(config, args.step_duration, args.settle_duration)
+        sys.exit(0)
+
+    if args.dry_run:
+        print_experiment_plan(config, args)
+        sys.exit(0)
+
+    # Run experiment
+    run_full_sysid(args, config)
 
 
 if __name__ == '__main__':
