@@ -1,0 +1,33 @@
+{
+  "run_id": "20260216_070737",
+  "start_time": "2026-02-16 07:07:37",
+  "end_time": "2026-02-16 18:08:28",
+  "duration_seconds": 39651,
+  "grid_config": {
+    "preset": "20x20",
+    "batch_min": 10, "batch_max": 500, "batch_points": 20,
+    "poll_min": 200, "poll_max": 5000, "poll_points": 20,
+    "spacing": "linear",
+    "batch_size_values": [10, 36, 62, 87, 113, 139, 165, 191, 216, 242, 268, 294, 319, 345, 371, 397, 423, 448, 474, 500],
+    "poll_interval_values": [200, 453, 705, 958, 1211, 1463, 1716, 1968, 2221, 2474, 2726, 2979, 3232, 3484, 3737, 3989, 4242, 4495, 4747, 5000]
+  },
+  "experiment_params": {
+    "phases": [
+      "vary_both"
+    ],
+    "step_duration": 60,
+    "settle_duration": 10,
+    "total_steps": 400
+  },
+  "data_generator": {
+    "mode": "mixed",
+    "rate": 150,
+    "duration": 29800,
+    "update_ratio": 1.0
+  },
+  "results": {
+    "csv_file": "results/sysid_data_vary_both.csv",
+    "samples_collected": 26776,
+    "csv_size_bytes": 2648394
+  }
+}

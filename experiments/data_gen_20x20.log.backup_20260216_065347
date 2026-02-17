@@ -1,0 +1,2 @@
+2026-02-15 17:55:59,902 - data-generator - INFO - Connected to PostgreSQL at localhost:5433/cqrs_write
+2026-02-15 17:55:59,902 - data-generator - INFO - Constant rate: 150 rows/sec for 29800s

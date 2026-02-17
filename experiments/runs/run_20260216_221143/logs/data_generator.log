@@ -1,0 +1,4 @@
+2026-02-16 22:11:44,143 - data-generator - INFO - Connected to PostgreSQL at localhost:5433/cqrs_write
+2026-02-16 22:11:44,143 - data-generator - INFO - Mixed rate: 150 ops/sec (0 INSERT + 150 UPDATE) for 29800s
+2026-02-17 06:28:25,299 - data-generator - INFO - Mixed complete. Inserted 0, Updated 4116750 in 29801.2s
+2026-02-17 06:28:25,299 - data-generator - INFO - PostgreSQL connection closed

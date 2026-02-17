@@ -287,10 +287,10 @@ PRESETS = {
     ),
     '20x20': GridConfig(
         batch_min=10,
-        batch_max=500,
+        batch_max=2000,
         batch_points=20,
-        poll_min=200,
-        poll_max=5000,
+        poll_min=50,
+        poll_max=1000,
         poll_points=20,
         spacing='linear',
     ),

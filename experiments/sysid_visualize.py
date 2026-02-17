@@ -294,7 +294,13 @@ def main():
     args = parser.parse_args()
 
     if args.output_dir is None:
-        args.output_dir = os.path.dirname(args.data_file) or './results'
+        # Auto-detect: if CSV is inside a runs/run_*/results/ directory, output to viz/
+        from pathlib import Path
+        csv_path = Path(args.data_file).resolve()
+        if 'runs' in csv_path.parts and csv_path.parent.name == 'results':
+            args.output_dir = str(csv_path.parent.parent / 'viz')
+        else:
+            args.output_dir = os.path.dirname(args.data_file) or './results'
     os.makedirs(args.output_dir, exist_ok=True)
 
     df = load_and_prepare(args.data_file)

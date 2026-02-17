@@ -1,0 +1,72 @@
+{
+  "run_id": "20260216_221143",
+  "start_time": "2026-02-16 22:11:43",
+  "grid_config": {
+    "preset": "20x20",
+    "batch_min": 10,
+    "batch_max": 2000,
+    "batch_points": 20,
+    "poll_min": 50,
+    "poll_max": 1000,
+    "poll_points": 20,
+    "spacing": "linear",
+    "batch_size_values": [
+      10,
+      115,
+      219,
+      324,
+      429,
+      534,
+      638,
+      743,
+      848,
+      953,
+      1057,
+      1162,
+      1267,
+      1372,
+      1476,
+      1581,
+      1686,
+      1791,
+      1895,
+      2000
+    ],
+    "poll_interval_values": [
+      50,
+      100,
+      150,
+      200,
+      250,
+      300,
+      350,
+      400,
+      450,
+      500,
+      550,
+      600,
+      650,
+      700,
+      750,
+      800,
+      850,
+      900,
+      950,
+      1000
+    ]
+  },
+  "experiment_params": {
+    "phases": [
+      "vary_both"
+    ],
+    "step_duration": 60,
+    "settle_duration": 10,
+    "total_steps": 400
+  },
+  "data_generator": {
+    "mode": "mixed",
+    "rate": 150,
+    "duration": 29800,
+    "update_ratio": 1.0
+  }
+}

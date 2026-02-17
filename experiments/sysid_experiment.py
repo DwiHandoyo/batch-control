@@ -58,7 +58,7 @@ class SysIdExperiment:
         cadvisor_url: str = 'http://localhost:8080',
         kafka_servers: str = 'localhost:29092',
         kafka_topic: str = 'cdc.postgres.changes',
-        kafka_group_id: str = 'sysid-observer',
+        kafka_group_id: str = 'message-sink-group',
         es_container_name: str = 'elasticsearch-read',
         sample_interval: float = 1.0,
         output_dir: str = './results',

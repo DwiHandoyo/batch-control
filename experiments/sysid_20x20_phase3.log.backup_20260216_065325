@@ -1,0 +1,1103 @@
+C:\Users\DELL\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\requests\__init__.py:89: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (3.0.4) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
+2026-02-15 18:02:12,845 - sysid-experiment - INFO - === Phase: vary_both ===
+2026-02-15 18:02:12,845 - sysid-experiment - INFO - Steps: [(10, 200), (10, 453), (10, 705), (10, 958), (10, 1211), (10, 1463), (10, 1716), (10, 1968), (10, 2221), (10, 2474), (10, 2726), (10, 2979), (10, 3232), (10, 3484), (10, 3737), (10, 3989), (10, 4242), (10, 4495), (10, 4747), (10, 5000), (36, 200), (36, 453), (36, 705), (36, 958), (36, 1211), (36, 1463), (36, 1716), (36, 1968), (36, 2221), (36, 2474), (36, 2726), (36, 2979), (36, 3232), (36, 3484), (36, 3737), (36, 3989), (36, 4242), (36, 4495), (36, 4747), (36, 5000), (62, 200), (62, 453), (62, 705), (62, 958), (62, 1211), (62, 1463), (62, 1716), (62, 1968), (62, 2221), (62, 2474), (62, 2726), (62, 2979), (62, 3232), (62, 3484), (62, 3737), (62, 3989), (62, 4242), (62, 4495), (62, 4747), (62, 5000), (87, 200), (87, 453), (87, 705), (87, 958), (87, 1211), (87, 1463), (87, 1716), (87, 1968), (87, 2221), (87, 2474), (87, 2726), (87, 2979), (87, 3232), (87, 3484), (87, 3737), (87, 3989), (87, 4242), (87, 4495), (87, 4747), (87, 5000), (113, 200), (113, 453), (113, 705), (113, 958), (113, 1211), (113, 1463), (113, 1716), (113, 1968), (113, 2221), (113, 2474), (113, 2726), (113, 2979), (113, 3232), (113, 3484), (113, 3737), (113, 3989), (113, 4242), (113, 4495), (113, 4747), (113, 5000), (139, 200), (139, 453), (139, 705), (139, 958), (139, 1211), (139, 1463), (139, 1716), (139, 1968), (139, 2221), (139, 2474), (139, 2726), (139, 2979), (139, 3232), (139, 3484), (139, 3737), (139, 3989), (139, 4242), (139, 4495), (139, 4747), (139, 5000), (165, 200), (165, 453), (165, 705), (165, 958), (165, 1211), (165, 1463), (165, 1716), (165, 1968), (165, 2221), (165, 2474), (165, 2726), (165, 2979), (165, 3232), (165, 3484), (165, 3737), (165, 3989), (165, 4242), (165, 4495), (165, 4747), (165, 5000), (191, 200), (191, 453), (191, 705), (191, 958), (191, 1211), (191, 1463), (191, 1716), (191, 1968), (191, 2221), (191, 2474), (191, 2726), (191, 2979), (191, 3232), (191, 3484), (191, 3737), (191, 3989), (191, 4242), (191, 4495), (191, 4747), (191, 5000), (216, 200), (216, 453), (216, 705), (216, 958), (216, 1211), (216, 1463), (216, 1716), (216, 1968), (216, 2221), (216, 2474), (216, 2726), (216, 2979), (216, 3232), (216, 3484), (216, 3737), (216, 3989), (216, 4242), (216, 4495), (216, 4747), (216, 5000), (242, 200), (242, 453), (242, 705), (242, 958), (242, 1211), (242, 1463), (242, 1716), (242, 1968), (242, 2221), (242, 2474), (242, 2726), (242, 2979), (242, 3232), (242, 3484), (242, 3737), (242, 3989), (242, 4242), (242, 4495), (242, 4747), (242, 5000), (268, 200), (268, 453), (268, 705), (268, 958), (268, 1211), (268, 1463), (268, 1716), (268, 1968), (268, 2221), (268, 2474), (268, 2726), (268, 2979), (268, 3232), (268, 3484), (268, 3737), (268, 3989), (268, 4242), (268, 4495), (268, 4747), (268, 5000), (294, 200), (294, 453), (294, 705), (294, 958), (294, 1211), (294, 1463), (294, 1716), (294, 1968), (294, 2221), (294, 2474), (294, 2726), (294, 2979), (294, 3232), (294, 3484), (294, 3737), (294, 3989), (294, 4242), (294, 4495), (294, 4747), (294, 5000), (319, 200), (319, 453), (319, 705), (319, 958), (319, 1211), (319, 1463), (319, 1716), (319, 1968), (319, 2221), (319, 2474), (319, 2726), (319, 2979), (319, 3232), (319, 3484), (319, 3737), (319, 3989), (319, 4242), (319, 4495), (319, 4747), (319, 5000), (345, 200), (345, 453), (345, 705), (345, 958), (345, 1211), (345, 1463), (345, 1716), (345, 1968), (345, 2221), (345, 2474), (345, 2726), (345, 2979), (345, 3232), (345, 3484), (345, 3737), (345, 3989), (345, 4242), (345, 4495), (345, 4747), (345, 5000), (371, 200), (371, 453), (371, 705), (371, 958), (371, 1211), (371, 1463), (371, 1716), (371, 1968), (371, 2221), (371, 2474), (371, 2726), (371, 2979), (371, 3232), (371, 3484), (371, 3737), (371, 3989), (371, 4242), (371, 4495), (371, 4747), (371, 5000), (397, 200), (397, 453), (397, 705), (397, 958), (397, 1211), (397, 1463), (397, 1716), (397, 1968), (397, 2221), (397, 2474), (397, 2726), (397, 2979), (397, 3232), (397, 3484), (397, 3737), (397, 3989), (397, 4242), (397, 4495), (397, 4747), (397, 5000), (423, 200), (423, 453), (423, 705), (423, 958), (423, 1211), (423, 1463), (423, 1716), (423, 1968), (423, 2221), (423, 2474), (423, 2726), (423, 2979), (423, 3232), (423, 3484), (423, 3737), (423, 3989), (423, 4242), (423, 4495), (423, 4747), (423, 5000), (448, 200), (448, 453), (448, 705), (448, 958), (448, 1211), (448, 1463), (448, 1716), (448, 1968), (448, 2221), (448, 2474), (448, 2726), (448, 2979), (448, 3232), (448, 3484), (448, 3737), (448, 3989), (448, 4242), (448, 4495), (448, 4747), (448, 5000), (474, 200), (474, 453), (474, 705), (474, 958), (474, 1211), (474, 1463), (474, 1716), (474, 1968), (474, 2221), (474, 2474), (474, 2726), (474, 2979), (474, 3232), (474, 3484), (474, 3737), (474, 3989), (474, 4242), (474, 4495), (474, 4747), (474, 5000), (500, 200), (500, 453), (500, 705), (500, 958), (500, 1211), (500, 1463), (500, 1716), (500, 1968), (500, 2221), (500, 2474), (500, 2726), (500, 2979), (500, 3232), (500, 3484), (500, 3737), (500, 3989), (500, 4242), (500, 4495), (500, 4747), (500, 5000)]
+2026-02-15 18:02:12,845 - sysid-experiment - INFO - Step duration: 60s, Settle: 10s
+2026-02-15 18:02:12,845 - sysid-experiment - INFO - Step 1/400: batch_size=10, poll_interval=200ms
+2026-02-15 18:02:16,904 - metrics-collector - INFO - Searching for container 'elasticsearch-read' in cAdvisor...
+2026-02-15 18:02:16,906 - metrics-collector - WARNING - Could not find container 'elasticsearch-read'
+2026-02-15 18:02:16,957 - metrics-collector - INFO - Using container with highest memory: 7001b76aaf99...
+2026-02-15 18:02:16,986 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=bootstrap-0 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 18:02:16,990 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=bootstrap-0 host=localhost:29092 <checking_api_versions_recv> [IPv6 ('::1', 29092, 0, 0)]>: Broker version identified as 2.6
+2026-02-15 18:02:16,990 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=bootstrap-0 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 18:02:16,993 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 18:02:16,993 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 18:02:16,993 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=bootstrap-0 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 18:02:17,096 - kafka.cluster - INFO - Coordinator for group/sysid-observer is BrokerMetadata(nodeId='coordinator-1', host='localhost', port=29092, rack=None)
+2026-02-15 18:02:17,096 - kafka.coordinator - INFO - Discovered coordinator coordinator-1 for group sysid-observer
+2026-02-15 18:02:17,096 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 18:02:17,097 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 18:02:26,613 - sysid-experiment - INFO -   Sample 10: queue=57450, cpu=6.7%, mem=6.5%, io=298166
+2026-02-15 18:02:36,996 - sysid-experiment - INFO -   Sample 20: queue=58950, cpu=6.4%, mem=6.5%, io=280060
+2026-02-15 18:02:47,385 - sysid-experiment - INFO -   Sample 30: queue=60450, cpu=0.0%, mem=6.5%, io=0
+2026-02-15 18:02:57,784 - sysid-experiment - INFO -   Sample 40: queue=62100, cpu=7.2%, mem=6.6%, io=521936
+2026-02-15 18:03:08,251 - sysid-experiment - INFO -   Sample 50: queue=63631, cpu=3.7%, mem=6.6%, io=277512
+2026-02-15 18:03:13,398 - sysid-experiment - INFO -   Collected 54 samples
+2026-02-15 18:03:13,398 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:03:23,850 - sysid-experiment - INFO - Step 2/400: batch_size=10, poll_interval=453ms
+2026-02-15 18:03:33,262 - sysid-experiment - INFO -   Sample 10: queue=67350, cpu=0.0%, mem=6.6%, io=0
+2026-02-15 18:03:43,652 - sysid-experiment - INFO -   Sample 20: queue=68850, cpu=3.9%, mem=6.6%, io=284104
+2026-02-15 18:03:53,942 - sysid-experiment - INFO -   Sample 30: queue=70500, cpu=16.1%, mem=6.6%, io=568482
+2026-02-15 18:04:04,342 - sysid-experiment - INFO -   Sample 40: queue=72000, cpu=16.0%, mem=6.6%, io=295246
+2026-02-15 18:04:14,737 - sysid-experiment - INFO -   Sample 50: queue=73500, cpu=0.0%, mem=6.6%, io=0
+2026-02-15 18:04:23,971 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:04:23,971 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:04:34,434 - sysid-experiment - INFO - Step 3/400: batch_size=10, poll_interval=705ms
+2026-02-15 18:04:43,824 - sysid-experiment - INFO -   Sample 10: queue=78000, cpu=4.0%, mem=6.7%, io=285269
+2026-02-15 18:04:54,231 - sysid-experiment - INFO -   Sample 20: queue=79362, cpu=7.8%, mem=6.7%, io=278585
+2026-02-15 18:05:04,532 - sysid-experiment - INFO -   Sample 30: queue=80850, cpu=0.0%, mem=6.6%, io=0
+2026-02-15 18:05:14,907 - sysid-experiment - INFO -   Sample 40: queue=82500, cpu=12.7%, mem=6.6%, io=568294
+2026-02-15 18:05:25,298 - sysid-experiment - INFO -   Sample 50: queue=84000, cpu=8.5%, mem=6.6%, io=385076
+2026-02-15 18:05:34,608 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:05:34,608 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:05:44,991 - sysid-experiment - INFO - Step 4/400: batch_size=10, poll_interval=958ms
+2026-02-15 18:05:54,424 - sysid-experiment - INFO -   Sample 10: queue=88350, cpu=21.5%, mem=6.6%, io=540424
+2026-02-15 18:06:04,783 - sysid-experiment - INFO -   Sample 20: queue=90000, cpu=4.0%, mem=6.6%, io=287049
+2026-02-15 18:06:15,202 - sysid-experiment - INFO -   Sample 30: queue=91500, cpu=14.7%, mem=6.6%, io=451724
+2026-02-15 18:06:25,608 - sysid-experiment - INFO -   Sample 40: queue=93000, cpu=3.5%, mem=6.6%, io=276799
+2026-02-15 18:06:36,002 - sysid-experiment - INFO -   Sample 50: queue=94500, cpu=27.4%, mem=6.6%, io=539600
+2026-02-15 18:06:45,303 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:06:45,303 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:06:55,670 - sysid-experiment - INFO - Step 5/400: batch_size=10, poll_interval=1211ms
+2026-02-15 18:07:05,043 - sysid-experiment - INFO -   Sample 10: queue=98850, cpu=0.0%, mem=6.6%, io=0
+2026-02-15 18:07:15,460 - sysid-experiment - INFO -   Sample 20: queue=100350, cpu=16.4%, mem=6.6%, io=470051
+2026-02-15 18:07:25,886 - sysid-experiment - INFO -   Sample 30: queue=102000, cpu=5.7%, mem=6.7%, io=244928
+2026-02-15 18:07:36,253 - sysid-experiment - INFO -   Sample 40: queue=103500, cpu=0.0%, mem=6.7%, io=0
+2026-02-15 18:07:46,654 - sysid-experiment - INFO -   Sample 50: queue=105000, cpu=8.1%, mem=6.7%, io=316076
+2026-02-15 18:07:55,894 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:07:55,894 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:08:06,266 - sysid-experiment - INFO - Step 6/400: batch_size=10, poll_interval=1463ms
+2026-02-15 18:08:15,579 - sysid-experiment - INFO -   Sample 10: queue=109500, cpu=6.9%, mem=6.7%, io=284809
+2026-02-15 18:08:25,935 - sysid-experiment - INFO -   Sample 20: queue=111000, cpu=9.1%, mem=6.7%, io=536453
+2026-02-15 18:08:36,324 - sysid-experiment - INFO -   Sample 30: queue=112500, cpu=0.0%, mem=6.7%, io=0
+2026-02-15 18:08:46,714 - sysid-experiment - INFO -   Sample 40: queue=114000, cpu=8.7%, mem=6.7%, io=371218
+2026-02-15 18:08:57,162 - sysid-experiment - INFO -   Sample 50: queue=115650, cpu=9.0%, mem=6.8%, io=555256
+2026-02-15 18:09:06,380 - sysid-experiment - INFO -   Collected 56 samples
+2026-02-15 18:09:06,380 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:09:16,785 - sysid-experiment - INFO - Step 7/400: batch_size=10, poll_interval=1716ms
+2026-02-15 18:09:26,232 - sysid-experiment - INFO -   Sample 10: queue=119400, cpu=17.8%, mem=6.9%, io=704764
+2026-02-15 18:09:36,788 - sysid-experiment - INFO -   Sample 20: queue=120900, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:09:47,210 - sysid-experiment - INFO -   Sample 30: queue=122400, cpu=7.0%, mem=6.9%, io=537882
+2026-02-15 18:09:57,688 - sysid-experiment - INFO -   Sample 40: queue=124050, cpu=6.5%, mem=6.9%, io=486178
+2026-02-15 18:10:08,171 - sysid-experiment - INFO -   Sample 50: queue=125668, cpu=8.3%, mem=6.7%, io=2370799
+2026-02-15 18:10:17,515 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:10:17,516 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:10:27,942 - sysid-experiment - INFO - Step 8/400: batch_size=10, poll_interval=1968ms
+2026-02-15 18:10:37,336 - sysid-experiment - INFO -   Sample 10: queue=129900, cpu=0.0%, mem=6.7%, io=0
+2026-02-15 18:10:47,783 - sysid-experiment - INFO -   Sample 20: queue=131550, cpu=10.0%, mem=6.8%, io=682091
+2026-02-15 18:10:58,273 - sysid-experiment - INFO -   Sample 30: queue=133050, cpu=5.2%, mem=6.8%, io=398953
+2026-02-15 18:11:08,727 - sysid-experiment - INFO -   Sample 40: queue=134550, cpu=0.0%, mem=6.8%, io=0
+2026-02-15 18:11:19,164 - sysid-experiment - INFO -   Sample 50: queue=136200, cpu=8.7%, mem=6.7%, io=673880
+2026-02-15 18:11:28,552 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:11:28,552 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:11:38,976 - sysid-experiment - INFO - Step 9/400: batch_size=10, poll_interval=2221ms
+2026-02-15 18:11:48,446 - sysid-experiment - INFO -   Sample 10: queue=140550, cpu=26.0%, mem=6.8%, io=574611
+2026-02-15 18:11:58,931 - sysid-experiment - INFO -   Sample 20: queue=142050, cpu=4.3%, mem=6.8%, io=275412
+2026-02-15 18:12:09,457 - sysid-experiment - INFO -   Sample 30: queue=143550, cpu=5.2%, mem=6.7%, io=350957
+2026-02-15 18:12:19,983 - sysid-experiment - INFO -   Sample 40: queue=145200, cpu=0.0%, mem=6.7%, io=0
+2026-02-15 18:12:30,381 - sysid-experiment - INFO -   Sample 50: queue=146700, cpu=0.0%, mem=6.8%, io=0
+2026-02-15 18:12:39,705 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:12:39,705 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:12:50,253 - sysid-experiment - INFO - Step 10/400: batch_size=10, poll_interval=2474ms
+2026-02-15 18:12:59,665 - sysid-experiment - INFO -   Sample 10: queue=151050, cpu=36.8%, mem=6.9%, io=210500
+2026-02-15 18:13:10,081 - sysid-experiment - INFO -   Sample 20: queue=152700, cpu=6.5%, mem=6.8%, io=567670
+2026-02-15 18:13:20,523 - sysid-experiment - INFO -   Sample 30: queue=154200, cpu=3.4%, mem=6.8%, io=283473
+2026-02-15 18:13:30,981 - sysid-experiment - INFO -   Sample 40: queue=155700, cpu=0.0%, mem=6.8%, io=0
+2026-02-15 18:13:41,444 - sysid-experiment - INFO -   Sample 50: queue=157200, cpu=8.5%, mem=6.8%, io=487438
+2026-02-15 18:13:50,763 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:13:50,763 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:14:01,193 - sysid-experiment - INFO - Step 11/400: batch_size=10, poll_interval=2726ms
+2026-02-15 18:14:10,595 - sysid-experiment - INFO -   Sample 10: queue=161589, cpu=4.0%, mem=6.8%, io=273814
+2026-02-15 18:14:21,001 - sysid-experiment - INFO -   Sample 20: queue=163050, cpu=4.4%, mem=6.8%, io=370572
+2026-02-15 18:14:31,437 - sysid-experiment - INFO -   Sample 30: queue=164740, cpu=8.7%, mem=6.8%, io=457752
+2026-02-15 18:14:41,769 - sysid-experiment - INFO -   Sample 40: queue=166200, cpu=0.0%, mem=6.8%, io=0
+2026-02-15 18:14:52,214 - sysid-experiment - INFO -   Sample 50: queue=167850, cpu=6.8%, mem=6.8%, io=284744
+2026-02-15 18:15:01,613 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:15:01,613 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:15:12,106 - sysid-experiment - INFO - Step 12/400: batch_size=10, poll_interval=2979ms
+2026-02-15 18:15:21,477 - sysid-experiment - INFO -   Sample 10: queue=172200, cpu=8.2%, mem=6.9%, io=346616
+2026-02-15 18:15:31,963 - sysid-experiment - INFO -   Sample 20: queue=173700, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:15:42,442 - sysid-experiment - INFO -   Sample 30: queue=175200, cpu=8.0%, mem=6.9%, io=204919
+2026-02-15 18:15:52,856 - sysid-experiment - INFO -   Sample 40: queue=176850, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:16:03,282 - sysid-experiment - INFO -   Sample 50: queue=178350, cpu=10.4%, mem=6.9%, io=593683
+2026-02-15 18:16:12,672 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:16:12,672 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:16:23,162 - sysid-experiment - INFO - Step 13/400: batch_size=10, poll_interval=3232ms
+2026-02-15 18:16:32,657 - sysid-experiment - INFO -   Sample 10: queue=182700, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:16:43,166 - sysid-experiment - INFO -   Sample 20: queue=184350, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:16:53,575 - sysid-experiment - INFO -   Sample 30: queue=185850, cpu=8.8%, mem=6.9%, io=3539393
+2026-02-15 18:17:04,014 - sysid-experiment - INFO -   Sample 40: queue=187350, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:17:14,392 - sysid-experiment - INFO -   Sample 50: queue=189000, cpu=4.3%, mem=6.8%, io=341455
+2026-02-15 18:17:23,767 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:17:23,767 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:17:34,153 - sysid-experiment - INFO - Step 14/400: batch_size=10, poll_interval=3484ms
+2026-02-15 18:17:43,636 - sysid-experiment - INFO -   Sample 10: queue=193200, cpu=8.1%, mem=6.9%, io=289837
+2026-02-15 18:17:54,104 - sysid-experiment - INFO -   Sample 20: queue=194762, cpu=9.2%, mem=6.9%, io=3553230
+2026-02-15 18:18:04,570 - sysid-experiment - INFO -   Sample 30: queue=196350, cpu=9.7%, mem=6.9%, io=559308
+2026-02-15 18:18:15,049 - sysid-experiment - INFO -   Sample 40: queue=197966, cpu=3.9%, mem=6.9%, io=329639
+2026-02-15 18:18:25,498 - sysid-experiment - INFO -   Sample 50: queue=199500, cpu=4.8%, mem=6.9%, io=344116
+2026-02-15 18:18:34,876 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:18:34,876 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:18:45,299 - sysid-experiment - INFO - Step 15/400: batch_size=10, poll_interval=3737ms
+2026-02-15 18:18:54,707 - sysid-experiment - INFO -   Sample 10: queue=203850, cpu=16.9%, mem=6.9%, io=503688
+2026-02-15 18:19:05,111 - sysid-experiment - INFO -   Sample 20: queue=205350, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:19:15,538 - sysid-experiment - INFO -   Sample 30: queue=206850, cpu=3.4%, mem=6.9%, io=278910
+2026-02-15 18:19:25,969 - sysid-experiment - INFO -   Sample 40: queue=208350, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:19:36,379 - sysid-experiment - INFO -   Sample 50: queue=209937, cpu=4.2%, mem=6.9%, io=356025
+2026-02-15 18:19:45,718 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:19:45,718 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:19:56,086 - sysid-experiment - INFO - Step 16/400: batch_size=10, poll_interval=3989ms
+2026-02-15 18:20:05,482 - sysid-experiment - INFO -   Sample 10: queue=214350, cpu=3.7%, mem=6.9%, io=283057
+2026-02-15 18:20:15,944 - sysid-experiment - INFO -   Sample 20: queue=215850, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:20:26,400 - sysid-experiment - INFO -   Sample 30: queue=217350, cpu=4.6%, mem=6.9%, io=287613
+2026-02-15 18:20:36,809 - sysid-experiment - INFO -   Sample 40: queue=218850, cpu=5.5%, mem=6.9%, io=375524
+2026-02-15 18:20:47,212 - sysid-experiment - INFO -   Sample 50: queue=220500, cpu=5.4%, mem=6.9%, io=457415
+2026-02-15 18:20:56,566 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:20:56,566 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:21:07,022 - sysid-experiment - INFO - Step 17/400: batch_size=10, poll_interval=4242ms
+2026-02-15 18:21:16,481 - sysid-experiment - INFO -   Sample 10: queue=224850, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:21:26,841 - sysid-experiment - INFO -   Sample 20: queue=226350, cpu=7.1%, mem=6.9%, io=565748
+2026-02-15 18:21:37,186 - sysid-experiment - INFO -   Sample 30: queue=227850, cpu=3.6%, mem=6.9%, io=284341
+2026-02-15 18:21:47,607 - sysid-experiment - INFO -   Sample 40: queue=229500, cpu=0.0%, mem=6.9%, io=0
+2026-02-15 18:21:58,107 - sysid-experiment - INFO -   Sample 50: queue=231000, cpu=6.8%, mem=7.0%, io=548059
+2026-02-15 18:22:07,483 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:22:07,483 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:22:17,884 - sysid-experiment - INFO - Step 18/400: batch_size=10, poll_interval=4495ms
+2026-02-15 18:22:27,321 - sysid-experiment - INFO -   Sample 10: queue=235350, cpu=3.3%, mem=7.1%, io=228036
+2026-02-15 18:22:37,747 - sysid-experiment - INFO -   Sample 20: queue=237000, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:22:48,147 - sysid-experiment - INFO -   Sample 30: queue=238500, cpu=7.9%, mem=7.2%, io=357147
+2026-02-15 18:22:58,573 - sysid-experiment - INFO -   Sample 40: queue=240000, cpu=6.7%, mem=7.2%, io=491449
+2026-02-15 18:23:08,997 - sysid-experiment - INFO -   Sample 50: queue=241500, cpu=5.3%, mem=7.2%, io=383900
+2026-02-15 18:23:18,313 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:23:18,313 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:23:28,798 - sysid-experiment - INFO - Step 19/400: batch_size=10, poll_interval=4747ms
+2026-02-15 18:23:38,233 - sysid-experiment - INFO -   Sample 10: queue=246000, cpu=8.5%, mem=7.0%, io=350107
+2026-02-15 18:23:48,640 - sysid-experiment - INFO -   Sample 20: queue=247200, cpu=3.1%, mem=7.0%, io=182835
+2026-02-15 18:23:59,162 - sysid-experiment - INFO -   Sample 30: queue=249000, cpu=5.0%, mem=7.0%, io=446869
+2026-02-15 18:24:09,602 - sysid-experiment - INFO -   Sample 40: queue=250650, cpu=2.8%, mem=7.0%, io=245534
+2026-02-15 18:24:20,103 - sysid-experiment - INFO -   Sample 50: queue=252000, cpu=4.8%, mem=7.0%, io=448800
+2026-02-15 18:24:29,429 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:24:29,429 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:24:39,880 - sysid-experiment - INFO - Step 20/400: batch_size=10, poll_interval=5000ms
+2026-02-15 18:24:49,269 - sysid-experiment - INFO -   Sample 10: queue=256500, cpu=3.6%, mem=7.0%, io=288536
+2026-02-15 18:24:59,763 - sysid-experiment - INFO -   Sample 20: queue=258000, cpu=6.7%, mem=7.0%, io=556409
+2026-02-15 18:25:10,174 - sysid-experiment - INFO -   Sample 30: queue=259500, cpu=6.2%, mem=7.0%, io=304158
+2026-02-15 18:25:20,608 - sysid-experiment - INFO -   Sample 40: queue=261150, cpu=3.3%, mem=7.0%, io=302002
+2026-02-15 18:25:31,055 - sysid-experiment - INFO -   Sample 50: queue=262650, cpu=3.7%, mem=7.0%, io=173667
+2026-02-15 18:25:40,411 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:25:40,411 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:25:50,811 - sysid-experiment - INFO - Step 21/400: batch_size=36, poll_interval=200ms
+2026-02-15 18:26:00,248 - sysid-experiment - INFO -   Sample 10: queue=266866, cpu=0.0%, mem=7.0%, io=0
+2026-02-15 18:26:10,696 - sysid-experiment - INFO -   Sample 20: queue=268602, cpu=0.0%, mem=7.0%, io=0
+2026-02-15 18:26:21,231 - sysid-experiment - INFO -   Sample 30: queue=270150, cpu=4.0%, mem=7.0%, io=304797
+2026-02-15 18:26:31,664 - sysid-experiment - INFO -   Sample 40: queue=271650, cpu=2.4%, mem=7.1%, io=3878
+2026-02-15 18:26:42,117 - sysid-experiment - INFO -   Sample 50: queue=273150, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:26:51,468 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:26:51,468 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:27:01,930 - sysid-experiment - INFO - Step 22/400: batch_size=36, poll_interval=453ms
+2026-02-15 18:27:11,404 - sysid-experiment - INFO -   Sample 10: queue=277553, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:27:21,856 - sysid-experiment - INFO -   Sample 20: queue=279150, cpu=0.0%, mem=7.0%, io=0
+2026-02-15 18:27:32,295 - sysid-experiment - INFO -   Sample 30: queue=280650, cpu=0.0%, mem=7.0%, io=0
+2026-02-15 18:27:42,722 - sysid-experiment - INFO -   Sample 40: queue=282150, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:27:53,195 - sysid-experiment - INFO -   Sample 50: queue=283800, cpu=2.2%, mem=7.1%, io=168454
+2026-02-15 18:28:02,597 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:28:02,597 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:28:13,009 - sysid-experiment - INFO - Step 23/400: batch_size=36, poll_interval=705ms
+2026-02-15 18:28:22,443 - sysid-experiment - INFO -   Sample 10: queue=288000, cpu=4.0%, mem=7.0%, io=334976
+2026-02-15 18:28:32,866 - sysid-experiment - INFO -   Sample 20: queue=289594, cpu=2.2%, mem=7.1%, io=164020
+2026-02-15 18:28:43,252 - sysid-experiment - INFO -   Sample 30: queue=291245, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:28:53,606 - sysid-experiment - INFO -   Sample 40: queue=292779, cpu=10.1%, mem=7.1%, io=311327
+2026-02-15 18:29:04,095 - sysid-experiment - INFO -   Sample 50: queue=294300, cpu=6.5%, mem=7.1%, io=165083
+2026-02-15 18:29:13,422 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:29:13,423 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:29:23,860 - sysid-experiment - INFO - Step 24/400: batch_size=36, poll_interval=958ms
+2026-02-15 18:29:33,304 - sysid-experiment - INFO -   Sample 10: queue=298350, cpu=1.1%, mem=7.1%, io=3927
+2026-02-15 18:29:43,796 - sysid-experiment - INFO -   Sample 20: queue=299700, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:29:54,280 - sysid-experiment - INFO -   Sample 30: queue=301050, cpu=1.9%, mem=7.1%, io=135756
+2026-02-15 18:30:04,804 - sysid-experiment - INFO -   Sample 40: queue=302850, cpu=2.9%, mem=7.1%, io=294477
+2026-02-15 18:30:15,255 - sysid-experiment - INFO -   Sample 50: queue=304350, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:30:24,619 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:30:24,619 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:30:35,031 - sysid-experiment - INFO - Step 25/400: batch_size=36, poll_interval=1211ms
+2026-02-15 18:30:44,465 - sysid-experiment - INFO -   Sample 10: queue=308550, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:30:54,870 - sysid-experiment - INFO -   Sample 20: queue=310050, cpu=4.0%, mem=7.1%, io=307091
+2026-02-15 18:31:05,397 - sysid-experiment - INFO -   Sample 30: queue=311550, cpu=5.5%, mem=7.1%, io=246068
+2026-02-15 18:31:15,870 - sysid-experiment - INFO -   Sample 40: queue=313050, cpu=2.6%, mem=7.1%, io=232905
+2026-02-15 18:31:26,330 - sysid-experiment - INFO -   Sample 50: queue=314250, cpu=5.8%, mem=7.1%, io=3852
+2026-02-15 18:31:35,716 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:31:35,716 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:31:46,148 - sysid-experiment - INFO - Step 26/400: batch_size=36, poll_interval=1463ms
+2026-02-15 18:31:55,649 - sysid-experiment - INFO -   Sample 10: queue=318750, cpu=2.2%, mem=7.1%, io=164834
+2026-02-15 18:32:06,084 - sysid-experiment - INFO -   Sample 20: queue=320400, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:32:16,526 - sysid-experiment - INFO -   Sample 30: queue=321769, cpu=4.7%, mem=7.1%, io=334733
+2026-02-15 18:32:27,054 - sysid-experiment - INFO -   Sample 40: queue=323400, cpu=4.3%, mem=7.1%, io=314174
+2026-02-15 18:32:37,482 - sysid-experiment - INFO -   Sample 50: queue=324900, cpu=4.1%, mem=7.1%, io=326134
+2026-02-15 18:32:46,846 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:32:46,846 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:32:57,259 - sysid-experiment - INFO - Step 27/400: batch_size=36, poll_interval=1716ms
+2026-02-15 18:33:06,694 - sysid-experiment - INFO -   Sample 10: queue=329250, cpu=0.0%, mem=7.2%, io=0
+2026-02-15 18:33:17,073 - sysid-experiment - INFO -   Sample 20: queue=330750, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:33:27,425 - sysid-experiment - INFO -   Sample 30: queue=332400, cpu=0.0%, mem=7.1%, io=0
+2026-02-15 18:33:37,823 - sysid-experiment - INFO -   Sample 40: queue=333900, cpu=4.5%, mem=7.1%, io=338089
+2026-02-15 18:33:48,220 - sysid-experiment - INFO -   Sample 50: queue=335522, cpu=3.1%, mem=7.2%, io=165840
+2026-02-15 18:33:57,600 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:33:57,600 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:34:08,009 - sysid-experiment - INFO - Step 28/400: batch_size=36, poll_interval=1968ms
+2026-02-15 18:34:17,526 - sysid-experiment - INFO -   Sample 10: queue=339750, cpu=2.2%, mem=7.2%, io=162369
+2026-02-15 18:34:27,888 - sysid-experiment - INFO -   Sample 20: queue=341400, cpu=4.5%, mem=7.2%, io=324069
+2026-02-15 18:34:38,361 - sysid-experiment - INFO -   Sample 30: queue=342900, cpu=2.9%, mem=7.2%, io=168551
+2026-02-15 18:34:48,786 - sysid-experiment - INFO -   Sample 40: queue=344550, cpu=0.0%, mem=7.2%, io=0
+2026-02-15 18:34:59,227 - sysid-experiment - INFO -   Sample 50: queue=346050, cpu=6.9%, mem=7.2%, io=323635
+2026-02-15 18:35:08,531 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:35:08,531 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:35:18,970 - sysid-experiment - INFO - Step 29/400: batch_size=36, poll_interval=2221ms
+2026-02-15 18:35:28,368 - sysid-experiment - INFO -   Sample 10: queue=350250, cpu=5.0%, mem=7.4%, io=150750
+2026-02-15 18:35:38,804 - sysid-experiment - INFO -   Sample 20: queue=351900, cpu=5.8%, mem=7.4%, io=241358
+2026-02-15 18:35:49,211 - sysid-experiment - INFO -   Sample 30: queue=353400, cpu=3.9%, mem=7.4%, io=134318
+2026-02-15 18:35:59,618 - sysid-experiment - INFO -   Sample 40: queue=355050, cpu=0.0%, mem=7.4%, io=0
+2026-02-15 18:36:10,002 - sysid-experiment - INFO -   Sample 50: queue=356437, cpu=7.7%, mem=7.4%, io=328381
+2026-02-15 18:36:19,397 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:36:19,397 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:36:29,756 - sysid-experiment - INFO - Step 30/400: batch_size=36, poll_interval=2474ms
+2026-02-15 18:36:39,226 - sysid-experiment - INFO -   Sample 10: queue=360849, cpu=0.0%, mem=7.2%, io=0
+2026-02-15 18:36:49,675 - sysid-experiment - INFO -   Sample 20: queue=362400, cpu=1.8%, mem=7.2%, io=96727
+2026-02-15 18:37:00,075 - sysid-experiment - INFO -   Sample 30: queue=363750, cpu=3.4%, mem=7.2%, io=197744
+2026-02-15 18:37:10,474 - sysid-experiment - INFO -   Sample 40: queue=365191, cpu=1.5%, mem=7.2%, io=134163
+2026-02-15 18:37:20,957 - sysid-experiment - INFO -   Sample 50: queue=367050, cpu=18.2%, mem=7.2%, io=204871
+2026-02-15 18:37:30,323 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:37:30,323 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:37:40,717 - sysid-experiment - INFO - Step 31/400: batch_size=36, poll_interval=2726ms
+2026-02-15 18:37:50,088 - sysid-experiment - INFO -   Sample 10: queue=371250, cpu=3.3%, mem=7.2%, io=223605
+2026-02-15 18:38:00,551 - sysid-experiment - INFO -   Sample 20: queue=372900, cpu=10.7%, mem=7.3%, io=288312
+2026-02-15 18:38:10,992 - sysid-experiment - INFO -   Sample 30: queue=374400, cpu=8.3%, mem=7.3%, io=165681
+2026-02-15 18:38:21,434 - sysid-experiment - INFO -   Sample 40: queue=376050, cpu=0.0%, mem=7.2%, io=0
+2026-02-15 18:38:31,898 - sysid-experiment - INFO -   Sample 50: queue=377550, cpu=7.8%, mem=7.3%, io=482883
+2026-02-15 18:38:41,277 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:38:41,277 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:38:51,658 - sysid-experiment - INFO - Step 32/400: batch_size=36, poll_interval=2979ms
+2026-02-15 18:39:01,037 - sysid-experiment - INFO -   Sample 10: queue=381900, cpu=10.7%, mem=7.3%, io=172475
+2026-02-15 18:39:11,397 - sysid-experiment - INFO -   Sample 20: queue=383400, cpu=8.3%, mem=7.3%, io=292739
+2026-02-15 18:39:21,888 - sysid-experiment - INFO -   Sample 30: queue=385050, cpu=7.1%, mem=7.2%, io=301214
+2026-02-15 18:39:32,280 - sysid-experiment - INFO -   Sample 40: queue=386535, cpu=2.7%, mem=7.3%, io=181619
+2026-02-15 18:39:42,658 - sysid-experiment - INFO -   Sample 50: queue=388050, cpu=14.5%, mem=7.3%, io=477583
+2026-02-15 18:39:51,988 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:39:51,988 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:40:02,443 - sysid-experiment - INFO - Step 33/400: batch_size=36, poll_interval=3232ms
+2026-02-15 18:40:11,891 - sysid-experiment - INFO -   Sample 10: queue=392400, cpu=9.8%, mem=7.3%, io=312558
+2026-02-15 18:40:22,246 - sysid-experiment - INFO -   Sample 20: queue=393900, cpu=5.5%, mem=7.3%, io=171319
+2026-02-15 18:40:32,732 - sysid-experiment - INFO -   Sample 30: queue=395419, cpu=0.0%, mem=7.3%, io=0
+2026-02-15 18:40:43,223 - sysid-experiment - INFO -   Sample 40: queue=397050, cpu=6.8%, mem=7.3%, io=352599
+2026-02-15 18:40:53,621 - sysid-experiment - INFO -   Sample 50: queue=398700, cpu=0.0%, mem=7.3%, io=0
+2026-02-15 18:41:02,946 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:41:02,946 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:41:13,382 - sysid-experiment - INFO - Step 34/400: batch_size=36, poll_interval=3484ms
+2026-02-15 18:41:22,794 - sysid-experiment - INFO -   Sample 10: queue=402900, cpu=10.6%, mem=7.3%, io=174833
+2026-02-15 18:41:33,208 - sysid-experiment - INFO -   Sample 20: queue=404550, cpu=5.0%, mem=7.3%, io=417213
+2026-02-15 18:41:43,578 - sysid-experiment - INFO -   Sample 30: queue=405996, cpu=0.0%, mem=7.3%, io=0
+2026-02-15 18:41:54,076 - sysid-experiment - INFO -   Sample 40: queue=407550, cpu=0.0%, mem=7.3%, io=0
+2026-02-15 18:42:04,484 - sysid-experiment - INFO -   Sample 50: queue=409200, cpu=4.3%, mem=7.3%, io=3311417
+2026-02-15 18:42:13,800 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:42:13,800 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:42:24,165 - sysid-experiment - INFO - Step 35/400: batch_size=36, poll_interval=3737ms
+2026-02-15 18:42:33,566 - sysid-experiment - INFO -   Sample 10: queue=413550, cpu=4.8%, mem=7.3%, io=165948
+2026-02-15 18:42:43,978 - sysid-experiment - INFO -   Sample 20: queue=415050, cpu=2.2%, mem=7.3%, io=166277
+2026-02-15 18:42:54,358 - sysid-experiment - INFO -   Sample 30: queue=416550, cpu=5.9%, mem=7.3%, io=335786
+2026-02-15 18:43:04,831 - sysid-experiment - INFO -   Sample 40: queue=418050, cpu=1.7%, mem=7.4%, io=113162
+2026-02-15 18:43:15,200 - sysid-experiment - INFO -   Sample 50: queue=419700, cpu=4.0%, mem=7.4%, io=305357
+2026-02-15 18:43:24,546 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:43:24,546 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:43:34,981 - sysid-experiment - INFO - Step 36/400: batch_size=36, poll_interval=3989ms
+2026-02-15 18:43:44,416 - sysid-experiment - INFO -   Sample 10: queue=423942, cpu=0.0%, mem=7.3%, io=0
+2026-02-15 18:43:54,757 - sysid-experiment - INFO -   Sample 20: queue=425550, cpu=2.2%, mem=7.3%, io=168095
+2026-02-15 18:44:05,184 - sysid-experiment - INFO -   Sample 30: queue=427050, cpu=2.2%, mem=7.4%, io=167880
+2026-02-15 18:44:15,575 - sysid-experiment - INFO -   Sample 40: queue=428550, cpu=2.9%, mem=7.4%, io=245571
+2026-02-15 18:44:26,032 - sysid-experiment - INFO -   Sample 50: queue=430200, cpu=4.7%, mem=7.3%, io=411594
+2026-02-15 18:44:35,406 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:44:35,406 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:44:45,830 - sysid-experiment - INFO - Step 37/400: batch_size=36, poll_interval=4242ms
+2026-02-15 18:44:55,246 - sysid-experiment - INFO -   Sample 10: queue=434550, cpu=3.8%, mem=7.4%, io=300028
+2026-02-15 18:45:05,648 - sysid-experiment - INFO -   Sample 20: queue=436050, cpu=4.9%, mem=7.4%, io=123755
+2026-02-15 18:45:16,005 - sysid-experiment - INFO -   Sample 30: queue=437700, cpu=2.6%, mem=7.4%, io=162570
+2026-02-15 18:45:26,436 - sysid-experiment - INFO -   Sample 40: queue=439058, cpu=4.2%, mem=7.4%, io=288245
+2026-02-15 18:45:36,884 - sysid-experiment - INFO -   Sample 50: queue=440700, cpu=2.8%, mem=7.4%, io=238600
+2026-02-15 18:45:46,208 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:45:46,208 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:45:56,666 - sysid-experiment - INFO - Step 38/400: batch_size=36, poll_interval=4495ms
+2026-02-15 18:46:06,070 - sysid-experiment - INFO -   Sample 10: queue=445050, cpu=0.0%, mem=7.4%, io=0
+2026-02-15 18:46:16,539 - sysid-experiment - INFO -   Sample 20: queue=446550, cpu=8.8%, mem=7.4%, io=338066
+2026-02-15 18:46:26,945 - sysid-experiment - INFO -   Sample 30: queue=448200, cpu=0.0%, mem=7.4%, io=0
+2026-02-15 18:46:37,342 - sysid-experiment - INFO -   Sample 40: queue=449708, cpu=2.3%, mem=7.4%, io=170008
+2026-02-15 18:46:47,732 - sysid-experiment - INFO -   Sample 50: queue=451200, cpu=3.1%, mem=7.4%, io=165051
+2026-02-15 18:46:57,052 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:46:57,052 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:47:07,491 - sysid-experiment - INFO - Step 39/400: batch_size=36, poll_interval=4747ms
+2026-02-15 18:47:16,912 - sysid-experiment - INFO -   Sample 10: queue=455550, cpu=4.1%, mem=7.4%, io=335366
+2026-02-15 18:47:27,301 - sysid-experiment - INFO -   Sample 20: queue=457114, cpu=2.5%, mem=7.4%, io=165987
+2026-02-15 18:47:37,770 - sysid-experiment - INFO -   Sample 30: queue=458550, cpu=2.6%, mem=7.4%, io=162730
+2026-02-15 18:47:48,163 - sysid-experiment - INFO -   Sample 40: queue=460200, cpu=2.8%, mem=7.4%, io=267530
+2026-02-15 18:47:58,565 - sysid-experiment - INFO -   Sample 50: queue=461418, cpu=4.5%, mem=7.4%, io=141278
+2026-02-15 18:48:07,880 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:48:07,880 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:48:18,240 - sysid-experiment - INFO - Step 40/400: batch_size=36, poll_interval=5000ms
+2026-02-15 18:48:27,677 - sysid-experiment - INFO -   Sample 10: queue=465900, cpu=4.8%, mem=7.5%, io=314779
+2026-02-15 18:48:38,077 - sysid-experiment - INFO -   Sample 20: queue=467550, cpu=2.9%, mem=7.5%, io=248606
+2026-02-15 18:48:48,457 - sysid-experiment - INFO -   Sample 30: queue=469085, cpu=2.1%, mem=7.5%, io=165848
+2026-02-15 18:48:58,820 - sysid-experiment - INFO -   Sample 40: queue=470672, cpu=0.0%, mem=7.5%, io=0
+2026-02-15 18:49:09,232 - sysid-experiment - INFO -   Sample 50: queue=472200, cpu=7.7%, mem=7.5%, io=269579
+2026-02-15 18:49:18,535 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:49:18,535 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:49:28,967 - sysid-experiment - INFO - Step 41/400: batch_size=62, poll_interval=200ms
+2026-02-15 18:49:38,347 - sysid-experiment - INFO -   Sample 10: queue=476550, cpu=2.0%, mem=7.5%, io=147360
+2026-02-15 18:49:48,787 - sysid-experiment - INFO -   Sample 20: queue=478050, cpu=3.7%, mem=7.5%, io=283348
+2026-02-15 18:49:59,270 - sysid-experiment - INFO -   Sample 30: queue=479400, cpu=1.0%, mem=7.5%, io=80646
+2026-02-15 18:50:09,671 - sysid-experiment - INFO -   Sample 40: queue=481050, cpu=2.8%, mem=7.5%, io=142479
+2026-02-15 18:50:20,077 - sysid-experiment - INFO -   Sample 50: queue=482698, cpu=4.0%, mem=7.5%, io=266960
+2026-02-15 18:50:29,437 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:50:29,437 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:50:39,826 - sysid-experiment - INFO - Step 42/400: batch_size=62, poll_interval=453ms
+2026-02-15 18:50:49,249 - sysid-experiment - INFO -   Sample 10: queue=486750, cpu=0.3%, mem=7.5%, io=0
+2026-02-15 18:50:59,593 - sysid-experiment - INFO -   Sample 20: queue=488400, cpu=1.8%, mem=7.5%, io=130009
+2026-02-15 18:51:10,028 - sysid-experiment - INFO -   Sample 30: queue=489900, cpu=2.6%, mem=7.5%, io=133707
+2026-02-15 18:51:20,518 - sysid-experiment - INFO -   Sample 40: queue=491400, cpu=1.6%, mem=7.5%, io=93122
+2026-02-15 18:51:30,940 - sysid-experiment - INFO -   Sample 50: queue=493050, cpu=5.7%, mem=7.5%, io=147989
+2026-02-15 18:51:40,324 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:51:40,324 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:51:50,707 - sysid-experiment - INFO - Step 43/400: batch_size=62, poll_interval=705ms
+2026-02-15 18:52:00,115 - sysid-experiment - INFO -   Sample 10: queue=497400, cpu=2.6%, mem=7.5%, io=145459
+2026-02-15 18:52:10,516 - sysid-experiment - INFO -   Sample 20: queue=498900, cpu=2.2%, mem=7.5%, io=169902
+2026-02-15 18:52:21,216 - sysid-experiment - INFO -   Sample 30: queue=500400, cpu=1.4%, mem=7.5%, io=77438
+2026-02-15 18:52:31,624 - sysid-experiment - INFO -   Sample 40: queue=502050, cpu=3.3%, mem=7.5%, io=259669
+2026-02-15 18:52:42,028 - sysid-experiment - INFO -   Sample 50: queue=503700, cpu=6.1%, mem=7.5%, io=144344
+2026-02-15 18:52:51,436 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:52:51,436 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:53:01,875 - sysid-experiment - INFO - Step 44/400: batch_size=62, poll_interval=958ms
+2026-02-15 18:53:11,310 - sysid-experiment - INFO -   Sample 10: queue=507900, cpu=0.0%, mem=7.5%, io=0
+2026-02-15 18:53:21,722 - sysid-experiment - INFO -   Sample 20: queue=509550, cpu=0.0%, mem=7.5%, io=0
+2026-02-15 18:53:32,181 - sysid-experiment - INFO -   Sample 30: queue=510750, cpu=2.6%, mem=7.5%, io=204044
+2026-02-15 18:53:42,619 - sysid-experiment - INFO -   Sample 40: queue=512400, cpu=2.2%, mem=7.5%, io=141606
+2026-02-15 18:53:53,064 - sysid-experiment - INFO -   Sample 50: queue=513900, cpu=0.0%, mem=7.5%, io=0
+2026-02-15 18:54:02,437 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:54:02,437 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:54:12,848 - sysid-experiment - INFO - Step 45/400: batch_size=62, poll_interval=1211ms
+2026-02-15 18:54:22,262 - sysid-experiment - INFO -   Sample 10: queue=518400, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:54:32,728 - sysid-experiment - INFO -   Sample 20: queue=519900, cpu=0.0%, mem=7.5%, io=0
+2026-02-15 18:54:43,105 - sysid-experiment - INFO -   Sample 30: queue=521400, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:54:53,496 - sysid-experiment - INFO -   Sample 40: queue=523050, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:55:04,013 - sysid-experiment - INFO -   Sample 50: queue=524550, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:55:13,410 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:55:13,410 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:55:23,860 - sysid-experiment - INFO - Step 46/400: batch_size=62, poll_interval=1463ms
+2026-02-15 18:55:33,288 - sysid-experiment - INFO -   Sample 10: queue=528750, cpu=3.7%, mem=7.5%, io=272962
+2026-02-15 18:55:43,712 - sysid-experiment - INFO -   Sample 20: queue=530400, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:55:54,110 - sysid-experiment - INFO -   Sample 30: queue=531900, cpu=12.1%, mem=7.6%, io=168262
+2026-02-15 18:56:04,516 - sysid-experiment - INFO -   Sample 40: queue=533400, cpu=1.2%, mem=7.6%, io=0
+2026-02-15 18:56:14,966 - sysid-experiment - INFO -   Sample 50: queue=534900, cpu=2.0%, mem=7.6%, io=140668
+2026-02-15 18:56:24,352 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:56:24,352 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:56:34,775 - sysid-experiment - INFO - Step 47/400: batch_size=62, poll_interval=1716ms
+2026-02-15 18:56:44,475 - sysid-experiment - INFO -   Sample 10: queue=538822, cpu=2.8%, mem=7.6%, io=137395
+2026-02-15 18:56:54,909 - sysid-experiment - INFO -   Sample 20: queue=540300, cpu=2.1%, mem=7.6%, io=6286336
+2026-02-15 18:57:05,364 - sysid-experiment - INFO -   Sample 30: queue=541800, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:57:15,814 - sysid-experiment - INFO -   Sample 40: queue=543150, cpu=0.9%, mem=7.6%, io=3888
+2026-02-15 18:57:26,318 - sysid-experiment - INFO -   Sample 50: queue=543300, cpu=1.3%, mem=7.6%, io=1611731
+2026-02-15 18:57:35,736 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:57:35,736 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:57:46,109 - sysid-experiment - INFO - Step 48/400: batch_size=62, poll_interval=1968ms
+2026-02-15 18:57:55,604 - sysid-experiment - INFO -   Sample 10: queue=545550, cpu=0.5%, mem=7.8%, io=0
+2026-02-15 18:58:06,027 - sysid-experiment - INFO -   Sample 20: queue=545550, cpu=1.6%, mem=7.6%, io=39133
+2026-02-15 18:58:16,555 - sysid-experiment - INFO -   Sample 30: queue=545850, cpu=1.1%, mem=7.6%, io=42924
+2026-02-15 18:58:26,916 - sysid-experiment - INFO -   Sample 40: queue=547500, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:58:37,372 - sysid-experiment - INFO -   Sample 50: queue=547500, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:58:46,733 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:58:46,733 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 18:58:57,183 - sysid-experiment - INFO - Step 49/400: batch_size=62, poll_interval=2221ms
+2026-02-15 18:59:06,595 - sysid-experiment - INFO -   Sample 10: queue=548250, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:59:17,028 - sysid-experiment - INFO -   Sample 20: queue=548250, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 18:59:27,526 - sysid-experiment - INFO -   Sample 30: queue=548250, cpu=0.5%, mem=7.6%, io=0
+2026-02-15 18:59:37,985 - sysid-experiment - INFO -   Sample 40: queue=548250, cpu=0.3%, mem=7.6%, io=0
+2026-02-15 18:59:48,469 - sysid-experiment - INFO -   Sample 50: queue=548250, cpu=3.1%, mem=7.6%, io=0
+2026-02-15 18:59:57,846 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 18:59:57,846 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:00:08,301 - sysid-experiment - INFO - Step 50/400: batch_size=62, poll_interval=2474ms
+2026-02-15 19:00:17,767 - sysid-experiment - INFO -   Sample 10: queue=548250, cpu=0.2%, mem=7.6%, io=0
+2026-02-15 19:00:28,202 - sysid-experiment - INFO -   Sample 20: queue=548250, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 19:00:38,633 - sysid-experiment - INFO -   Sample 30: queue=548250, cpu=0.5%, mem=7.6%, io=8037
+2026-02-15 19:00:49,082 - sysid-experiment - INFO -   Sample 40: queue=550800, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 19:00:59,535 - sysid-experiment - INFO -   Sample 50: queue=550800, cpu=0.4%, mem=7.6%, io=0
+2026-02-15 19:01:08,922 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:01:08,922 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:01:19,420 - sysid-experiment - INFO - Step 51/400: batch_size=62, poll_interval=2726ms
+2026-02-15 19:01:28,870 - sysid-experiment - INFO -   Sample 10: queue=550800, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 19:02:02,095 - sysid-experiment - INFO -   Sample 20: queue=550800, cpu=0.3%, mem=7.6%, io=0
+2026-02-15 19:02:12,591 - sysid-experiment - INFO -   Sample 30: queue=550800, cpu=0.5%, mem=7.6%, io=204673
+2026-02-15 19:02:19,922 - sysid-experiment - INFO -   Collected 36 samples
+2026-02-15 19:02:19,922 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:02:30,378 - sysid-experiment - INFO - Step 52/400: batch_size=62, poll_interval=2979ms
+2026-02-15 19:02:40,819 - sysid-experiment - INFO -   Sample 10: queue=559650, cpu=15.2%, mem=7.6%, io=633262
+2026-02-15 19:02:51,322 - sysid-experiment - INFO -   Sample 20: queue=559800, cpu=1.1%, mem=7.6%, io=23210
+2026-02-15 19:03:01,786 - sysid-experiment - INFO -   Sample 30: queue=561058, cpu=7.2%, mem=7.6%, io=363373
+2026-02-15 19:03:12,275 - sysid-experiment - INFO -   Sample 40: queue=563700, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 19:03:22,707 - sysid-experiment - INFO -   Sample 50: queue=565050, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 19:03:32,096 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:03:32,096 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:03:42,571 - sysid-experiment - INFO - Step 53/400: batch_size=62, poll_interval=3232ms
+2026-02-15 19:03:52,459 - sysid-experiment - INFO -   Sample 10: queue=568950, cpu=1.1%, mem=7.7%, io=0
+2026-02-15 19:04:02,885 - sysid-experiment - INFO -   Sample 20: queue=570600, cpu=2.2%, mem=7.7%, io=158968
+2026-02-15 19:04:13,385 - sysid-experiment - INFO -   Sample 30: queue=572250, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:04:23,840 - sysid-experiment - INFO -   Sample 40: queue=573534, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:04:34,265 - sysid-experiment - INFO -   Sample 50: queue=574950, cpu=3.5%, mem=7.7%, io=35062
+2026-02-15 19:04:43,614 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:04:43,614 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:04:54,137 - sysid-experiment - INFO - Step 54/400: batch_size=62, poll_interval=3484ms
+2026-02-15 19:05:03,513 - sysid-experiment - INFO -   Sample 10: queue=579150, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:05:13,908 - sysid-experiment - INFO -   Sample 20: queue=580200, cpu=0.3%, mem=7.7%, io=666793
+2026-02-15 19:05:29,562 - sysid-experiment - INFO -   Sample 30: queue=581850, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:05:39,985 - sysid-experiment - INFO -   Sample 40: queue=582970, cpu=0.0%, mem=7.6%, io=0
+2026-02-15 19:05:50,488 - sysid-experiment - INFO -   Sample 50: queue=584850, cpu=3.7%, mem=7.7%, io=427629
+2026-02-15 19:05:54,632 - sysid-experiment - INFO -   Collected 53 samples
+2026-02-15 19:05:54,632 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:06:05,129 - sysid-experiment - INFO - Step 55/400: batch_size=62, poll_interval=3737ms
+2026-02-15 19:06:14,606 - sysid-experiment - INFO -   Sample 10: queue=588450, cpu=1.8%, mem=7.7%, io=5426942
+2026-02-15 19:06:25,057 - sysid-experiment - INFO -   Sample 20: queue=589200, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:06:35,480 - sysid-experiment - INFO -   Sample 30: queue=589500, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:06:52,460 - sysid-experiment - INFO -   Sample 40: queue=592650, cpu=3.4%, mem=7.7%, io=0
+2026-02-15 19:07:02,871 - sysid-experiment - INFO -   Sample 50: queue=594300, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:07:05,987 - sysid-experiment - INFO -   Collected 52 samples
+2026-02-15 19:07:05,987 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:07:16,441 - sysid-experiment - INFO - Step 56/400: batch_size=62, poll_interval=3989ms
+2026-02-15 19:07:25,850 - sysid-experiment - INFO -   Sample 10: queue=596700, cpu=0.8%, mem=7.7%, io=34949
+2026-02-15 19:07:36,268 - sysid-experiment - INFO -   Sample 20: queue=598800, cpu=12.0%, mem=7.7%, io=490622
+2026-02-15 19:07:46,645 - sysid-experiment - INFO -   Sample 30: queue=600300, cpu=3.8%, mem=7.7%, io=263803
+2026-02-15 19:07:57,116 - sysid-experiment - INFO -   Sample 40: queue=601800, cpu=2.8%, mem=7.7%, io=129225
+2026-02-15 19:08:07,627 - sysid-experiment - INFO -   Sample 50: queue=603150, cpu=1.6%, mem=7.7%, io=142090
+2026-02-15 19:08:17,068 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:08:17,068 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:08:27,566 - sysid-experiment - INFO - Step 57/400: batch_size=62, poll_interval=4242ms
+2026-02-15 19:08:36,955 - sysid-experiment - INFO -   Sample 10: queue=607610, cpu=2.3%, mem=7.8%, io=115835
+2026-02-15 19:08:47,369 - sysid-experiment - INFO -   Sample 20: queue=609300, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:08:57,881 - sysid-experiment - INFO -   Sample 30: queue=610800, cpu=3.5%, mem=7.7%, io=296477
+2026-02-15 19:09:08,342 - sysid-experiment - INFO -   Sample 40: queue=612300, cpu=17.9%, mem=7.8%, io=225295
+2026-02-15 19:09:18,730 - sysid-experiment - INFO -   Sample 50: queue=613950, cpu=5.7%, mem=7.7%, io=285221
+2026-02-15 19:09:28,099 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:09:28,099 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:09:38,504 - sysid-experiment - INFO - Step 58/400: batch_size=62, poll_interval=4495ms
+2026-02-15 19:09:47,967 - sysid-experiment - INFO -   Sample 10: queue=618300, cpu=2.5%, mem=7.7%, io=142766
+2026-02-15 19:09:58,422 - sysid-experiment - INFO -   Sample 20: queue=619800, cpu=0.0%, mem=7.7%, io=0
+2026-02-15 19:10:08,843 - sysid-experiment - INFO -   Sample 30: queue=621450, cpu=4.5%, mem=7.7%, io=398895
+2026-02-15 19:10:19,167 - sysid-experiment - INFO -   Sample 40: queue=622950, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:10:29,609 - sysid-experiment - INFO -   Sample 50: queue=624450, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:10:38,993 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:10:38,993 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:10:49,407 - sysid-experiment - INFO - Step 59/400: batch_size=62, poll_interval=4747ms
+2026-02-15 19:10:58,844 - sysid-experiment - INFO -   Sample 10: queue=628873, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:11:09,298 - sysid-experiment - INFO -   Sample 20: queue=630450, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:11:19,789 - sysid-experiment - INFO -   Sample 30: queue=631950, cpu=2.8%, mem=7.8%, io=219715
+2026-02-15 19:11:30,180 - sysid-experiment - INFO -   Sample 40: queue=633450, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:11:40,703 - sysid-experiment - INFO -   Sample 50: queue=634950, cpu=2.9%, mem=7.8%, io=259156
+2026-02-15 19:11:50,054 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:11:50,054 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:12:00,517 - sysid-experiment - INFO - Step 60/400: batch_size=62, poll_interval=5000ms
+2026-02-15 19:12:09,920 - sysid-experiment - INFO -   Sample 10: queue=639450, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:12:20,404 - sysid-experiment - INFO -   Sample 20: queue=640950, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:12:30,817 - sysid-experiment - INFO -   Sample 30: queue=642450, cpu=3.1%, mem=7.8%, io=295280
+2026-02-15 19:12:41,233 - sysid-experiment - INFO -   Sample 40: queue=643950, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:12:51,735 - sysid-experiment - INFO -   Sample 50: queue=645600, cpu=4.2%, mem=7.8%, io=256381
+2026-02-15 19:13:01,090 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:13:01,090 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:13:11,565 - sysid-experiment - INFO - Step 61/400: batch_size=87, poll_interval=200ms
+2026-02-15 19:13:21,045 - sysid-experiment - INFO -   Sample 10: queue=649800, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:13:31,474 - sysid-experiment - INFO -   Sample 20: queue=651450, cpu=5.2%, mem=7.9%, io=274467
+2026-02-15 19:13:41,971 - sysid-experiment - INFO -   Sample 30: queue=652950, cpu=3.6%, mem=8.0%, io=146944
+2026-02-15 19:13:52,462 - sysid-experiment - INFO -   Sample 40: queue=654600, cpu=2.2%, mem=7.8%, io=204833
+2026-02-15 19:14:02,889 - sysid-experiment - INFO -   Sample 50: queue=656181, cpu=1.9%, mem=7.8%, io=1501675
+2026-02-15 19:14:12,193 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:14:12,193 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:14:22,671 - sysid-experiment - INFO - Step 62/400: batch_size=87, poll_interval=453ms
+2026-02-15 19:14:32,062 - sysid-experiment - INFO -   Sample 10: queue=660450, cpu=2.7%, mem=7.8%, io=2593060
+2026-02-15 19:14:42,473 - sysid-experiment - INFO -   Sample 20: queue=662100, cpu=2.0%, mem=7.8%, io=141579
+2026-02-15 19:14:52,860 - sysid-experiment - INFO -   Sample 30: queue=663600, cpu=1.9%, mem=7.8%, io=144118
+2026-02-15 19:15:03,359 - sysid-experiment - INFO -   Sample 40: queue=665100, cpu=8.6%, mem=7.8%, io=4485558
+2026-02-15 19:15:13,857 - sysid-experiment - INFO -   Sample 50: queue=666600, cpu=1.8%, mem=7.8%, io=142609
+2026-02-15 19:15:23,192 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:15:23,192 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:15:33,677 - sysid-experiment - INFO - Step 63/400: batch_size=87, poll_interval=705ms
+2026-02-15 19:15:43,050 - sysid-experiment - INFO -   Sample 10: queue=670950, cpu=1.8%, mem=7.9%, io=138073
+2026-02-15 19:15:53,510 - sysid-experiment - INFO -   Sample 20: queue=672600, cpu=2.5%, mem=7.8%, io=236900
+2026-02-15 19:16:03,996 - sysid-experiment - INFO -   Sample 30: queue=674100, cpu=0.0%, mem=7.8%, io=0
+2026-02-15 19:16:14,416 - sysid-experiment - INFO -   Sample 40: queue=675600, cpu=2.6%, mem=7.8%, io=141228
+2026-02-15 19:16:24,848 - sysid-experiment - INFO -   Sample 50: queue=677250, cpu=3.7%, mem=7.9%, io=265524
+2026-02-15 19:16:34,226 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:16:34,226 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:16:44,699 - sysid-experiment - INFO - Step 64/400: batch_size=87, poll_interval=958ms
+2026-02-15 19:16:54,087 - sysid-experiment - INFO -   Sample 10: queue=681600, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:17:04,464 - sysid-experiment - INFO -   Sample 20: queue=682951, cpu=1.9%, mem=7.9%, io=141774
+2026-02-15 19:17:14,950 - sysid-experiment - INFO -   Sample 30: queue=684600, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:17:25,388 - sysid-experiment - INFO -   Sample 40: queue=686100, cpu=11.6%, mem=7.9%, io=250931
+2026-02-15 19:17:35,770 - sysid-experiment - INFO -   Sample 50: queue=687750, cpu=4.5%, mem=7.9%, io=144870
+2026-02-15 19:17:45,072 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:17:45,072 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:17:55,484 - sysid-experiment - INFO - Step 65/400: batch_size=87, poll_interval=1211ms
+2026-02-15 19:18:04,909 - sysid-experiment - INFO -   Sample 10: queue=692100, cpu=3.3%, mem=7.9%, io=199396
+2026-02-15 19:18:15,398 - sysid-experiment - INFO -   Sample 20: queue=693689, cpu=6.3%, mem=7.9%, io=282267
+2026-02-15 19:18:25,850 - sysid-experiment - INFO -   Sample 30: queue=695100, cpu=2.1%, mem=7.9%, io=141927
+2026-02-15 19:18:36,274 - sysid-experiment - INFO -   Sample 40: queue=696600, cpu=4.4%, mem=7.9%, io=168087
+2026-02-15 19:18:46,651 - sysid-experiment - INFO -   Sample 50: queue=698250, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:18:55,973 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:18:55,973 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:19:06,464 - sysid-experiment - INFO - Step 66/400: batch_size=87, poll_interval=1463ms
+2026-02-15 19:19:15,965 - sysid-experiment - INFO -   Sample 10: queue=702600, cpu=4.3%, mem=8.0%, io=367551
+2026-02-15 19:19:26,436 - sysid-experiment - INFO -   Sample 20: queue=704250, cpu=4.5%, mem=8.0%, io=419442
+2026-02-15 19:19:36,933 - sysid-experiment - INFO -   Sample 30: queue=705750, cpu=4.1%, mem=8.0%, io=142533
+2026-02-15 19:19:47,309 - sysid-experiment - INFO -   Sample 40: queue=707250, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:19:57,699 - sysid-experiment - INFO -   Sample 50: queue=708750, cpu=1.4%, mem=7.9%, io=3928
+2026-02-15 19:20:07,008 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:20:07,008 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:20:17,452 - sysid-experiment - INFO - Step 67/400: batch_size=87, poll_interval=1716ms
+2026-02-15 19:20:26,933 - sysid-experiment - INFO -   Sample 10: queue=712995, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:20:37,418 - sysid-experiment - INFO -   Sample 20: queue=714600, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:20:47,924 - sysid-experiment - INFO -   Sample 30: queue=716100, cpu=4.8%, mem=7.9%, io=224457
+2026-02-15 19:20:58,318 - sysid-experiment - INFO -   Sample 40: queue=717600, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:21:08,746 - sysid-experiment - INFO -   Sample 50: queue=719100, cpu=7.2%, mem=7.9%, io=148225
+2026-02-15 19:21:18,053 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:21:18,053 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:21:28,464 - sysid-experiment - INFO - Step 68/400: batch_size=87, poll_interval=1968ms
+2026-02-15 19:21:37,835 - sysid-experiment - INFO -   Sample 10: queue=723600, cpu=6.6%, mem=8.0%, io=408751
+2026-02-15 19:21:48,288 - sysid-experiment - INFO -   Sample 20: queue=725100, cpu=5.0%, mem=7.9%, io=144026
+2026-02-15 19:21:58,723 - sysid-experiment - INFO -   Sample 30: queue=726750, cpu=0.0%, mem=7.9%, io=0
+2026-02-15 19:22:09,197 - sysid-experiment - INFO -   Sample 40: queue=728250, cpu=1.9%, mem=8.0%, io=145715
+2026-02-15 19:22:19,593 - sysid-experiment - INFO -   Sample 50: queue=729750, cpu=3.3%, mem=8.0%, io=260216
+2026-02-15 19:22:28,949 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:22:28,949 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:22:39,333 - sysid-experiment - INFO - Step 69/400: batch_size=87, poll_interval=2221ms
+2026-02-15 19:22:48,810 - sysid-experiment - INFO -   Sample 10: queue=734100, cpu=7.9%, mem=8.0%, io=4314555
+2026-02-15 19:22:59,318 - sysid-experiment - INFO -   Sample 20: queue=735723, cpu=2.9%, mem=8.0%, io=265440
+2026-02-15 19:23:09,674 - sysid-experiment - INFO -   Sample 30: queue=737100, cpu=0.0%, mem=8.0%, io=0
+2026-02-15 19:23:20,157 - sysid-experiment - INFO -   Sample 40: queue=738750, cpu=27.6%, mem=8.0%, io=130446
+2026-02-15 19:23:30,576 - sysid-experiment - INFO -   Sample 50: queue=740250, cpu=1.9%, mem=8.0%, io=143984
+2026-02-15 19:23:39,932 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:23:39,932 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:23:50,311 - sysid-experiment - INFO - Step 70/400: batch_size=87, poll_interval=2474ms
+2026-02-15 19:23:59,747 - sysid-experiment - INFO -   Sample 10: queue=744600, cpu=1.6%, mem=8.0%, io=148297
+2026-02-15 19:24:10,161 - sysid-experiment - INFO -   Sample 20: queue=746250, cpu=2.6%, mem=8.0%, io=145873
+2026-02-15 19:24:20,649 - sysid-experiment - INFO -   Sample 30: queue=747750, cpu=3.4%, mem=8.0%, io=278921
+2026-02-15 19:24:31,072 - sysid-experiment - INFO -   Sample 40: queue=749400, cpu=0.0%, mem=8.0%, io=0
+2026-02-15 19:24:41,535 - sysid-experiment - INFO -   Sample 50: queue=750900, cpu=5.8%, mem=8.0%, io=140152
+2026-02-15 19:24:50,881 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:24:50,881 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:25:01,324 - sysid-experiment - INFO - Step 71/400: batch_size=87, poll_interval=2726ms
+2026-02-15 19:25:10,847 - sysid-experiment - INFO -   Sample 10: queue=755103, cpu=0.0%, mem=8.0%, io=0
+2026-02-15 19:25:21,304 - sysid-experiment - INFO -   Sample 20: queue=756750, cpu=0.0%, mem=8.0%, io=0
+2026-02-15 19:25:31,777 - sysid-experiment - INFO -   Sample 30: queue=758169, cpu=2.3%, mem=8.0%, io=143142
+2026-02-15 19:25:42,218 - sysid-experiment - INFO -   Sample 40: queue=759779, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:25:52,639 - sysid-experiment - INFO -   Sample 50: queue=761311, cpu=0.0%, mem=8.0%, io=0
+2026-02-15 19:26:02,000 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:26:02,000 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:26:12,459 - sysid-experiment - INFO - Step 72/400: batch_size=87, poll_interval=2979ms
+2026-02-15 19:26:21,865 - sysid-experiment - INFO -   Sample 10: queue=765450, cpu=2.2%, mem=8.1%, io=137714
+2026-02-15 19:26:32,360 - sysid-experiment - INFO -   Sample 20: queue=767250, cpu=2.8%, mem=8.1%, io=142952
+2026-02-15 19:26:42,821 - sysid-experiment - INFO -   Sample 30: queue=768750, cpu=2.9%, mem=8.1%, io=180566
+2026-02-15 19:26:53,213 - sysid-experiment - INFO -   Sample 40: queue=770400, cpu=2.4%, mem=8.0%, io=1589314
+2026-02-15 19:27:03,637 - sysid-experiment - INFO -   Sample 50: queue=771900, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:27:12,962 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:27:12,962 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:27:23,424 - sysid-experiment - INFO - Step 73/400: batch_size=87, poll_interval=3232ms
+2026-02-15 19:27:32,799 - sysid-experiment - INFO -   Sample 10: queue=776250, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:27:43,208 - sysid-experiment - INFO -   Sample 20: queue=777750, cpu=9.8%, mem=8.2%, io=149329
+2026-02-15 19:27:53,632 - sysid-experiment - INFO -   Sample 30: queue=779400, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:28:04,119 - sysid-experiment - INFO -   Sample 40: queue=780900, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:28:14,581 - sysid-experiment - INFO -   Sample 50: queue=782400, cpu=1.8%, mem=8.1%, io=133246
+2026-02-15 19:28:23,925 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:28:23,925 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:28:34,373 - sysid-experiment - INFO - Step 74/400: batch_size=87, poll_interval=3484ms
+2026-02-15 19:28:43,782 - sysid-experiment - INFO -   Sample 10: queue=786750, cpu=3.3%, mem=8.1%, io=340577
+2026-02-15 19:28:54,188 - sysid-experiment - INFO -   Sample 20: queue=788400, cpu=5.6%, mem=8.1%, io=1535313
+2026-02-15 19:29:04,662 - sysid-experiment - INFO -   Sample 30: queue=789900, cpu=3.7%, mem=8.1%, io=304414
+2026-02-15 19:29:15,061 - sysid-experiment - INFO -   Sample 40: queue=791550, cpu=1.9%, mem=8.1%, io=141894
+2026-02-15 19:29:25,456 - sysid-experiment - INFO -   Sample 50: queue=793050, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:29:34,777 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:29:34,777 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:29:45,161 - sysid-experiment - INFO - Step 75/400: batch_size=87, poll_interval=3737ms
+2026-02-15 19:29:54,571 - sysid-experiment - INFO -   Sample 10: queue=797250, cpu=6.2%, mem=8.1%, io=8833629
+2026-02-15 19:30:05,031 - sysid-experiment - INFO -   Sample 20: queue=798900, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:30:15,487 - sysid-experiment - INFO -   Sample 30: queue=800550, cpu=3.1%, mem=8.1%, io=335062
+2026-02-15 19:30:25,965 - sysid-experiment - INFO -   Sample 40: queue=802050, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:30:36,425 - sysid-experiment - INFO -   Sample 50: queue=803550, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:30:45,718 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:30:45,718 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:30:56,180 - sysid-experiment - INFO - Step 76/400: batch_size=87, poll_interval=3989ms
+2026-02-15 19:31:05,693 - sysid-experiment - INFO -   Sample 10: queue=807900, cpu=6.0%, mem=8.1%, io=264002
+2026-02-15 19:31:16,127 - sysid-experiment - INFO -   Sample 20: queue=809476, cpu=3.0%, mem=8.1%, io=166050
+2026-02-15 19:31:26,623 - sysid-experiment - INFO -   Sample 30: queue=810900, cpu=4.6%, mem=8.1%, io=291991
+2026-02-15 19:31:37,062 - sysid-experiment - INFO -   Sample 40: queue=812550, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:31:47,581 - sysid-experiment - INFO -   Sample 50: queue=814050, cpu=2.8%, mem=8.2%, io=144045
+2026-02-15 19:31:56,892 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:31:56,892 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:32:07,324 - sysid-experiment - INFO - Step 77/400: batch_size=87, poll_interval=4242ms
+2026-02-15 19:32:16,770 - sysid-experiment - INFO -   Sample 10: queue=818488, cpu=11.1%, mem=9.3%, io=266059
+2026-02-15 19:32:27,209 - sysid-experiment - INFO -   Sample 20: queue=819903, cpu=5.3%, mem=9.3%, io=264884
+2026-02-15 19:32:37,675 - sysid-experiment - INFO -   Sample 30: queue=821550, cpu=0.0%, mem=9.3%, io=0
+2026-02-15 19:32:48,028 - sysid-experiment - INFO -   Sample 40: queue=823189, cpu=2.7%, mem=9.3%, io=142939
+2026-02-15 19:32:58,547 - sysid-experiment - INFO -   Sample 50: queue=824700, cpu=2.2%, mem=8.1%, io=139433
+2026-02-15 19:33:07,935 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:33:07,935 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:33:18,355 - sysid-experiment - INFO - Step 78/400: batch_size=87, poll_interval=4495ms
+2026-02-15 19:33:27,732 - sysid-experiment - INFO -   Sample 10: queue=829050, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:33:38,153 - sysid-experiment - INFO -   Sample 20: queue=830550, cpu=7.9%, mem=8.1%, io=280785
+2026-02-15 19:33:48,518 - sysid-experiment - INFO -   Sample 30: queue=832050, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:33:59,001 - sysid-experiment - INFO -   Sample 40: queue=833550, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:34:09,423 - sysid-experiment - INFO -   Sample 50: queue=835200, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:34:18,716 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:34:18,716 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:34:29,150 - sysid-experiment - INFO - Step 79/400: batch_size=87, poll_interval=4747ms
+2026-02-15 19:34:38,623 - sysid-experiment - INFO -   Sample 10: queue=839550, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:34:49,053 - sysid-experiment - INFO -   Sample 20: queue=841050, cpu=1.8%, mem=8.2%, io=142300
+2026-02-15 19:34:59,465 - sysid-experiment - INFO -   Sample 30: queue=842550, cpu=0.0%, mem=8.1%, io=0
+2026-02-15 19:35:09,858 - sysid-experiment - INFO -   Sample 40: queue=844200, cpu=3.0%, mem=8.2%, io=272641
+2026-02-15 19:35:20,258 - sysid-experiment - INFO -   Sample 50: queue=845700, cpu=8.4%, mem=8.2%, io=371714
+2026-02-15 19:35:29,660 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:35:29,660 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:35:40,098 - sysid-experiment - INFO - Step 80/400: batch_size=87, poll_interval=5000ms
+2026-02-15 19:35:49,477 - sysid-experiment - INFO -   Sample 10: queue=850050, cpu=8.6%, mem=8.2%, io=282143
+2026-02-15 19:35:59,910 - sysid-experiment - INFO -   Sample 20: queue=851550, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:36:10,300 - sysid-experiment - INFO -   Sample 30: queue=853200, cpu=5.0%, mem=8.2%, io=411117
+2026-02-15 19:36:20,714 - sysid-experiment - INFO -   Sample 40: queue=854700, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:36:31,126 - sysid-experiment - INFO -   Sample 50: queue=856200, cpu=1.9%, mem=8.2%, io=143820
+2026-02-15 19:36:40,442 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:36:40,442 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:36:50,905 - sysid-experiment - INFO - Step 81/400: batch_size=113, poll_interval=200ms
+2026-02-15 19:37:00,299 - sysid-experiment - INFO -   Sample 10: queue=860550, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:37:10,731 - sysid-experiment - INFO -   Sample 20: queue=862152, cpu=2.7%, mem=8.2%, io=139036
+2026-02-15 19:37:21,154 - sysid-experiment - INFO -   Sample 30: queue=863700, cpu=2.0%, mem=8.2%, io=140301
+2026-02-15 19:37:31,615 - sysid-experiment - INFO -   Sample 40: queue=865350, cpu=4.2%, mem=8.2%, io=143938
+2026-02-15 19:37:42,033 - sysid-experiment - INFO -   Sample 50: queue=866850, cpu=1.2%, mem=8.2%, io=35575
+2026-02-15 19:37:51,432 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:37:51,432 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:38:01,953 - sysid-experiment - INFO - Step 82/400: batch_size=113, poll_interval=453ms
+2026-02-15 19:38:11,366 - sysid-experiment - INFO -   Sample 10: queue=871050, cpu=2.1%, mem=8.2%, io=143820
+2026-02-15 19:38:21,805 - sysid-experiment - INFO -   Sample 20: queue=872683, cpu=1.9%, mem=8.2%, io=140685
+2026-02-15 19:38:32,220 - sysid-experiment - INFO -   Sample 30: queue=874350, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:38:42,649 - sysid-experiment - INFO -   Sample 40: queue=875850, cpu=11.6%, mem=8.3%, io=3417557
+2026-02-15 19:38:53,118 - sysid-experiment - INFO -   Sample 50: queue=877350, cpu=2.7%, mem=8.3%, io=151074
+2026-02-15 19:39:02,493 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:39:02,493 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:39:12,939 - sysid-experiment - INFO - Step 83/400: batch_size=113, poll_interval=705ms
+2026-02-15 19:39:22,371 - sysid-experiment - INFO -   Sample 10: queue=881550, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:39:32,786 - sysid-experiment - INFO -   Sample 20: queue=883304, cpu=0.0%, mem=8.3%, io=0
+2026-02-15 19:39:43,230 - sysid-experiment - INFO -   Sample 30: queue=884788, cpu=2.7%, mem=8.3%, io=4744283
+2026-02-15 19:39:53,621 - sysid-experiment - INFO -   Sample 40: queue=886350, cpu=0.0%, mem=8.3%, io=0
+2026-02-15 19:40:04,092 - sysid-experiment - INFO -   Sample 50: queue=887850, cpu=0.0%, mem=8.2%, io=0
+2026-02-15 19:40:13,486 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:40:13,486 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:40:23,899 - sysid-experiment - INFO - Step 84/400: batch_size=113, poll_interval=958ms
+2026-02-15 19:40:33,261 - sysid-experiment - INFO -   Sample 10: queue=892200, cpu=1.7%, mem=8.3%, io=133883
+2026-02-15 19:40:43,648 - sysid-experiment - INFO -   Sample 20: queue=893700, cpu=6.7%, mem=8.3%, io=4332737
+2026-02-15 19:40:54,116 - sysid-experiment - INFO -   Sample 30: queue=895200, cpu=3.8%, mem=8.3%, io=250739
+2026-02-15 19:41:04,478 - sysid-experiment - INFO -   Sample 40: queue=896850, cpu=0.0%, mem=8.3%, io=0
+2026-02-15 19:41:14,863 - sysid-experiment - INFO -   Sample 50: queue=898350, cpu=7.8%, mem=8.3%, io=246955
+2026-02-15 19:41:24,232 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:41:24,232 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:41:34,669 - sysid-experiment - INFO - Step 85/400: batch_size=113, poll_interval=1211ms
+2026-02-15 19:41:44,076 - sysid-experiment - INFO -   Sample 10: queue=902700, cpu=82.0%, mem=8.4%, io=17190582
+2026-02-15 19:41:54,607 - sysid-experiment - INFO -   Sample 20: queue=904350, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 19:42:05,013 - sysid-experiment - INFO -   Sample 30: queue=905850, cpu=4.3%, mem=8.3%, io=154894
+2026-02-15 19:42:15,449 - sysid-experiment - INFO -   Sample 40: queue=907350, cpu=4.3%, mem=8.3%, io=151107
+2026-02-15 19:42:25,930 - sysid-experiment - INFO -   Sample 50: queue=908850, cpu=2.1%, mem=8.3%, io=162376
+2026-02-15 19:42:35,286 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:42:35,286 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:42:45,779 - sysid-experiment - INFO - Step 86/400: batch_size=113, poll_interval=1463ms
+2026-02-15 19:42:55,221 - sysid-experiment - INFO -   Sample 10: queue=913350, cpu=10.4%, mem=8.3%, io=472501
+2026-02-15 19:43:05,656 - sysid-experiment - INFO -   Sample 20: queue=914850, cpu=0.0%, mem=8.3%, io=0
+2026-02-15 19:43:16,120 - sysid-experiment - INFO -   Sample 30: queue=916350, cpu=0.0%, mem=8.3%, io=0
+2026-02-15 19:43:26,574 - sysid-experiment - INFO -   Sample 40: queue=917960, cpu=0.0%, mem=8.3%, io=0
+2026-02-15 19:43:37,010 - sysid-experiment - INFO -   Sample 50: queue=919583, cpu=3.5%, mem=8.3%, io=308443
+2026-02-15 19:43:46,426 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:43:46,426 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:43:56,932 - sysid-experiment - INFO - Step 87/400: batch_size=113, poll_interval=1716ms
+2026-02-15 19:44:06,324 - sysid-experiment - INFO -   Sample 10: queue=923850, cpu=4.8%, mem=8.3%, io=171337
+2026-02-15 19:44:16,741 - sysid-experiment - INFO -   Sample 20: queue=925350, cpu=2.4%, mem=8.3%, io=143847
+2026-02-15 19:44:27,192 - sysid-experiment - INFO -   Sample 30: queue=926909, cpu=6.6%, mem=8.3%, io=314483
+2026-02-15 19:44:37,692 - sysid-experiment - INFO -   Sample 40: queue=928650, cpu=5.3%, mem=8.3%, io=436314
+2026-02-15 19:44:48,108 - sysid-experiment - INFO -   Sample 50: queue=930150, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 19:44:57,461 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:44:57,461 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:45:07,939 - sysid-experiment - INFO - Step 88/400: batch_size=113, poll_interval=1968ms
+2026-02-15 19:45:17,363 - sysid-experiment - INFO -   Sample 10: queue=934350, cpu=5.7%, mem=8.3%, io=262884
+2026-02-15 19:45:27,776 - sysid-experiment - INFO -   Sample 20: queue=935850, cpu=3.8%, mem=8.4%, io=202113
+2026-02-15 19:45:38,245 - sysid-experiment - INFO -   Sample 30: queue=937549, cpu=4.5%, mem=8.4%, io=475203
+2026-02-15 19:45:48,679 - sysid-experiment - INFO -   Sample 40: queue=939137, cpu=3.2%, mem=8.4%, io=272760
+2026-02-15 19:45:59,081 - sysid-experiment - INFO -   Sample 50: queue=940587, cpu=3.5%, mem=8.4%, io=281214
+2026-02-15 19:46:08,454 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:46:08,454 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:46:18,966 - sysid-experiment - INFO - Step 89/400: batch_size=113, poll_interval=2221ms
+2026-02-15 19:46:28,367 - sysid-experiment - INFO -   Sample 10: queue=945000, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 19:46:38,761 - sysid-experiment - INFO -   Sample 20: queue=946500, cpu=3.3%, mem=8.4%, io=329502
+2026-02-15 19:46:49,190 - sysid-experiment - INFO -   Sample 30: queue=948000, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 19:46:59,575 - sysid-experiment - INFO -   Sample 40: queue=949650, cpu=4.9%, mem=8.4%, io=463252
+2026-02-15 19:47:09,987 - sysid-experiment - INFO -   Sample 50: queue=951150, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 19:47:19,349 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 19:47:19,349 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:47:29,769 - sysid-experiment - INFO - Step 90/400: batch_size=113, poll_interval=2474ms
+2026-02-15 19:47:39,237 - sysid-experiment - INFO -   Sample 10: queue=955500, cpu=3.0%, mem=8.4%, io=306532
+2026-02-15 19:47:49,637 - sysid-experiment - INFO -   Sample 20: queue=957000, cpu=3.8%, mem=8.4%, io=330059
+2026-02-15 19:48:00,059 - sysid-experiment - INFO -   Sample 30: queue=958633, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 19:48:14,621 - sysid-experiment - INFO -   Sample 40: queue=960000, cpu=2.0%, mem=8.4%, io=114293
+2026-02-15 19:48:25,200 - sysid-experiment - INFO -   Sample 50: queue=961650, cpu=1.8%, mem=8.4%, io=150871
+2026-02-15 19:48:30,428 - sysid-experiment - INFO -   Collected 54 samples
+2026-02-15 19:48:30,428 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 19:48:40,917 - sysid-experiment - INFO - Step 91/400: batch_size=113, poll_interval=2726ms
+2026-02-15 19:48:50,391 - sysid-experiment - INFO -   Sample 10: queue=965445, cpu=3.4%, mem=8.4%, io=299635
+2026-02-15 19:49:00,961 - sysid-experiment - INFO -   Sample 20: queue=966900, cpu=2.9%, mem=8.4%, io=161643
+2026-02-15 19:49:11,479 - sysid-experiment - INFO -   Sample 30: queue=968550, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:27:43,816 - sysid-experiment - INFO -   Collected 37 samples
+2026-02-15 20:27:43,816 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:27:43,864 - kafka.client - INFO - Closing idle connection 1, last active 2305056 ms ago
+2026-02-15 20:27:43,865 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 20:27:43,968 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::12026-02-15 20:27:44,382 - sysid-experiment - INFO - Step 92/400: batch_size=113, poll_interval=2979ms
+2026-02-15 20:27:44,419 - kafka.client - INFO - Closing idle connection 1, last active 2305032 ms ago
+2026-02-15 20:27:44,419 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 20:27:44,535 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 20:27:44,535 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 20:27:44,536 - kafka.client - INFO - Closing idle connection coordinator-1, last active 2305148 ms ago
+2026-02-15 20:27:44,536 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, nod2026-02-15 20:46:53,210 - sysid-experiment - INFO - Step 92/400: batch_size=113, poll_interval=2979ms
+2026-02-15 20:46:53,242 - kafka.client - INFO - Closing idle connection 1, last active 1140708 ms ago
+2026-02-15 20:46:53,242 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 20:46:53,350 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 20:46:53,350 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 20:46:53,350 - kafka.client - INFO - Closing idle connection coordinator-1, last active 1140816 ms ago
+2026-02-15 20:46:53,350 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 20:46:53,459 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 20:46:53,459 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 20:47:02,936 - sysid-experiment - INFO -   Sample 10: queue=972750, cpu=2.2%, mem=8.4%, io=166954
+2026-02-15 20:47:13,376 - sysid-experiment - INFO -   Sample 20: queue=974250, cpu=2.9%, mem=8.4%, io=175253
+2026-02-15 20:47:23,772 - sysid-experiment - INFO -   Sample 30: queue=975750, cpu=0.0%, mem=8.4%, io=0
+2026-02-15 20:47:34,228 - sysid-experiment - INFO -   Sample 40: queue=977250, cpu=5.4%, mem=8.5%, io=143178
+2026-02-15 20:47:44,648 - sysid-experiment - INFO -   Sample 50: queue=978832, cpu=3.0%, mem=8.4%, io=273884
+2026-02-15 20:47:54,070 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:47:54,070 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:48:04,558 - sysid-experiment - INFO - Step 93/400: batch_size=113, poll_interval=3232ms
+2026-02-15 20:48:13,947 - sysid-experiment - INFO -   Sample 10: queue=983250, cpu=2.7%, mem=8.5%, io=255675
+2026-02-15 20:48:24,359 - sysid-experiment - INFO -   Sample 20: queue=984750, cpu=0.0%, mem=8.6%, io=0
+2026-02-15 20:48:34,867 - sysid-experiment - INFO -   Sample 30: queue=986400, cpu=3.0%, mem=8.6%, io=283951
+2026-02-15 20:48:45,278 - sysid-experiment - INFO -   Sample 40: queue=987900, cpu=2.0%, mem=8.4%, io=144067
+2026-02-15 20:48:55,786 - sysid-experiment - INFO -   Sample 50: queue=989400, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:49:05,163 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:49:05,163 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:49:15,647 - sysid-experiment - INFO - Step 94/400: batch_size=113, poll_interval=3484ms
+2026-02-15 20:49:25,056 - sysid-experiment - INFO -   Sample 10: queue=993750, cpu=2.7%, mem=8.5%, io=177073
+2026-02-15 20:49:35,483 - sysid-experiment - INFO -   Sample 20: queue=995400, cpu=3.5%, mem=8.5%, io=168347
+2026-02-15 20:49:45,979 - sysid-experiment - INFO -   Sample 30: queue=996900, cpu=7.5%, mem=8.5%, io=200894
+2026-02-15 20:49:56,472 - sysid-experiment - INFO -   Sample 40: queue=998400, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:50:06,935 - sysid-experiment - INFO -   Sample 50: queue=1000050, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:50:16,321 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:50:16,321 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:50:26,798 - sysid-experiment - INFO - Step 95/400: batch_size=113, poll_interval=3737ms
+2026-02-15 20:50:36,188 - sysid-experiment - INFO -   Sample 10: queue=1004400, cpu=4.4%, mem=8.5%, io=2910176
+2026-02-15 20:50:46,683 - sysid-experiment - INFO -   Sample 20: queue=1005900, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:50:57,150 - sysid-experiment - INFO -   Sample 30: queue=1007550, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:51:07,584 - sysid-experiment - INFO -   Sample 40: queue=1009034, cpu=9.8%, mem=8.5%, io=349334
+2026-02-15 20:51:18,111 - sysid-experiment - INFO -   Sample 50: queue=1010603, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:51:27,432 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:51:27,435 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:51:37,996 - sysid-experiment - INFO - Step 96/400: batch_size=113, poll_interval=3989ms
+2026-02-15 20:51:47,432 - sysid-experiment - INFO -   Sample 10: queue=1014900, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:51:57,842 - sysid-experiment - INFO -   Sample 20: queue=1016550, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:52:08,326 - sysid-experiment - INFO -   Sample 30: queue=1018050, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:52:18,774 - sysid-experiment - INFO -   Sample 40: queue=1019550, cpu=0.0%, mem=8.5%, io=0
+2026-02-15 20:52:29,212 - sysid-experiment - INFO -   Sample 50: queue=1021200, cpu=4.5%, mem=8.6%, io=343843
+2026-02-15 20:52:38,568 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:52:38,568 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:52:48,995 - sysid-experiment - INFO - Step 97/400: batch_size=113, poll_interval=4242ms
+2026-02-15 20:52:58,362 - sysid-experiment - INFO -   Sample 10: queue=1025550, cpu=7.3%, mem=8.5%, io=326839
+2026-02-15 20:53:08,720 - sysid-experiment - INFO -   Sample 20: queue=1026900, cpu=5.1%, mem=8.5%, io=165648
+2026-02-15 20:53:19,147 - sysid-experiment - INFO -   Sample 30: queue=1028550, cpu=4.8%, mem=8.6%, io=154077
+2026-02-15 20:53:29,547 - sysid-experiment - INFO -   Sample 40: queue=1030200, cpu=3.0%, mem=8.6%, io=291805
+2026-02-15 20:53:39,909 - sysid-experiment - INFO -   Sample 50: queue=1031700, cpu=9.8%, mem=8.5%, io=4285747
+2026-02-15 20:53:49,258 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:53:49,258 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:53:59,599 - sysid-experiment - INFO - Step 98/400: batch_size=113, poll_interval=4495ms
+2026-02-15 20:54:08,936 - sysid-experiment - INFO -   Sample 10: queue=1035900, cpu=7.1%, mem=8.6%, io=342117
+2026-02-15 20:54:19,368 - sysid-experiment - INFO -   Sample 20: queue=1037550, cpu=0.0%, mem=8.6%, io=0
+2026-02-15 20:54:29,752 - sysid-experiment - INFO -   Sample 30: queue=1039050, cpu=0.0%, mem=8.6%, io=0
+2026-02-15 20:54:40,125 - sysid-experiment - INFO -   Sample 40: queue=1040550, cpu=2.2%, mem=8.6%, io=165622
+2026-02-15 20:54:50,462 - sysid-experiment - INFO -   Sample 50: queue=1042200, cpu=2.5%, mem=8.6%, io=224292
+2026-02-15 20:54:59,787 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:54:59,787 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:55:10,218 - sysid-experiment - INFO - Step 99/400: batch_size=113, poll_interval=4747ms
+2026-02-15 20:55:19,664 - sysid-experiment - INFO -   Sample 10: queue=1046550, cpu=6.0%, mem=8.7%, io=377834
+2026-02-15 20:55:30,045 - sysid-experiment - INFO -   Sample 20: queue=1048050, cpu=2.0%, mem=8.7%, io=156118
+2026-02-15 20:55:40,467 - sysid-experiment - INFO -   Sample 30: queue=1049550, cpu=11.8%, mem=8.6%, io=20511891
+2026-02-15 20:55:50,876 - sysid-experiment - INFO -   Sample 40: queue=1051200, cpu=3.0%, mem=8.6%, io=290888
+2026-02-15 20:56:01,265 - sysid-experiment - INFO -   Sample 50: queue=1052700, cpu=4.0%, mem=8.6%, io=318030
+2026-02-15 20:56:10,581 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:56:10,581 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:56:20,973 - sysid-experiment - INFO - Step 100/400: batch_size=113, poll_interval=5000ms
+2026-02-15 20:56:30,260 - sysid-experiment - INFO -   Sample 10: queue=1057050, cpu=4.7%, mem=8.6%, io=160827
+2026-02-15 20:56:40,647 - sysid-experiment - INFO -   Sample 20: queue=1058550, cpu=7.9%, mem=8.6%, io=3413886
+2026-02-15 20:56:51,018 - sysid-experiment - INFO -   Sample 30: queue=1060050, cpu=5.3%, mem=8.6%, io=165939
+2026-02-15 20:57:01,487 - sysid-experiment - INFO -   Sample 40: queue=1061700, cpu=6.0%, mem=8.6%, io=274361
+2026-02-15 20:57:11,784 - sysid-experiment - INFO -   Sample 50: queue=1063200, cpu=0.0%, mem=8.6%, io=0
+2026-02-15 20:57:21,124 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:57:21,124 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:57:31,459 - sysid-experiment - INFO - Step 101/400: batch_size=139, poll_interval=200ms
+2026-02-15 20:57:40,854 - sysid-experiment - INFO -   Sample 10: queue=1067550, cpu=10.4%, mem=8.6%, io=5217491
+2026-02-15 20:57:51,234 - sysid-experiment - INFO -   Sample 20: queue=1069050, cpu=0.0%, mem=8.6%, io=0
+2026-02-15 20:58:01,632 - sysid-experiment - INFO -   Sample 30: queue=1070700, cpu=2.6%, mem=8.6%, io=225814
+2026-02-15 20:58:12,106 - sysid-experiment - INFO -   Sample 40: queue=1072200, cpu=6.8%, mem=8.7%, io=154752
+2026-02-15 20:58:22,603 - sysid-experiment - INFO -   Sample 50: queue=1073818, cpu=2.1%, mem=8.7%, io=162012
+2026-02-15 20:58:32,002 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:58:32,002 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:58:42,440 - sysid-experiment - INFO - Step 102/400: batch_size=139, poll_interval=453ms
+2026-02-15 20:58:51,773 - sysid-experiment - INFO -   Sample 10: queue=1078050, cpu=6.2%, mem=8.6%, io=176854
+2026-02-15 20:59:02,143 - sysid-experiment - INFO -   Sample 20: queue=1079664, cpu=0.0%, mem=8.6%, io=0
+2026-02-15 20:59:12,476 - sysid-experiment - INFO -   Sample 30: queue=1081066, cpu=2.0%, mem=8.7%, io=155421
+2026-02-15 20:59:22,801 - sysid-experiment - INFO -   Sample 40: queue=1082550, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 20:59:33,155 - sysid-experiment - INFO -   Sample 50: queue=1084200, cpu=3.2%, mem=8.7%, io=164916
+2026-02-15 20:59:42,472 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 20:59:42,472 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 20:59:52,879 - sysid-experiment - INFO - Step 103/400: batch_size=139, poll_interval=705ms
+2026-02-15 21:00:02,282 - sysid-experiment - INFO -   Sample 10: queue=1088410, cpu=5.8%, mem=8.7%, io=306273
+2026-02-15 21:00:12,679 - sysid-experiment - INFO -   Sample 20: queue=1090050, cpu=3.0%, mem=8.7%, io=284986
+2026-02-15 21:00:23,001 - sysid-experiment - INFO -   Sample 30: queue=1091550, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:15:06,415 - sysid-experiment - INFO -   Collected 38 samples
+2026-02-15 21:15:06,415 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:15:06,461 - kafka.client - INFO - Closing idle connection 1, last active 875178 ms ago
+2026-02-15 21:15:06,461 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 21:15:06,568 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 21:15:06,569 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 21:15:06,569 - kafka.client - INFO - Closing idle connection coordinator-1, last active 875286 ms ago
+2026-02-15 21:15:06,569 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 21:15:06,678 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 21:15:06,679 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 21:15:17,099 - sysid-experiment - INFO - Step 104/400: batch_size=139, poll_interval=958ms
+2026-02-15 21:15:26,453 - sysid-experiment - INFO -   Sample 10: queue=1095900, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:15:36,836 - sysid-experiment - INFO -   Sample 20: queue=1097476, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:15:47,253 - sysid-experiment - INFO -   Sample 30: queue=1099050, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:15:57,557 - sysid-experiment - INFO -   Sample 40: queue=1100657, cpu=4.2%, mem=8.7%, io=374596
+2026-02-15 21:16:07,906 - sysid-experiment - INFO -   Sample 50: queue=1102200, cpu=2.7%, mem=8.7%, io=154555
+2026-02-15 21:16:17,217 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:16:17,217 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:16:27,683 - sysid-experiment - INFO - Step 105/400: batch_size=139, poll_interval=1211ms
+2026-02-15 21:16:36,998 - sysid-experiment - INFO -   Sample 10: queue=1106400, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:16:47,422 - sysid-experiment - INFO -   Sample 20: queue=1107900, cpu=3.8%, mem=8.8%, io=150624
+2026-02-15 21:16:57,754 - sysid-experiment - INFO -   Sample 30: queue=1109523, cpu=2.4%, mem=8.8%, io=164895
+2026-02-15 21:17:08,131 - sysid-experiment - INFO -   Sample 40: queue=1111200, cpu=4.7%, mem=8.8%, io=304137
+2026-02-15 21:17:18,516 - sysid-experiment - INFO -   Sample 50: queue=1112700, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:17:27,837 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:17:27,837 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:17:38,222 - sysid-experiment - INFO - Step 106/400: batch_size=139, poll_interval=1463ms
+2026-02-15 21:17:47,569 - sysid-experiment - INFO -   Sample 10: queue=1116900, cpu=6.1%, mem=8.7%, io=309109
+2026-02-15 21:17:57,925 - sysid-experiment - INFO -   Sample 20: queue=1118400, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:18:08,307 - sysid-experiment - INFO -   Sample 30: queue=1119900, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:18:18,735 - sysid-experiment - INFO -   Sample 40: queue=1121550, cpu=3.3%, mem=8.7%, io=308008
+2026-02-15 21:18:29,179 - sysid-experiment - INFO -   Sample 50: queue=1123050, cpu=0.0%, mem=8.7%, io=0
+2026-02-15 21:18:38,475 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:18:38,475 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:18:48,882 - sysid-experiment - INFO - Step 107/400: batch_size=139, poll_interval=1716ms
+2026-02-15 21:18:58,323 - sysid-experiment - INFO -   Sample 10: queue=1127400, cpu=3.0%, mem=8.8%, io=312094
+2026-02-15 21:19:08,706 - sysid-experiment - INFO -   Sample 20: queue=1129050, cpu=2.8%, mem=8.8%, io=288240
+2026-02-15 21:19:19,183 - sysid-experiment - INFO -   Sample 30: queue=1130550, cpu=4.3%, mem=8.7%, io=8448982
+2026-02-15 21:19:29,616 - sysid-experiment - INFO -   Sample 40: queue=1132050, cpu=6.3%, mem=8.7%, io=309712
+2026-02-15 21:19:40,043 - sysid-experiment - INFO -   Sample 50: queue=1133550, cpu=2.6%, mem=8.7%, io=151811
+2026-02-15 21:19:49,380 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:19:49,380 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:19:59,809 - sysid-experiment - INFO - Step 108/400: batch_size=139, poll_interval=1968ms
+2026-02-15 21:20:09,223 - sysid-experiment - INFO -   Sample 10: queue=1138050, cpu=3.1%, mem=8.8%, io=231782
+2026-02-15 21:20:19,649 - sysid-experiment - INFO -   Sample 20: queue=1139550, cpu=4.5%, mem=8.7%, io=1869327
+2026-02-15 21:20:30,103 - sysid-experiment - INFO -   Sample 30: queue=1141050, cpu=0.0%, mem=8.8%, io=0
+2026-02-15 21:20:40,461 - sysid-experiment - INFO -   Sample 40: queue=1142550, cpu=5.8%, mem=8.8%, io=151184
+2026-02-15 21:20:50,820 - sysid-experiment - INFO -   Sample 50: queue=1144200, cpu=2.0%, mem=8.8%, io=155810
+2026-02-15 21:21:00,179 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:21:00,179 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:21:10,621 - sysid-experiment - INFO - Step 109/400: batch_size=139, poll_interval=2221ms
+2026-02-15 21:21:20,023 - sysid-experiment - INFO -   Sample 10: queue=1148550, cpu=6.0%, mem=8.8%, io=4755308
+2026-02-15 21:21:30,477 - sysid-experiment - INFO -   Sample 20: queue=1150050, cpu=2.0%, mem=8.8%, io=153096
+2026-02-15 21:21:40,865 - sysid-experiment - INFO -   Sample 30: queue=1151550, cpu=2.2%, mem=8.9%, io=152738
+2026-02-15 21:21:51,277 - sysid-experiment - INFO -   Sample 40: queue=1153200, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:22:01,684 - sysid-experiment - INFO -   Sample 50: queue=1154629, cpu=2.0%, mem=8.9%, io=166991
+2026-02-15 21:22:11,117 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:22:11,117 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:22:21,581 - sysid-experiment - INFO - Step 110/400: batch_size=139, poll_interval=2474ms
+2026-02-15 21:22:30,964 - sysid-experiment - INFO -   Sample 10: queue=1159050, cpu=2.0%, mem=8.8%, io=152625
+2026-02-15 21:22:41,370 - sysid-experiment - INFO -   Sample 20: queue=1160697, cpu=0.0%, mem=8.8%, io=0
+2026-02-15 21:22:51,732 - sysid-experiment - INFO -   Sample 30: queue=1162113, cpu=2.7%, mem=8.8%, io=158610
+2026-02-15 21:23:02,137 - sysid-experiment - INFO -   Sample 40: queue=1163616, cpu=0.0%, mem=8.8%, io=0
+2026-02-15 21:23:12,505 - sysid-experiment - INFO -   Sample 50: queue=1165200, cpu=5.5%, mem=8.8%, io=156805
+2026-02-15 21:23:21,903 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:23:21,903 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:23:32,259 - sysid-experiment - INFO - Step 111/400: batch_size=139, poll_interval=2726ms
+2026-02-15 21:23:41,625 - sysid-experiment - INFO -   Sample 10: queue=1169550, cpu=0.0%, mem=8.8%, io=0
+2026-02-15 21:23:52,063 - sysid-experiment - INFO -   Sample 20: queue=1171050, cpu=1.9%, mem=8.8%, io=153840
+2026-02-15 21:24:02,394 - sysid-experiment - INFO -   Sample 30: queue=1172550, cpu=2.4%, mem=8.9%, io=167691
+2026-02-15 21:24:12,741 - sysid-experiment - INFO -   Sample 40: queue=1174200, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:24:23,158 - sysid-experiment - INFO -   Sample 50: queue=1175700, cpu=0.0%, mem=8.8%, io=0
+2026-02-15 21:24:32,544 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:24:32,544 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:24:42,951 - sysid-experiment - INFO - Step 112/400: batch_size=139, poll_interval=2979ms
+2026-02-15 21:24:52,302 - sysid-experiment - INFO -   Sample 10: queue=1179900, cpu=2.8%, mem=8.9%, io=171703
+2026-02-15 21:25:02,700 - sysid-experiment - INFO -   Sample 20: queue=1181550, cpu=1.6%, mem=8.9%, io=127435
+2026-02-15 21:25:13,136 - sysid-experiment - INFO -   Sample 30: queue=1183050, cpu=1.5%, mem=8.9%, io=116205
+2026-02-15 21:25:23,606 - sysid-experiment - INFO -   Sample 40: queue=1184550, cpu=6.2%, mem=8.8%, io=298523
+2026-02-15 21:42:15,632 - sysid-experiment - INFO -   Collected 46 samples
+2026-02-15 21:42:15,632 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:42:15,697 - kafka.client - INFO - Closing idle connection 1, last active 1005811 ms ago
+2026-02-15 21:42:15,698 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 21:42:15,803 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to lo2026-02-15 21:42:15,879 - sysid-experiment - INFO -   Collected 47 samples
+2026-02-15 21:42:15,879 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:42:15,910 - kafka.client - INFO - Closing idle connection 1, last active 1005769 ms ago
+2026-02-15 21:42:15,910 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 21:42:16,019 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 21:42:16,019 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 21:42:16,019 - kafka.client - INFO - Closing idle connection coordinator-1, last active 1005877 ms ago
+2026-02-15 21:2026-02-15 21:42:26,333 - sysid-experiment - INFO - Step 113/400: batch_size=139, poll_interval=3232ms
+2026-02-15 21:42:35,691 - sysid-experiment - INFO -   Sample 10: queue=1188900, cpu=14.3%, mem=8.9%, io=212736
+2026-02-15 21:42:46,155 - sysid-experiment - INFO -   Sample 20: queue=1190400, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:42:56,572 - sysid-experiment - INFO -   Sample 30: queue=1192050, cpu=2.4%, mem=8.9%, io=251350
+2026-02-15 21:43:07,002 - sysid-experiment - INFO -   Sample 40: queue=1193550, cpu=3.3%, mem=8.9%, io=182272
+2026-02-15 21:43:17,418 - sysid-experiment - INFO -   Sample 50: queue=1195050, cpu=3.4%, mem=8.9%, io=131460
+2026-02-15 21:43:26,651 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:43:26,651 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:43:37,103 - sysid-experiment - INFO - Step 114/400: batch_size=139, poll_interval=3484ms
+2026-02-15 21:43:46,514 - sysid-experiment - INFO -   Sample 10: queue=1199400, cpu=4.0%, mem=8.9%, io=433176
+2026-02-15 21:43:56,951 - sysid-experiment - INFO -   Sample 20: queue=1200900, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:44:07,323 - sysid-experiment - INFO -   Sample 30: queue=1202400, cpu=7.4%, mem=8.9%, io=673368
+2026-02-15 21:44:17,777 - sysid-experiment - INFO -   Sample 40: queue=1203900, cpu=3.6%, mem=8.9%, io=186362
+2026-02-15 21:44:28,178 - sysid-experiment - INFO -   Sample 50: queue=1205550, cpu=3.9%, mem=8.9%, io=326760
+2026-02-15 21:44:37,556 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:44:37,556 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:44:47,956 - sysid-experiment - INFO - Step 115/400: batch_size=139, poll_interval=3737ms
+2026-02-15 21:44:57,351 - sysid-experiment - INFO -   Sample 10: queue=1209750, cpu=4.1%, mem=8.9%, io=322868
+2026-02-15 21:45:07,779 - sysid-experiment - INFO -   Sample 20: queue=1211416, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:45:18,173 - sysid-experiment - INFO -   Sample 30: queue=1212996, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:45:28,629 - sysid-experiment - INFO -   Sample 40: queue=1214550, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:45:39,023 - sysid-experiment - INFO -   Sample 50: queue=1216050, cpu=2.9%, mem=8.9%, io=300463
+2026-02-15 21:45:48,469 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:45:48,469 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:45:58,917 - sysid-experiment - INFO - Step 116/400: batch_size=139, poll_interval=3989ms
+2026-02-15 21:55:34,581 - sysid-experiment - INFO -   Collected 2 samples
+2026-02-15 21:55:34,581 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:55:34,619 - kafka.client - INFO - Closing idle connection 1, last active 574605 ms ago
+2026-02-15 21:55:34,619 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 21:55:34,720 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 21:55:34,721 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 21:55:34,721 - kafka.client - INFO - Closing idle connection coordinator-1, last active 574706 ms ago
+2026-02-15 21:55:34,721 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 21:55:34,827 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 21:55:34,828 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 21:55:45,329 - sysid-experiment - INFO - Step 117/400: batch_size=139, poll_interval=4242ms
+2026-02-15 21:55:54,676 - sysid-experiment - INFO -   Sample 10: queue=1222350, cpu=2.0%, mem=8.9%, io=144765
+2026-02-15 21:56:05,024 - sysid-experiment - INFO -   Sample 20: queue=1223850, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:56:15,454 - sysid-experiment - INFO -   Sample 30: queue=1225496, cpu=0.0%, mem=8.9%, io=0
+2026-02-15 21:56:25,830 - sysid-experiment - INFO -   Sample 40: queue=1226850, cpu=3.0%, mem=9.0%, io=228327
+2026-02-15 21:56:36,174 - sysid-experiment - INFO -   Sample 50: queue=1228363, cpu=3.6%, mem=9.0%, io=4320523
+2026-02-15 21:56:45,504 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:56:45,504 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:56:55,949 - sysid-experiment - INFO - Step 118/400: batch_size=139, poll_interval=4495ms
+2026-02-15 21:57:05,343 - sysid-experiment - INFO -   Sample 10: queue=1232850, cpu=1.9%, mem=9.0%, io=13408889
+2026-02-15 21:57:15,765 - sysid-experiment - INFO -   Sample 20: queue=1234350, cpu=0.0%, mem=9.0%, io=0
+2026-02-15 21:57:26,195 - sysid-experiment - INFO -   Sample 30: queue=1236000, cpu=1.9%, mem=9.0%, io=154780
+2026-02-15 21:57:36,536 - sysid-experiment - INFO -   Sample 40: queue=1237500, cpu=2.4%, mem=9.0%, io=178973
+2026-02-15 21:57:46,935 - sysid-experiment - INFO -   Sample 50: queue=1239000, cpu=0.0%, mem=9.0%, io=0
+2026-02-15 21:57:56,242 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:57:56,242 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:58:06,660 - sysid-experiment - INFO - Step 119/400: batch_size=139, poll_interval=4747ms
+2026-02-15 21:58:16,023 - sysid-experiment - INFO -   Sample 10: queue=1243200, cpu=10.5%, mem=9.0%, io=225179
+2026-02-15 21:58:26,381 - sysid-experiment - INFO -   Sample 20: queue=1244850, cpu=3.8%, mem=9.0%, io=239189
+2026-02-15 21:58:36,750 - sysid-experiment - INFO -   Sample 30: queue=1246350, cpu=2.9%, mem=9.0%, io=306783
+2026-02-15 21:58:47,121 - sysid-experiment - INFO -   Sample 40: queue=1247850, cpu=3.5%, mem=9.0%, io=304325
+2026-02-15 21:58:57,581 - sysid-experiment - INFO -   Sample 50: queue=1249500, cpu=2.7%, mem=9.0%, io=164882
+2026-02-15 21:59:06,832 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 21:59:06,832 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 21:59:17,281 - sysid-experiment - INFO - Step 120/400: batch_size=139, poll_interval=5000ms
+2026-02-15 21:59:26,684 - sysid-experiment - INFO -   Sample 10: queue=1253700, cpu=1.9%, mem=9.0%, io=151295
+2026-02-15 22:14:46,883 - sysid-experiment - INFO -   Collected 13 samples
+2026-02-15 22:14:46,883 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:14:46,931 - kafka.client - INFO - Closing idle connection 1, last active 917104 ms ago
+2026-02-15 22:14:46,932 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 22:14:47,038 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 22:14:47,039 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 22:14:47,040 - kafka.client - INFO - Closing idle connection coordinator-1, last active 917212 ms ago
+2026-02-15 22:14:47,040 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 22:14:47,152 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 22:14:47,153 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=coordinator-1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-02-15 22:14:57,623 - sysid-experiment - INFO - Step 121/400: batch_size=165, poll_interval=200ms
+2026-02-15 22:15:07,043 - sysid-experiment - INFO -   Sample 10: queue=1257450, cpu=11.2%, mem=9.0%, io=319107
+2026-02-15 22:15:17,424 - sysid-experiment - INFO -   Sample 20: queue=1258950, cpu=0.0%, mem=9.0%, io=0
+2026-02-15 22:15:27,849 - sysid-experiment - INFO -   Sample 30: queue=1260450, cpu=0.0%, mem=9.0%, io=0
+2026-02-15 22:15:38,357 - sysid-experiment - INFO -   Sample 40: queue=1261982, cpu=3.6%, mem=9.0%, io=283663
+2026-02-15 22:15:48,713 - sysid-experiment - INFO -   Sample 50: queue=1263600, cpu=2.8%, mem=9.0%, io=167593
+2026-02-15 22:15:58,049 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:15:58,049 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:16:08,460 - sysid-experiment - INFO - Step 122/400: batch_size=165, poll_interval=453ms
+2026-02-15 22:16:17,782 - sysid-experiment - INFO -   Sample 10: queue=1267950, cpu=7.7%, mem=9.0%, io=280272
+2026-02-15 22:16:28,144 - sysid-experiment - INFO -   Sample 20: queue=1269450, cpu=0.0%, mem=9.0%, io=0
+2026-02-15 22:16:38,523 - sysid-experiment - INFO -   Sample 30: queue=1270950, cpu=5.2%, mem=9.0%, io=158958
+2026-02-15 22:16:48,902 - sysid-experiment - INFO -   Sample 40: queue=1272450, cpu=3.1%, mem=9.0%, io=193917
+2026-02-15 22:16:59,284 - sysid-experiment - INFO -   Sample 50: queue=1273950, cpu=0.0%, mem=9.1%, io=0
+2026-02-15 22:17:08,540 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:17:08,540 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:17:19,046 - sysid-experiment - INFO - Step 123/400: batch_size=165, poll_interval=705ms
+2026-02-15 22:17:28,417 - sysid-experiment - INFO -   Sample 10: queue=1278450, cpu=8.2%, mem=9.1%, io=152941
+2026-02-15 22:17:38,829 - sysid-experiment - INFO -   Sample 20: queue=1279950, cpu=2.3%, mem=9.1%, io=5381166
+2026-02-15 22:17:49,236 - sysid-experiment - INFO -   Sample 30: queue=1281450, cpu=3.2%, mem=9.1%, io=307590
+2026-02-15 22:17:59,564 - sysid-experiment - INFO -   Sample 40: queue=1282950, cpu=3.1%, mem=9.1%, io=140923
+2026-02-15 22:18:10,014 - sysid-experiment - INFO -   Sample 50: queue=1284600, cpu=39.5%, mem=9.7%, io=311285
+2026-02-15 22:18:19,309 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:18:19,309 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:18:29,695 - sysid-experiment - INFO - Step 124/400: batch_size=165, poll_interval=958ms
+2026-02-15 22:46:52,923 - sysid-experiment - INFO -   Collected 1 samples
+2026-02-15 22:46:52,923 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:46:52,975 - kafka.client - INFO - Closing idle connection 1, last active 1703248 ms ago
+2026-02-15 22:46:52,975 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 22:46:53,077 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: c2026-02-15 22:46:53,152 - sysid-experiment - INFO -   Collected 1 samples
+2026-02-15 22:46:53,152 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:46:53,185 - kafka.client - INFO - Closing idle connection 1, last active 1703229 ms ago
+2026-02-15 22:46:53,185 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-02-15 22:46:53,291 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-02-15 22:46:53,292 - kafka.conn - INFO - <BrokerConnection client_id=kafka-python-2.3.0, node_id=1 host=localhost:29092 2026-02-15 22:46:53,337 - sysid-experiment - INFO -   Collected 1 samples
+2026-02-15 22:46:53,337 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:46:53,378 - kafka.client - INFO - Closing idl2026-02-15 22:47:03,643 - sysid-experiment - INFO - Step 125/400: batch_size=165, poll_interval=1211ms
+2026-02-15 22:47:13,089 - sysid-experiment - INFO -   Sample 10: queue=1290663, cpu=3.1%, mem=9.8%, io=304163
+2026-02-15 22:47:23,568 - sysid-experiment - INFO -   Sample 20: queue=1292250, cpu=0.0%, mem=9.0%, io=0
+2026-02-15 22:47:34,030 - sysid-experiment - INFO -   Sample 30: queue=1293750, cpu=3.4%, mem=9.0%, io=223925
+2026-02-15 22:47:44,510 - sysid-experiment - INFO -   Sample 40: queue=1295250, cpu=5.3%, mem=9.1%, io=165831
+2026-02-15 22:47:54,979 - sysid-experiment - INFO -   Sample 50: queue=1296900, cpu=2.1%, mem=9.1%, io=145985
+2026-02-15 22:48:04,370 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:48:04,370 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:48:14,846 - sysid-experiment - INFO - Step 126/400: batch_size=165, poll_interval=1463ms
+2026-02-15 22:48:24,304 - sysid-experiment - INFO -   Sample 10: queue=1301250, cpu=3.0%, mem=9.1%, io=312114
+2026-02-15 22:48:34,743 - sysid-experiment - INFO -   Sample 20: queue=1302750, cpu=2.2%, mem=9.1%, io=169499
+2026-02-15 22:48:45,227 - sysid-experiment - INFO -   Sample 30: queue=1304250, cpu=2.3%, mem=9.1%, io=162528
+2026-02-15 22:48:55,655 - sysid-experiment - INFO -   Sample 40: queue=1305750, cpu=1.9%, mem=9.1%, io=153511
+2026-02-15 22:49:06,169 - sysid-experiment - INFO -   Sample 50: queue=1307400, cpu=3.0%, mem=9.1%, io=166040
+2026-02-15 22:49:15,480 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:49:15,480 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:49:25,907 - sysid-experiment - INFO - Step 127/400: batch_size=165, poll_interval=1716ms
+2026-02-15 22:49:35,373 - sysid-experiment - INFO -   Sample 10: queue=1311750, cpu=3.5%, mem=9.1%, io=245676
+2026-02-15 22:49:45,810 - sysid-experiment - INFO -   Sample 20: queue=1313250, cpu=5.8%, mem=9.1%, io=436477
+2026-02-15 22:49:56,284 - sysid-experiment - INFO -   Sample 30: queue=1314750, cpu=2.8%, mem=9.1%, io=179444
+2026-02-15 22:50:06,783 - sysid-experiment - INFO -   Sample 40: queue=1316374, cpu=0.0%, mem=9.1%, io=0
+2026-02-15 22:50:17,269 - sysid-experiment - INFO -   Sample 50: queue=1317941, cpu=7.6%, mem=9.2%, io=1538392
+2026-02-15 22:50:26,688 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:50:26,688 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:50:37,241 - sysid-experiment - INFO - Step 128/400: batch_size=165, poll_interval=1968ms
+2026-02-15 22:50:46,661 - sysid-experiment - INFO -   Sample 10: queue=1322325, cpu=0.0%, mem=9.1%, io=0
+2026-02-15 22:50:57,079 - sysid-experiment - INFO -   Sample 20: queue=1323771, cpu=3.9%, mem=9.1%, io=329666
+2026-02-15 22:51:07,515 - sysid-experiment - INFO -   Sample 30: queue=1325400, cpu=5.5%, mem=9.1%, io=484492
+2026-02-15 22:51:18,046 - sysid-experiment - INFO -   Sample 40: queue=1326900, cpu=3.0%, mem=9.1%, io=208658
+2026-02-15 22:51:28,525 - sysid-experiment - INFO -   Sample 50: queue=1328550, cpu=0.0%, mem=9.1%, io=0
+2026-02-15 22:51:37,902 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:51:37,902 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:51:48,397 - sysid-experiment - INFO - Step 129/400: batch_size=165, poll_interval=2221ms
+2026-02-15 22:51:57,810 - sysid-experiment - INFO -   Sample 10: queue=1332900, cpu=3.9%, mem=9.1%, io=165151
+2026-02-15 22:52:08,279 - sysid-experiment - INFO -   Sample 20: queue=1334550, cpu=4.9%, mem=9.2%, io=417513
+2026-02-15 22:52:18,723 - sysid-experiment - INFO -   Sample 30: queue=1335964, cpu=2.0%, mem=9.2%, io=182433
+2026-02-15 22:52:29,182 - sysid-experiment - INFO -   Sample 40: queue=1337550, cpu=0.0%, mem=9.1%, io=0
+2026-02-15 22:52:39,571 - sysid-experiment - INFO -   Sample 50: queue=1339195, cpu=0.0%, mem=9.2%, io=0
+2026-02-15 22:52:48,944 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:52:48,944 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:52:59,367 - sysid-experiment - INFO - Step 130/400: batch_size=165, poll_interval=2474ms
+u=4.8%, mem=9.2%, io=412220
+2026-02-15 22:52:18,762 - sysid-experiment - INFO -   Sample 30: queue=1335990, cpu=2.0%, mem=9.2%, io=182001
+2026-02-15 22:52:29,277 - sysid-experiment - INFO -   Sample 40: queue=1337550, cpu=0.0%, mem=9.1%, io=0
+2026-02-15 22:52:39,710 - sysid-experiment - INFO -   Sample 50: queue=1339200, cpu=6.2%, mem=9.2%, io=463078
+2026-02-15 22:52:49,068 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:52:49,068 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:52:59,540 - sysid-experiment - INFO - Step 131/400: batch_size=165, poll_interval=2726ms
+:58,078 - sysid-experiment - INFO -   Sample 10: queue=1332900, cpu=3.8%, mem=9.1%, io=162786
+2026-02-15 22:52:08,624 - sysid-experiment - INFO -   Sample 20: queue=1334550, cpu=4.8%, mem=9.2%, io=412058
+2026-02-15 22:52:19,088 - sysid-experiment - INFO -   Sample 30: queue=1336050, cpu=0.0%, mem=9.2%, io=0
+2026-02-15 22:52:29,616 - sysid-experiment - INFO -   Sample 40: queue=1337564, cpu=10.4%, mem=9.1%, io=182529
+2026-02-15 22:52:40,052 - sysid-experiment - INFO -   Sample 50: queue=1339200, cpu=6.4%, mem=9.2%, io=463709
+2026-02-15 22:52:49,397 - sysid-experiment - INFO -   Collected 58 samples
+2026-02-15 22:52:49,397 - sysid-experiment - INFO -   Settling for 10s...
+2026-02-15 22:52:59,850 - sysid-experiment - INFO - Step 131/400: batch_size=165, poll_interval=2726ms
