@@ -22,18 +22,26 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 
-STATE_VARS = ['queue_length', 'cpu_util', 'mem_util', 'io_ops']
+STATE_VARS = ['queue_length', 'queue_length_mean', 'cpu_util', 'mem_util', 'indexing_time_rate', 'io_write_ops', 'os_cpu_percent', 'os_mem_used_percent', 'gc_time_rate', 'write_queue_size']
 CONTROL_VARS = ['batch_size', 'poll_interval']
 # Variables that accumulate over time — use delta per step instead of mean
-DELTA_VARS = ['queue_length', 'mem_util']
+DELTA_VARS = ['queue_length']
 # Variables that are instantaneous measurements — use mean per step
-MEAN_VARS = ['cpu_util', 'io_ops']
+MEAN_VARS = ['cpu_util', 'indexing_time_rate', 'io_write_ops', 'os_cpu_percent', 'os_mem_used_percent', 'gc_time_rate', 'write_queue_size']
+# Variables where max per step is more meaningful (e.g. JVM heap peak before GC)
+MAX_VARS = ['mem_util']
 
 STATE_LABELS = {
     'queue_length': 'Δ Queue Length (messages/step)',
-    'cpu_util': 'CPU Utilization (%)',
-    'mem_util': 'Δ Memory Utilization (%/step)',
-    'io_ops': 'I/O Operations (bytes/s)',
+    'queue_length_mean': 'Queue Length Mean (messages)',
+    'cpu_util': 'ES Process CPU (%)',
+    'mem_util': 'ES JVM Heap Used (%)',
+    'indexing_time_rate': 'Indexing Time Rate (ms/s)',
+    'io_write_ops': 'Disk I/O Write Ops/s',
+    'os_cpu_percent': 'OS CPU (%)',
+    'os_mem_used_percent': 'OS RAM Used (%)',
+    'gc_time_rate': 'GC Time Rate (ms/s)',
+    'write_queue_size': 'Write Thread Pool Queue',
 }
 CONTROL_LABELS = {
     'batch_size': 'Batch Size',
@@ -75,9 +83,13 @@ def compute_step_deltas(df: pd.DataFrame) -> pd.DataFrame:
         # Delta for accumulating variables
         for var in DELTA_VARS:
             row[var] = group[var].iloc[-1] - group[var].iloc[0]
+            row[f'{var}_mean'] = group[var].mean()
         # Mean for instantaneous variables
         for var in MEAN_VARS:
             row[var] = group[var].mean()
+        # Max for GC-affected variables (peak before GC)
+        for var in MAX_VARS:
+            row[var] = group[var].max()
         rows.append(row)
 
     df_steps = pd.DataFrame(rows)
@@ -99,8 +111,11 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
     width = max(14, n_batch * 0.7)
     height = max(11, n_poll * 0.6)
 
-    fig, axes = plt.subplots(2, 2, figsize=(width, height))
-    fig.suptitle('State Variables per Control Combination (delta for queue/mem, mean for cpu/io)',
+    n_vars = len(STATE_VARS)
+    n_cols = 2
+    n_rows = (n_vars + n_cols - 1) // n_cols
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(width, height * n_rows / 2))
+    fig.suptitle('State Variables per Control Combination (delta for queue, mean for others)',
                  fontsize=12, fontweight='bold')
 
     # Disable annotations for very large grids (reduces clutter)
@@ -115,7 +130,7 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
         annot_fontsize = 6  # Smaller font for medium-large grids
 
     for idx, state_var in enumerate(STATE_VARS):
-        ax = axes[idx // 2][idx % 2]
+        ax = axes[idx // n_cols][idx % n_cols]
 
         pivot_table = df_steps.pivot_table(
             index='poll_interval', columns='batch_size', values=state_var
@@ -244,7 +259,9 @@ def plot_correlation_matrix(df_steps: pd.DataFrame, output_dir: str):
 
 def plot_timeseries(df: pd.DataFrame, output_dir: str):
     """Time-series of state variables with control step indicators."""
-    fig, axes = plt.subplots(len(STATE_VARS) + 1, 1, figsize=(16, 14), sharex=True)
+    # Only plot vars that exist in raw data (exclude computed vars like queue_length_mean)
+    raw_vars = [v for v in STATE_VARS if v in df.columns]
+    fig, axes = plt.subplots(len(raw_vars) + 1, 1, figsize=(16, 14), sharex=True)
     fig.suptitle('Step Response: State Variables Over Time', fontsize=14, fontweight='bold')
 
     elapsed = df['elapsed_sec'].values
@@ -268,7 +285,7 @@ def plot_timeseries(df: pd.DataFrame, output_dir: str):
 
     colors = plt.cm.tab20(np.linspace(0, 1, 25))
 
-    for idx, state_var in enumerate(STATE_VARS):
+    for idx, state_var in enumerate(raw_vars):
         ax = axes[idx + 1]
         ax.plot(elapsed, df[state_var].values, linewidth=0.8, alpha=0.8)
 
@@ -276,7 +293,7 @@ def plot_timeseries(df: pd.DataFrame, output_dir: str):
         for ci in change_idx:
             ax.axvline(x=elapsed[ci], color='gray', linestyle='--', alpha=0.3, linewidth=0.5)
 
-        ax.set_ylabel(STATE_LABELS[state_var], fontsize=9)
+        ax.set_ylabel(STATE_LABELS.get(state_var, state_var), fontsize=9)
         ax.grid(True, alpha=0.3)
 
     axes[-1].set_xlabel('Elapsed Time (seconds)')
@@ -287,10 +304,199 @@ def plot_timeseries(df: pd.DataFrame, output_dir: str):
     print(f"Saved: {path}")
 
 
+STALL_THRESHOLD = 319  # batch_size above which system stall may occur
+
+
+def plot_stall_detection(df_steps: pd.DataFrame, output_dir: str):
+    """Deteksi stall (batch_size > 319) dan outlier (IQR) pada data eksperimen."""
+    KEY_VARS = ['cpu_util', 'io_write_ops', 'queue_length']
+
+    df_steps = df_steps.copy()
+    df_steps['is_stall'] = df_steps['batch_size'] > STALL_THRESHOLD
+
+    normal = df_steps[~df_steps['is_stall']]
+    stall = df_steps[df_steps['is_stall']]
+
+    # IQR outlier detection
+    outlier_flags = {}
+    outlier_stats = {}
+    for var in STATE_VARS:
+        Q1 = df_steps[var].quantile(0.25)
+        Q3 = df_steps[var].quantile(0.75)
+        IQR = Q3 - Q1
+        lower = Q1 - 1.5 * IQR
+        upper = Q3 + 1.5 * IQR
+        flag = (df_steps[var] < lower) | (df_steps[var] > upper)
+        outlier_flags[var] = flag
+        outlier_stats[var] = {'count': int(flag.sum()), 'pct': flag.mean() * 100}
+
+    # --- Plot 2x2 ---
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    fig.suptitle('Deteksi Stall & Outlier', fontsize=14, fontweight='bold')
+
+    for idx, var in enumerate(KEY_VARS):
+        ax = axes[idx // 2][idx % 2]
+        norm_sub = df_steps[~df_steps['is_stall']]
+        stall_sub = df_steps[df_steps['is_stall']]
+        outliers = df_steps[outlier_flags[var]]
+
+        ax.scatter(norm_sub['batch_size'], norm_sub[var], c='steelblue',
+                   alpha=0.6, s=40, label='Normal', zorder=2)
+        ax.scatter(stall_sub['batch_size'], stall_sub[var], c='crimson',
+                   alpha=0.6, s=40, label=f'Stall (bs>{STALL_THRESHOLD})', zorder=2)
+        ax.scatter(outliers['batch_size'], outliers[var],
+                   facecolors='none', edgecolors='orange', s=80,
+                   linewidths=1.5, label='Outlier (IQR)', zorder=3)
+        ax.axvline(x=STALL_THRESHOLD, color='gray', linestyle='--',
+                   alpha=0.7, label=f'Threshold={STALL_THRESHOLD}')
+        ax.set_xlabel('Batch Size')
+        ax.set_ylabel(STATE_LABELS.get(var, var))
+        ax.legend(fontsize=8)
+        ax.grid(True, alpha=0.3)
+
+    # Summary text panel
+    ax_sum = axes[1][1]
+    ax_sum.axis('off')
+    lines = [f"Total steps: {len(df_steps)}",
+             f"Normal: {len(normal)}  |  Stall (bs>{STALL_THRESHOLD}): {len(stall)}",
+             "",
+             "Perbandingan rata-rata (normal vs stall):"]
+    for var in KEY_VARS:
+        mn = normal[var].mean() if len(normal) > 0 else 0
+        ms = stall[var].mean() if len(stall) > 0 else 0
+        lines.append(f"  {var:25s}: {mn:10.1f} vs {ms:10.1f}")
+    lines.append("")
+    lines.append("Outlier per variabel (IQR):")
+    for var in STATE_VARS:
+        s = outlier_stats[var]
+        lines.append(f"  {var:25s}: {s['count']:3d} ({s['pct']:.1f}%)")
+    ax_sum.text(0.05, 0.95, '\n'.join(lines), transform=ax_sum.transAxes,
+                fontsize=9, verticalalignment='top', fontfamily='monospace',
+                bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
+
+    plt.tight_layout()
+    path = os.path.join(output_dir, 'stall_outlier_detection.png')
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    print(f"Saved: {path}")
+
+    # Console output
+    print(f"\n  Threshold stall: batch_size > {STALL_THRESHOLD}")
+    print(f"  Normal: {len(normal)} steps | Stall: {len(stall)} steps")
+    print(f"\n  Perbandingan rata-rata (normal vs stall):")
+    for var in KEY_VARS:
+        mn = normal[var].mean() if len(normal) > 0 else 0
+        ms = stall[var].mean() if len(stall) > 0 else 0
+        print(f"    {var:25s}: {mn:10.1f} vs {ms:10.1f}")
+    print(f"\n  Outlier per variabel (IQR):")
+    for var in STATE_VARS:
+        s = outlier_stats[var]
+        print(f"    {var:25s}: {s['count']:3d} ({s['pct']:.1f}%)")
+
+
+def plot_nonlinearity_check(df_steps: pd.DataFrame, output_dir: str):
+    """Analisis non-linearitas: regresi polinomial derajat 1/2/3 untuk batch_size -> state."""
+    x = df_steps['batch_size'].values
+    results = {}
+
+    for var in STATE_VARS:
+        y = df_steps[var].values
+        ss_tot = np.sum((y - y.mean()) ** 2)
+        r2 = {}
+        coeffs_all = {}
+        for degree in [1, 2, 3]:
+            coeffs = np.polyfit(x, y, degree)
+            y_pred = np.polyval(coeffs, x)
+            ss_res = np.sum((y - y_pred) ** 2)
+            r2[degree] = 1 - ss_res / ss_tot if ss_tot > 0 else 0
+            coeffs_all[degree] = coeffs
+        results[var] = {'r2': r2, 'coeffs': coeffs_all}
+
+    # --- Figure 1: scatter + polynomial fits ---
+    n_vars = len(STATE_VARS)
+    n_cols = 2
+    n_rows = (n_vars + 1) // 2
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(14, 3.5 * n_rows))
+    fig.suptitle('Analisis Non-linearitas: Regresi Polinomial (batch_size -> state)',
+                 fontsize=13, fontweight='bold')
+
+    x_smooth = np.linspace(x.min(), x.max(), 200)
+    fit_styles = {1: ('steelblue', '--', 'Linear'),
+                  2: ('darkorange', '-', 'Kuadratik'),
+                  3: ('green', '-.', 'Kubik')}
+
+    for idx, var in enumerate(STATE_VARS):
+        ax = axes[idx // n_cols][idx % n_cols]
+        y = df_steps[var].values
+        ax.scatter(x, y, alpha=0.4, s=25, c='gray', zorder=1)
+
+        for degree in [1, 2, 3]:
+            coeffs = results[var]['coeffs'][degree]
+            y_fit = np.polyval(coeffs, x_smooth)
+            color, ls, name = fit_styles[degree]
+            r2_val = results[var]['r2'][degree]
+            ax.plot(x_smooth, y_fit, color=color, linestyle=ls,
+                    linewidth=2, label=f'{name}: R²={r2_val:.4f}', zorder=2)
+
+        ax.set_xlabel('Batch Size')
+        ax.set_ylabel(STATE_LABELS.get(var, var))
+        ax.legend(fontsize=7, loc='best')
+        ax.grid(True, alpha=0.3)
+
+    if n_vars % 2 == 1:
+        axes[-1][-1].axis('off')
+
+    plt.tight_layout()
+    path = os.path.join(output_dir, 'nonlinearity_polyfit.png')
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    print(f"Saved: {path}")
+
+    # --- Figure 2: R² comparison bar chart ---
+    fig2, ax2 = plt.subplots(figsize=(10, 6))
+    fig2.suptitle('Perbandingan R² per Derajat Polinomial (batch_size -> state)',
+                  fontsize=13, fontweight='bold')
+
+    var_names = [STATE_LABELS.get(v, v) for v in STATE_VARS]
+    y_pos = np.arange(len(STATE_VARS))
+    bar_height = 0.25
+
+    for i, degree in enumerate([1, 2, 3]):
+        color, _, name = fit_styles[degree]
+        r2_vals = [results[v]['r2'][degree] for v in STATE_VARS]
+        ax2.barh(y_pos + i * bar_height, r2_vals, bar_height,
+                 label=name, color=color, alpha=0.8)
+
+    ax2.set_yticks(y_pos + bar_height)
+    ax2.set_yticklabels(var_names, fontsize=9)
+    ax2.set_xlabel('R²')
+    ax2.legend(fontsize=10)
+    ax2.grid(True, axis='x', alpha=0.3)
+    ax2.invert_yaxis()
+
+    plt.tight_layout()
+    path2 = os.path.join(output_dir, 'nonlinearity_r2_comparison.png')
+    fig2.savefig(path2, dpi=150)
+    plt.close(fig2)
+    print(f"Saved: {path2}")
+
+    # Console output
+    print(f"\n  {'Variabel':30s} | {'Linear R²':>10s} | {'Quad R²':>10s} | {'Cubic R²':>10s} | {'Gain (Q-L)':>10s}")
+    print(f"  {'-'*30}-+-{'-'*10}-+-{'-'*10}-+-{'-'*10}-+-{'-'*10}")
+    for var in STATE_VARS:
+        r = results[var]['r2']
+        gain = r[2] - r[1]
+        marker = ' ***' if gain > 0.05 else ''
+        print(f"  {var:30s} | {r[1]:10.4f} | {r[2]:10.4f} | {r[3]:10.4f} | {gain:+10.4f}{marker}")
+    print(f"\n  *** = non-linearitas signifikan (gain > 0.05)")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Visualize System Identification Data')
     parser.add_argument('data_file', help='Path to experiment data CSV')
     parser.add_argument('--output-dir', default=None, help='Output directory (default: same as data file)')
+    parser.add_argument('--batch-max', type=int, default=None, help='Filter: max batch_size to include')
+    parser.add_argument('--poll-max', type=int, default=None, help='Filter: max poll_interval to include')
     args = parser.parse_args()
 
     if args.output_dir is None:
@@ -304,6 +510,16 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
 
     df = load_and_prepare(args.data_file)
+
+    # Apply filters if specified
+    if args.batch_max is not None:
+        before = len(df)
+        df = df[df['batch_size'] <= args.batch_max].reset_index(drop=True)
+        print(f"Filter batch_size <= {args.batch_max}: {before} -> {len(df)} samples")
+    if args.poll_max is not None:
+        before = len(df)
+        df = df[df['poll_interval'] <= args.poll_max].reset_index(drop=True)
+        print(f"Filter poll_interval <= {args.poll_max}: {before} -> {len(df)} samples")
 
     # Compute per-step aggregates (delta for accumulating vars, mean for instantaneous)
     df_steps = compute_step_deltas(df)
@@ -322,6 +538,12 @@ def main():
 
     print("\n--- Generating time-series (raw data) ---")
     plot_timeseries(df, args.output_dir)
+
+    print("\n--- Deteksi stall & outlier ---")
+    plot_stall_detection(df_steps, args.output_dir)
+
+    print("\n--- Analisis non-linearitas ---")
+    plot_nonlinearity_check(df_steps, args.output_dir)
 
     print(f"\nAll visualizations saved to: {args.output_dir}")
 

@@ -6,7 +6,7 @@ in the CQRS synchronization system.
 
 Model: x[k+1] = A·x[k] + B·u[k]
 
-State x = [queue_length, cpu_util, mem_util, io_ops]
+State x = [queue_length, cpu_util, mem_util, indexing_time_rate, io_write_ops]
 Control u = [batch_size, poll_interval]
 
 Methodology:
@@ -31,6 +31,7 @@ import signal
 import logging
 import argparse
 import requests
+import psycopg2
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
@@ -55,14 +56,17 @@ class SysIdExperiment:
 
     def __init__(
         self,
-        cadvisor_url: str = 'http://localhost:8080',
         kafka_servers: str = 'localhost:29092',
         kafka_topic: str = 'cdc.postgres.changes',
         kafka_group_id: str = 'message-sink-group',
-        es_container_name: str = 'elasticsearch-read',
         sample_interval: float = 1.0,
         output_dir: str = './results',
         control_override_path: str = None,
+        pg_host: str = 'localhost',
+        pg_port: int = 5433,
+        pg_db: str = 'cqrs_write',
+        pg_user: str = 'postgres',
+        pg_password: str = 'postgres',
     ):
         self.sample_interval = sample_interval
         self.output_dir = output_dir
@@ -74,13 +78,19 @@ class SysIdExperiment:
         )
 
         # Initialize metrics collector for state observation
-        os.environ['CADVISOR_URL'] = cadvisor_url
-        os.environ['ELASTICSEARCH_CONTAINER_NAME'] = es_container_name
         self.metrics = MetricsCollector(
             kafka_servers=kafka_servers,
             kafka_topic=kafka_topic,
             kafka_group_id=kafka_group_id,
         )
+
+        # PostgreSQL connection for burst queue fill
+        self.pg_conn = psycopg2.connect(
+            host=pg_host, port=pg_port, dbname=pg_db,
+            user=pg_user, password=pg_password,
+        )
+        self.pg_cursor = self.pg_conn.cursor()
+        logger.info(f"Connected to PostgreSQL at {pg_host}:{pg_port}/{pg_db}")
 
         # Data storage
         self.data: List[Dict] = []
@@ -97,13 +107,65 @@ class SysIdExperiment:
         with open(self.control_override_path, 'w') as f:
             json.dump(override, f)
 
+    def set_pause(self, pause: bool):
+        """Write pause flag to control override file."""
+        override = {'pause': pause, 'batch_size': 1, 'poll_interval': 1000}
+        with open(self.control_override_path, 'w') as f:
+            json.dump(override, f)
+
+    def burst_fill_queue(self, batch_size: int, poll_interval_ms: int, step_duration: int):
+        """
+        Burst UPDATE existing rows in PostgreSQL to pre-fill Kafka queue via CDC.
+        Amount = 2 × batch_size × (step_duration / (poll_interval / 1000))
+        Pre-fills with 2× consumption need so queue won't exhaust during measurement.
+        """
+        consumption_need = batch_size * (step_duration / (poll_interval_ms / 1000))
+        needed = int(2 * consumption_need)
+
+        if needed <= 0:
+            return
+
+        remaining = needed
+        while remaining > 0:
+            chunk = min(remaining, 5000)
+            for attempt in range(3):
+                try:
+                    self.pg_cursor.execute("""
+                        UPDATE orders
+                        SET status = (ARRAY['pending','confirmed','processing','shipped','delivered'])
+                                     [floor(random()*5+1)::int],
+                            updated_at = NOW()
+                        WHERE id IN (SELECT id FROM orders ORDER BY random() LIMIT %s)
+                    """, (chunk,))
+                    self.pg_conn.commit()
+                    break
+                except Exception as e:
+                    self.pg_conn.rollback()
+                    if attempt < 2:
+                        logger.warning(f"Deadlock on burst update, retry {attempt+1}: {e}")
+                        time.sleep(1)
+                    else:
+                        logger.error(f"Burst update failed after 3 attempts: {e}")
+            remaining -= chunk
+
+        logger.info(f"Burst updated {needed} rows for queue pre-fill")
+
+    def drain_queue(self):
+        """Signal sink to seek to end of topic, emptying the queue."""
+        override = {'pause': True, 'seek_to_end': True, 'batch_size': 1, 'poll_interval': 1000}
+        with open(self.control_override_path, 'w') as f:
+            json.dump(override, f)
+        time.sleep(3)  # Wait for sink to process
+        self.set_pause(True)  # Back to normal pause
+
     def clear_control_override(self):
         """Remove control override file so message-sink uses its own controller."""
         if os.path.exists(self.control_override_path):
             os.remove(self.control_override_path)
             logger.info("Control override cleared")
 
-    def collect_sample(self, batch_size: int, poll_interval: int, phase: str) -> Dict:
+    def collect_sample(self, batch_size: int, poll_interval: int, phase: str,
+                       queue_exhausted: bool = False) -> Dict:
         """Collect one state sample with the current control settings."""
         state = self.metrics.collect_state()
         sample = {
@@ -113,10 +175,17 @@ class SysIdExperiment:
             'queue_length': state.queue_length,
             'cpu_util': state.cpu_util,
             'mem_util': state.mem_util,
-            'io_ops': state.io_ops,
+            'indexing_time_rate': state.indexing_time_rate,
+            'io_write_ops': state.io_write_ops,
+            'os_cpu_percent': state.os_cpu_percent,
+            'os_mem_used_percent': state.os_mem_used_percent,
+            'gc_time_rate': state.gc_time_rate,
+            'write_queue_size': state.write_queue_size,
             # Control variables u[k]
             'batch_size': batch_size,
             'poll_interval': poll_interval,
+            # Safety flag
+            'queue_exhausted': queue_exhausted,
         }
         self.data.append(sample)
         return sample
@@ -147,26 +216,69 @@ class SysIdExperiment:
 
             logger.info(f"Step {i+1}/{len(control_steps)}: batch_size={batch_size}, poll_interval={poll_interval}ms")
 
+            # Pre-fill queue: pause → drain → burst update → wait CDC → resume
+            self.set_pause(True)
+            time.sleep(1)
+
+            # Drain queue (seek to end) so we start from queue=0
+            self.drain_queue()
+
+            self.burst_fill_queue(batch_size, poll_interval, step_duration)
+
+            # Wait for CDC propagation
+            target = int(2 * batch_size * (step_duration / (poll_interval / 1000)))
+            deadline = time.time() + 120
+            while time.time() < deadline:
+                state = self.metrics.collect_state()
+                if state.queue_length >= target * 0.8:
+                    break
+                time.sleep(2)
+            logger.info(f"  Queue pre-filled: {state.queue_length} messages (target: {target})")
+
             # Set control override for message-sink
             self.set_control(batch_size, poll_interval)
+
+            # Warm-up on first step to prevent cold start
+            if i == 0:
+                warmup_duration = step_duration  # same as measurement window
+                logger.info(f"  Warm-up for {warmup_duration}s (cold start prevention)...")
+                time.sleep(warmup_duration)
+                logger.info(f"  Warm-up done, starting measurement")
 
             # Collect samples during this step
             step_start = time.time()
             sample_count = 0
+            queue_exhausted = False
 
             while self.running and (time.time() - step_start) < step_duration:
-                sample = self.collect_sample(batch_size, poll_interval, phase_name)
+                sample = self.collect_sample(batch_size, poll_interval, phase_name,
+                                             queue_exhausted=queue_exhausted)
                 sample_count += 1
 
+                # Safety check: detect queue exhaustion
+                if sample['queue_length'] == 0 and not queue_exhausted:
+                    queue_exhausted = True
+                    elapsed = time.time() - step_start
+                    logger.warning(
+                        f"  QUEUE EXHAUSTED at sample {sample_count} "
+                        f"({elapsed:.0f}s into {step_duration}s step) "
+                        f"— remaining samples marked queue_exhausted=True"
+                    )
+
                 if sample_count % 10 == 0:
+                    exhausted_tag = " [EXHAUSTED]" if queue_exhausted else ""
                     logger.info(
-                        f"  Sample {sample_count}: queue={sample['queue_length']}, "
+                        f"  Sample {sample_count}: queue={sample['queue_length']}{exhausted_tag}, "
                         f"cpu={sample['cpu_util']:.1f}%, mem={sample['mem_util']:.1f}%, "
-                        f"io={sample['io_ops']:.0f}"
+                        f"idx_rate={sample['indexing_time_rate']:.1f}, io={sample['io_write_ops']:.1f}ops/s, "
+                        f"os_cpu={sample['os_cpu_percent']}%, os_mem={sample['os_mem_used_percent']}%, "
+                        f"gc={sample['gc_time_rate']:.1f}ms/s, wq={sample['write_queue_size']}"
                     )
 
                 time.sleep(self.sample_interval)
 
+            if queue_exhausted:
+                logger.warning(f"  Step {i+1} had queue exhaustion — data may be unreliable")
             logger.info(f"  Collected {sample_count} samples")
 
             # Settling time (still collect data, marked as 'settle')
@@ -196,6 +308,11 @@ class SysIdExperiment:
     def cleanup(self):
         self.clear_control_override()
         self.metrics.close()
+        if self.pg_cursor:
+            self.pg_cursor.close()
+        if self.pg_conn:
+            self.pg_conn.close()
+            logger.info("PostgreSQL connection closed")
 
 
 def build_phase_steps(config=None):
@@ -253,13 +370,16 @@ def run_full_sysid(args, config=None):
         config: GridConfig instance (optional, defaults to 5×5)
     """
     exp = SysIdExperiment(
-        cadvisor_url=args.cadvisor_url,
         kafka_servers=args.kafka_servers,
         kafka_topic=args.kafka_topic,
-        es_container_name=args.es_container,
         sample_interval=args.sample_interval,
         output_dir=args.output_dir,
         control_override_path=args.control_override_path,
+        pg_host=args.pg_host,
+        pg_port=args.pg_port,
+        pg_db=args.pg_db,
+        pg_user=args.pg_user,
+        pg_password=args.pg_password,
     )
 
     phases_to_run = args.phases
@@ -409,10 +529,8 @@ Examples:
     )
 
     # Existing arguments
-    parser.add_argument('--cadvisor-url', default='http://localhost:8080')
     parser.add_argument('--kafka-servers', default='localhost:29092')
     parser.add_argument('--kafka-topic', default='cdc.postgres.changes')
-    parser.add_argument('--es-container', default='elasticsearch-read')
     parser.add_argument('--sample-interval', type=float, default=1.0,
                         help='Time between state samples (seconds)')
     parser.add_argument('--step-duration', type=int, default=60,
@@ -426,6 +544,14 @@ Examples:
     parser.add_argument('--phases', nargs='+', default=AVAILABLE_PHASES,
                         choices=AVAILABLE_PHASES,
                         help='Phases to run (default: all)')
+
+    # PostgreSQL arguments (for burst queue fill)
+    pg_group = parser.add_argument_group('PostgreSQL (burst queue fill)')
+    pg_group.add_argument('--pg-host', default=os.getenv('POSTGRES_HOST', 'localhost'))
+    pg_group.add_argument('--pg-port', type=int, default=int(os.getenv('POSTGRES_PORT', '5433')))
+    pg_group.add_argument('--pg-db', default=os.getenv('POSTGRES_DB', 'cqrs_write'))
+    pg_group.add_argument('--pg-user', default=os.getenv('POSTGRES_USER', 'postgres'))
+    pg_group.add_argument('--pg-password', default=os.getenv('POSTGRES_PASSWORD', 'postgres'))
 
     # NEW: Grid configuration arguments
     grid_group = parser.add_argument_group('Grid Configuration')

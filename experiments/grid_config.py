@@ -39,6 +39,57 @@ def generate_linear_grid(min_val: int, max_val: int, n_points: int) -> List[int]
     return values
 
 
+def generate_hyperbolic_grid(min_val: int, max_val: int, n_points: int) -> List[int]:
+    """
+    Generate hyperbolically spaced integer values.
+
+    Linearly spaces 1/x, then converts back to x.
+    Gives more resolution at lower values where 1/x changes rapidly.
+
+    Useful for poll_interval where the effect is proportional to 1/poll_interval.
+
+    Args:
+        min_val: Minimum value (must be > 0)
+        max_val: Maximum value
+        n_points: Number of points to generate
+
+    Returns:
+        List of n_points integer values, hyperbolically spaced
+
+    Example:
+        >>> generate_hyperbolic_grid(100, 2000, 10)
+        [100, 118, 143, 177, 227, 303, 435, 690, 1220, 2000]
+    """
+    if n_points == 1:
+        return [(min_val + max_val) // 2]
+
+    if min_val <= 0:
+        raise ValueError("Hyperbolic spacing requires min_val > 0")
+
+    # Linear spacing in 1/x domain
+    inv_min = 1.0 / max_val   # smallest 1/x corresponds to largest x
+    inv_max = 1.0 / min_val   # largest 1/x corresponds to smallest x
+    inv_values = np.linspace(inv_min, inv_max, n_points)
+
+    # Convert back to x domain (and reverse so smallest x comes first)
+    values = [int(round(1.0 / iv)) for iv in inv_values]
+    values.reverse()
+
+    # Ensure exact min and max
+    values[0] = min_val
+    values[-1] = max_val
+
+    # Remove duplicates while maintaining order
+    seen = set()
+    unique_values = []
+    for v in values:
+        if v not in seen:
+            seen.add(v)
+            unique_values.append(v)
+
+    return sorted(unique_values)[:n_points]
+
+
 def generate_log_grid(min_val: int, max_val: int, n_points: int) -> List[int]:
     """
     Generate logarithmically spaced integer values.
@@ -127,7 +178,8 @@ class GridConfig:
         poll_min: Minimum poll_interval value (ms)
         poll_max: Maximum poll_interval value (ms)
         poll_points: Number of poll_interval values in grid
-        spacing: Grid spacing method ('linear' or 'log')
+        spacing: Grid spacing method ('linear', 'log', or 'hyperbolic')
+        poll_spacing: Override spacing for poll_interval only (default: same as spacing)
     """
 
     def __init__(
@@ -139,6 +191,7 @@ class GridConfig:
         poll_max: int = 5000,
         poll_points: int = 5,
         spacing: str = 'linear',
+        poll_spacing: str = None,
     ):
         """
         Initialize grid configuration.
@@ -150,7 +203,8 @@ class GridConfig:
             poll_min: Minimum poll_interval in ms (default: 200)
             poll_max: Maximum poll_interval in ms (default: 5000)
             poll_points: Number of poll_interval points (default: 5)
-            spacing: 'linear' or 'log' (default: 'linear')
+            spacing: 'linear', 'log', or 'hyperbolic' (default: 'linear')
+            poll_spacing: Override spacing for poll_interval (default: same as spacing)
         """
         self.batch_min = batch_min
         self.batch_max = batch_max
@@ -159,24 +213,26 @@ class GridConfig:
         self.poll_max = poll_max
         self.poll_points = poll_points
         self.spacing = spacing
+        self.poll_spacing = poll_spacing or spacing
+
+    def _generate_grid(self, min_val, max_val, n_points, spacing):
+        """Generate grid values with given spacing method."""
+        if spacing == 'linear':
+            return generate_linear_grid(min_val, max_val, n_points)
+        elif spacing == 'log':
+            return generate_log_grid(min_val, max_val, n_points)
+        elif spacing == 'hyperbolic':
+            return generate_hyperbolic_grid(min_val, max_val, n_points)
+        else:
+            raise ValueError(f"Invalid spacing: {spacing}. Must be 'linear', 'log', or 'hyperbolic'.")
 
     def generate_batch_values(self) -> List[int]:
         """Generate batch_size values based on configuration."""
-        if self.spacing == 'linear':
-            return generate_linear_grid(self.batch_min, self.batch_max, self.batch_points)
-        elif self.spacing == 'log':
-            return generate_log_grid(self.batch_min, self.batch_max, self.batch_points)
-        else:
-            raise ValueError(f"Invalid spacing method: {self.spacing}. Must be 'linear' or 'log'.")
+        return self._generate_grid(self.batch_min, self.batch_max, self.batch_points, self.spacing)
 
     def generate_poll_values(self) -> List[int]:
-        """Generate poll_interval values based on configuration."""
-        if self.spacing == 'linear':
-            return generate_linear_grid(self.poll_min, self.poll_max, self.poll_points)
-        elif self.spacing == 'log':
-            return generate_log_grid(self.poll_min, self.poll_max, self.poll_points)
-        else:
-            raise ValueError(f"Invalid spacing method: {self.spacing}. Must be 'linear' or 'log'.")
+        """Generate poll_interval values based on configuration (uses poll_spacing)."""
+        return self._generate_grid(self.poll_min, self.poll_max, self.poll_points, self.poll_spacing)
 
     def estimate_duration(self, step_duration: int, settle_duration: int) -> dict:
         """
@@ -237,8 +293,11 @@ class GridConfig:
             return False, "poll_points must be at least 1"
 
         # Check spacing
-        if self.spacing not in ['linear', 'log']:
-            return False, f"spacing must be 'linear' or 'log', got '{self.spacing}'"
+        valid_spacings = ['linear', 'log', 'hyperbolic']
+        if self.spacing not in valid_spacings:
+            return False, f"spacing must be one of {valid_spacings}, got '{self.spacing}'"
+        if self.poll_spacing not in valid_spacings:
+            return False, f"poll_spacing must be one of {valid_spacings}, got '{self.poll_spacing}'"
 
         # Warning checks (not errors, but good to know)
         warnings = []
@@ -269,7 +328,7 @@ class GridConfig:
 PRESETS = {
     '5x5': GridConfig(
         batch_min=10,
-        batch_max=500,
+        batch_max=320,
         batch_points=5,
         poll_min=200,
         poll_max=5000,
@@ -278,21 +337,23 @@ PRESETS = {
     ),
     '10x10': GridConfig(
         batch_min=10,
-        batch_max=500,
+        batch_max=320,
         batch_points=10,
-        poll_min=200,
-        poll_max=5000,
+        poll_min=100,
+        poll_max=2000,
         poll_points=10,
         spacing='linear',
+        poll_spacing='hyperbolic',
     ),
     '20x20': GridConfig(
         batch_min=10,
-        batch_max=2000,
+        batch_max=450,
         batch_points=20,
-        poll_min=50,
-        poll_max=1000,
+        poll_min=100,
+        poll_max=2500,
         poll_points=20,
         spacing='linear',
+        poll_spacing='hyperbolic',
     ),
     'quick': GridConfig(
         batch_min=50,

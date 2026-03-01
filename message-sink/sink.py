@@ -15,6 +15,8 @@ import json
 import time
 import logging
 import signal
+import threading
+import queue
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, asdict
@@ -43,7 +45,12 @@ class SinkMetrics:
     queue_length: int
     cpu_util: float
     mem_util: float
-    io_ops: float
+    indexing_time_rate: float
+    io_write_ops: float
+    os_cpu_percent: int
+    os_mem_used_percent: int
+    gc_time_rate: float
+    write_queue_size: int
     # Control variables
     batch_size: int
     poll_interval_ms: int
@@ -64,7 +71,10 @@ class SinkMetrics:
     @staticmethod
     def csv_header() -> str:
         return ','.join([
-            'timestamp', 'queue_length', 'cpu_util', 'mem_util', 'io_ops',
+            'timestamp', 'queue_length', 'cpu_util', 'mem_util',
+            'indexing_time_rate', 'io_write_ops',
+            'os_cpu_percent', 'os_mem_used_percent',
+            'gc_time_rate', 'write_queue_size',
             'batch_size', 'poll_interval_ms', 'control_mode',
             'messages_consumed', 'messages_indexed', 'cycle_duration_ms', 'indexing_duration_ms'
         ])
@@ -101,6 +111,12 @@ class MessageSink:
         self.total_messages_consumed = 0
         self.total_messages_indexed = 0
         self.last_metrics_log_time = 0
+
+        # Async indexing
+        self.index_queue = queue.Queue()
+        self.index_worker = None
+        self.last_index_count = 0
+        self.last_index_duration = 0.0
 
         # Metrics log file
         self.metrics_log_path = os.getenv('METRICS_LOG_PATH', '/app/logs/sink_metrics.csv')
@@ -206,16 +222,21 @@ class MessageSink:
         except Exception as e:
             logger.warning(f"Failed to initialize metrics log: {e}")
 
-    def _check_control_override(self) -> Optional[ControlOutput]:
+    def _check_control_override(self):
         """
         Check for external control override file.
         Used during system identification experiments to inject known control values.
         File format: {"batch_size": 100, "poll_interval": 1000}
+        Returns 'pause' string if paused, ControlOutput if override, None otherwise.
         """
         try:
             if os.path.exists(self.control_override_path):
                 with open(self.control_override_path, 'r') as f:
                     override = json.load(f)
+                if override.get('pause', False):
+                    if override.get('seek_to_end', False):
+                        return 'seek_to_end'
+                    return 'pause'
                 return ControlOutput(
                     batch_size=int(override['batch_size']),
                     poll_interval_ms=int(override['poll_interval']),
@@ -224,6 +245,26 @@ class MessageSink:
         except Exception:
             pass
         return None
+
+    def _index_worker_loop(self):
+        """Worker thread: takes messages from queue and bulk indexes to ES."""
+        while self.running or not self.index_queue.empty():
+            try:
+                messages = self.index_queue.get(timeout=1)
+            except queue.Empty:
+                continue
+            try:
+                start = time.time()
+                actions = self.process_messages(messages)
+                indexed = self.bulk_index(actions)
+                duration = (time.time() - start) * 1000
+                self.total_messages_indexed += indexed
+                self.last_index_count = indexed
+                self.last_index_duration = duration
+            except Exception as e:
+                logger.error(f"Index worker error: {e}", exc_info=True)
+            finally:
+                self.index_queue.task_done()
 
     def _log_metrics(self, metrics: SinkMetrics):
         """Log metrics to file and console."""
@@ -237,7 +278,9 @@ class MessageSink:
             if current_time - self.last_metrics_log_time >= self.metrics_log_interval:
                 logger.info(
                     f"State: queue={metrics.queue_length}, cpu={metrics.cpu_util:.1f}%, "
-                    f"mem={metrics.mem_util:.1f}%, io={metrics.io_ops:.0f} B/s | "
+                    f"mem={metrics.mem_util:.1f}%, idx_rate={metrics.indexing_time_rate:.1f}ms/s, io={metrics.io_write_ops:.1f}ops/s | "
+                    f"OS: cpu={metrics.os_cpu_percent}%, mem={metrics.os_mem_used_percent}% | "
+                    f"GC: {metrics.gc_time_rate:.1f}ms/s, wq={metrics.write_queue_size} | "
                     f"Control: batch={metrics.batch_size}, poll={metrics.poll_interval_ms}ms | "
                     f"Perf: consumed={metrics.messages_consumed}, indexed={metrics.messages_indexed}, "
                     f"cycle={metrics.cycle_duration_ms:.0f}ms"
@@ -297,6 +340,7 @@ class MessageSink:
                 actions,
                 raise_on_error=False,
                 raise_on_exception=False,
+                refresh=True,
             )
 
             if errors:
@@ -330,7 +374,11 @@ class MessageSink:
 
         logger.info("Message Sink running. Press Ctrl+C to stop.")
 
+        # Start async index worker
         self.running = True
+        self.index_worker = threading.Thread(target=self._index_worker_loop, daemon=True)
+        self.index_worker.start()
+        logger.info("Index worker thread started")
         while self.running:
             cycle_start = time.time()
 
@@ -340,36 +388,36 @@ class MessageSink:
 
                 # 2. Compute optimal control (or use external override for sysid)
                 override = self._check_control_override()
+                if override == 'seek_to_end':
+                    self.consumer.seek_to_end()
+                    self.consumer.commit()
+                    logger.info("Seeked to end of topic (queue drained)")
+                    time.sleep(0.5)
+                    continue
+                if override == 'pause':
+                    time.sleep(0.5)
+                    continue
                 control = override if override else self.controller.compute_control(state.to_dict())
 
-                # 3. Poll messages with controlled parameters
-                # Note: KafkaConsumer doesn't support changing max_poll_records after creation
-                # We use timeout to approximate poll_interval behavior
-                poll_start = time.time()
-                message_batch = self.consumer.poll(
-                    timeout_ms=control.poll_interval_ms,
-                    max_records=control.batch_size,
-                )
-                poll_duration = (time.time() - poll_start) * 1000
-
-                # 4. Process and index messages
+                # 3. Poll until batch_size fulfilled
                 messages = []
-                for tp, records in message_batch.items():
-                    for record in records:
-                        messages.append(record.value)
+                while len(messages) < control.batch_size:
+                    batch = self.consumer.poll(
+                        timeout_ms=1000,
+                        max_records=control.batch_size - len(messages),
+                    )
+                    for tp, records in batch.items():
+                        for record in records:
+                            messages.append(record.value)
 
                 messages_consumed = len(messages)
                 self.total_messages_consumed += messages_consumed
 
-                # 5. Bulk index to Elasticsearch
-                index_start = time.time()
+                # 5. Submit to async index worker
                 if messages:
-                    actions = self.process_messages(messages)
-                    messages_indexed = self.bulk_index(actions)
-                    self.total_messages_indexed += messages_indexed
-                else:
-                    messages_indexed = 0
-                index_duration = (time.time() - index_start) * 1000
+                    self.index_queue.put(messages)
+                messages_indexed = self.last_index_count
+                index_duration = self.last_index_duration
 
                 cycle_duration = (time.time() - cycle_start) * 1000
 
@@ -379,7 +427,12 @@ class MessageSink:
                     queue_length=state.queue_length,
                     cpu_util=state.cpu_util,
                     mem_util=state.mem_util,
-                    io_ops=state.io_ops,
+                    indexing_time_rate=state.indexing_time_rate,
+                    io_write_ops=state.io_write_ops,
+                    os_cpu_percent=state.os_cpu_percent,
+                    os_mem_used_percent=state.os_mem_used_percent,
+                    gc_time_rate=state.gc_time_rate,
+                    write_queue_size=state.write_queue_size,
                     batch_size=control.batch_size,
                     poll_interval_ms=control.poll_interval_ms,
                     control_mode=control.mode,
@@ -389,6 +442,12 @@ class MessageSink:
                     indexing_duration_ms=index_duration,
                 )
                 self._log_metrics(metrics)
+
+                # Enforce cycle_time (poll_interval_ms)
+                cycle_elapsed = (time.time() - cycle_start) * 1000
+                remaining = control.poll_interval_ms - cycle_elapsed
+                if remaining > 0:
+                    time.sleep(remaining / 1000)
 
             except KafkaError as e:
                 logger.error(f"Kafka error: {e}")
@@ -403,6 +462,12 @@ class MessageSink:
     def cleanup(self):
         """Clean up resources."""
         logger.info("Cleaning up...")
+
+        # Wait for index worker to finish remaining items
+        if self.index_worker and self.index_worker.is_alive():
+            logger.info("Waiting for index worker to finish...")
+            self.index_queue.join()
+            self.index_worker.join(timeout=30)
 
         if self.consumer:
             self.consumer.close()
