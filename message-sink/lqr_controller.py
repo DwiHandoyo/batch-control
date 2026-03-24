@@ -9,7 +9,7 @@ Based on the system state:
 - queue_length: Kafka consumer lag
 - cpu_util: Elasticsearch CPU utilization
 - mem_util: Elasticsearch memory utilization
-- io_ops: Elasticsearch I/O operations
+- io_write_ops: Elasticsearch disk I/O write operations per second
 
 The controller minimizes the quadratic cost function:
     J = sum(x'Qx + u'Ru)
@@ -22,6 +22,7 @@ Where:
 """
 
 import os
+import json
 import logging
 import numpy as np
 from typing import Tuple, Optional, Dict, Any
@@ -96,12 +97,17 @@ class LQRController(BaseController):
     """
     Linear Quadratic Regulator controller for optimal synchronization control.
 
-    State vector x = [queue_length, cpu_util, mem_util, io_ops]
+    State vector x = [queue_length, cpu_util, mem_util, io_write_ops]
     Control vector u = [batch_size, poll_interval]
 
     The optimal control law is: u = -K @ (x - x_target)
     Where K is the optimal gain matrix computed from the Riccati equation.
+
+    When normalization is active (from sysid), raw state values are normalized
+    before computing the control law: x_norm = (x_raw - mean) / std
     """
+
+    STATE_KEYS = ['queue_length', 'cpu_util', 'mem_util', 'io_write_ops']
 
     def __init__(
         self,
@@ -111,13 +117,17 @@ class LQRController(BaseController):
         R: Optional[np.ndarray] = None,
         x_target: Optional[np.ndarray] = None,
         u_nominal: Optional[np.ndarray] = None,
+        normalization: Optional[Dict[str, Dict[str, float]]] = None,
         **kwargs
     ):
         super().__init__(**kwargs)
 
         # System dimensions
-        self.n_states = 4   # queue_length, cpu_util, mem_util, io_ops
+        self.n_states = 4   # queue_length, cpu_util, mem_util, io_write_ops
         self.n_controls = 2  # batch_size, poll_interval
+
+        # Normalization scales from sysid (None = operate on raw values)
+        self.normalization = normalization
 
         # Target state (desired equilibrium)
         # Default: low queue, moderate CPU/mem usage, moderate I/O
@@ -125,7 +135,7 @@ class LQRController(BaseController):
             0.0,    # queue_length: target 0 (no lag)
             50.0,   # cpu_util: target 50%
             50.0,   # mem_util: target 50%
-            1e6,    # io_ops: target 1 MB/s
+            30.0,   # io_write_ops: target ~30 ops/s (median from data)
         ])
 
         # Nominal control (operating point)
@@ -143,15 +153,15 @@ class LQRController(BaseController):
         # Q: penalize state deviations (higher = more aggressive tracking)
         self.Q = Q if Q is not None else np.diag([
             1.0,    # queue_length weight
-            0.1,    # cpu_util weight
-            0.1,    # mem_util weight
-            0.01,   # io_ops weight (normalized)
+            1.0,    # cpu_util weight
+            1.0,    # mem_util weight
+            1.0,    # io_write_ops weight
         ])
 
         # R: penalize control effort (higher = smoother control)
         self.R = R if R is not None else np.diag([
-            0.01,   # batch_size change weight
-            0.001,  # poll_interval change weight
+            1.0,    # batch_size change weight
+            1.0,    # poll_interval change weight
         ])
 
         # Compute optimal gain matrix
@@ -160,7 +170,32 @@ class LQRController(BaseController):
         logger.info("LQRController initialized")
         logger.info(f"Target state: {self.x_target}")
         logger.info(f"Nominal control: {self.u_nominal}")
+        logger.info(f"Normalization: {'active' if normalization else 'off'}")
         logger.info(f"Gain matrix K:\n{self.K}")
+
+    @classmethod
+    def from_sysid_json(cls, json_path: str, **kwargs) -> 'LQRController':
+        """
+        Create LQRController from system identification JSON output.
+
+        Args:
+            json_path: Path to sysid_matrices_*.json
+            **kwargs: Additional arguments passed to constructor (Q, R, x_target, etc.)
+
+        Returns:
+            LQRController with identified A, B matrices and normalization scales
+        """
+        with open(json_path) as f:
+            data = json.load(f)
+
+        A = np.array(data['A'])
+        B = np.array(data['B'])
+        normalization = data.get('normalization', None)
+
+        logger.info(f"Loading sysid from {json_path}")
+        logger.info(f"  Fit R²: {data.get('fit_metrics', {}).get('r_squared', 'N/A')}")
+
+        return cls(A=A, B=B, normalization=normalization, **kwargs)
 
     def _solve_dare(self) -> np.ndarray:
         """
@@ -185,40 +220,95 @@ class LQRController(BaseController):
             logger.warning(f"Failed to solve DARE: {e}. Using zero gain (static behavior).")
             return np.zeros((self.n_controls, self.n_states))
 
+    def _normalize_state(self, x_raw: np.ndarray) -> np.ndarray:
+        """Normalize raw state vector using sysid normalization scales."""
+        if self.normalization is None:
+            return x_raw
+        x_norm = np.zeros_like(x_raw)
+        for i, key in enumerate(self.STATE_KEYS):
+            if key in self.normalization:
+                mean = self.normalization[key]['mean']
+                std = self.normalization[key]['std']
+                x_norm[i] = (x_raw[i] - mean) / std
+            else:
+                x_norm[i] = x_raw[i]
+        return x_norm
+
+    def _normalize_target(self) -> np.ndarray:
+        """Normalize target state using sysid normalization scales."""
+        return self._normalize_state(self.x_target)
+
+    def _normalize_control(self, u_raw: np.ndarray) -> np.ndarray:
+        """Normalize raw control vector using sysid normalization scales."""
+        if self.normalization is None:
+            return u_raw
+        control_keys = ['batch_size', 'poll_interval']
+        u_norm = np.zeros_like(u_raw)
+        for i, key in enumerate(control_keys):
+            if key in self.normalization:
+                mean = self.normalization[key]['mean']
+                std = self.normalization[key]['std']
+                u_norm[i] = (u_raw[i] - mean) / std
+            else:
+                u_norm[i] = u_raw[i]
+        return u_norm
+
+    def _denormalize_control(self, u_norm: np.ndarray) -> np.ndarray:
+        """Denormalize control vector back to raw units."""
+        if self.normalization is None:
+            return u_norm
+        control_keys = ['batch_size', 'poll_interval']
+        u_raw = np.zeros_like(u_norm)
+        for i, key in enumerate(control_keys):
+            if key in self.normalization:
+                mean = self.normalization[key]['mean']
+                std = self.normalization[key]['std']
+                u_raw[i] = u_norm[i] * std + mean
+            else:
+                u_raw[i] = u_norm[i]
+        return u_raw
+
     def compute_control(self, state: Dict[str, float]) -> ControlOutput:
         """
         Compute optimal control given current state.
 
         Args:
-            state: Dictionary with keys 'queue_length', 'cpu_util', 'mem_util', 'io_ops'
+            state: Dictionary with keys 'queue_length', 'cpu_util', 'mem_util', 'io_write_ops'
 
         Returns:
             ControlOutput with batch_size and poll_interval_ms
         """
         # Convert state dict to vector
-        x = np.array([
+        x_raw = np.array([
             state.get('queue_length', 0),
             state.get('cpu_util', 0),
             state.get('mem_util', 0),
-            state.get('io_ops', 0),
+            state.get('io_write_ops', 0),
         ])
 
-        # Compute state deviation from target
-        x_error = x - self.x_target
+        if self.normalization:
+            # Work in normalized space: x_norm, u_norm
+            x_norm = self._normalize_state(x_raw)
+            x_target_norm = self._normalize_target()
+            x_error = x_norm - x_target_norm
 
-        # Normalize io_ops for better scaling (divide by 1e6 to get MB/s scale)
-        x_error[3] = x_error[3] / 1e6
+            # Compute optimal control deviation in normalized space
+            delta_u_norm = -self.K @ x_error
 
-        # Compute optimal control deviation: delta_u = -K @ x_error
-        delta_u = -self.K @ x_error
-
-        # Add to nominal control
-        u = self.u_nominal + delta_u
+            # Add to normalized nominal control and denormalize
+            u_nominal_norm = self._normalize_control(self.u_nominal)
+            u_norm = u_nominal_norm + delta_u_norm
+            u_raw = self._denormalize_control(u_norm)
+        else:
+            # Work in raw space
+            x_error = x_raw - self.x_target
+            delta_u = -self.K @ x_error
+            u_raw = self.u_nominal + delta_u
 
         # Clamp to valid ranges
-        batch_size, poll_interval = self._clamp_control(u[0], u[1])
+        batch_size, poll_interval = self._clamp_control(u_raw[0], u_raw[1])
 
-        logger.debug(f"State: {x}, Error: {x_error}, Delta_u: {delta_u}, Control: ({batch_size}, {poll_interval})")
+        logger.debug(f"State: {x_raw}, Error: {x_error}, Control: ({batch_size}, {poll_interval})")
 
         return ControlOutput(
             batch_size=batch_size,
@@ -276,6 +366,9 @@ def create_controller(mode: str = 'static', **kwargs) -> BaseController:
             **bounds
         )
     elif mode == 'lqr':
+        sysid_json = os.getenv('SYSID_JSON', kwargs.pop('sysid_json', None))
+        if sysid_json:
+            return LQRController.from_sysid_json(sysid_json, **bounds, **kwargs)
         return LQRController(**bounds, **kwargs)
     else:
         raise ValueError(f"Unknown controller mode: {mode}. Use 'static' or 'lqr'.")
@@ -287,7 +380,7 @@ if __name__ == '__main__':
 
     print("Testing Static Controller:")
     static = create_controller('static', batch_size=50, poll_interval_ms=500)
-    state = {'queue_length': 100, 'cpu_util': 80, 'mem_util': 60, 'io_ops': 1e6}
+    state = {'queue_length': 100, 'cpu_util': 80, 'mem_util': 60, 'io_write_ops': 50}
     output = static.compute_control(state)
     print(f"  State: {state}")
     print(f"  Output: batch_size={output.batch_size}, poll_interval={output.poll_interval_ms}ms")
@@ -297,9 +390,9 @@ if __name__ == '__main__':
 
     # Test with different states
     test_states = [
-        {'queue_length': 0, 'cpu_util': 50, 'mem_util': 50, 'io_ops': 1e6},    # At target
-        {'queue_length': 1000, 'cpu_util': 90, 'mem_util': 80, 'io_ops': 5e6}, # High load
-        {'queue_length': 0, 'cpu_util': 10, 'mem_util': 20, 'io_ops': 1e5},    # Low load
+        {'queue_length': 0, 'cpu_util': 50, 'mem_util': 50, 'io_write_ops': 30},     # At target
+        {'queue_length': 1000, 'cpu_util': 90, 'mem_util': 80, 'io_write_ops': 200},  # High load
+        {'queue_length': 0, 'cpu_util': 10, 'mem_util': 20, 'io_write_ops': 5},       # Low load
     ]
 
     for state in test_states:

@@ -12,8 +12,8 @@ print("SEEDING DATABASE WITH INITIAL DATA")
 print("=" * 70)
 
 # Configuration
-NUM_ROWS = 10000
-RATE = 1000  # rows/sec
+NUM_ROWS = 500_000
+RATE = 2000  # rows/sec
 DURATION = NUM_ROWS // RATE  # Calculate duration needed
 
 print(f"\nTarget: {NUM_ROWS:,} rows")

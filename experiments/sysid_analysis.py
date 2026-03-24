@@ -16,6 +16,7 @@ The least squares formulation:
 
 import os
 import sys
+import json
 import argparse
 import logging
 import numpy as np
@@ -29,7 +30,7 @@ logging.basicConfig(
 logger = logging.getLogger('sysid-analysis')
 
 # State and control variable names
-STATE_VARS = ['queue_length', 'cpu_util', 'mem_util', 'io_ops']
+STATE_VARS = ['queue_length', 'cpu_util', 'mem_util', 'io_write_ops']
 CONTROL_VARS = ['batch_size', 'poll_interval']
 N_STATES = len(STATE_VARS)
 N_CONTROLS = len(CONTROL_VARS)
@@ -280,37 +281,135 @@ def save_results(A, B, metrics, output_dir, scales=None):
     return report_path, json_path
 
 
-def main():
-    parser = argparse.ArgumentParser(description='System Identification Analysis')
-    parser.add_argument('data_file', help='Path to experiment data CSV')
-    parser.add_argument('--output-dir', default='./results')
-    parser.add_argument('--normalize', action='store_true',
-                        help='Normalize data before identification')
-    parser.add_argument('--train-phases', nargs='+',
-                        default=['vary_batch', 'vary_poll'],
-                        help='Phases to use for training')
-    parser.add_argument('--val-phases', nargs='+',
-                        default=['vary_both'],
-                        help='Phases to use for validation')
+def filter_data(df: pd.DataFrame, exclude_settle: bool = True,
+                filter_exhausted: bool = True) -> pd.DataFrame:
+    """
+    Filter experiment data to remove unreliable samples.
 
-    args = parser.parse_args()
+    Args:
+        df: Raw experiment DataFrame
+        exclude_settle: Remove settle phase rows (transient dynamics)
+        filter_exhausted: Remove rows where queue was exhausted (constraint boundary)
 
-    # Load data
-    df = load_data(args.data_file)
+    Returns:
+        Filtered DataFrame
+    """
+    n_before = len(df)
 
-    # Optionally normalize
+    if exclude_settle:
+        df = df[~df['phase'].str.contains('settle', na=False)]
+        logger.info(f"  Excluded settle phases: {n_before} -> {len(df)} samples")
+
+    if filter_exhausted and 'queue_exhausted' in df.columns:
+        n_before_exh = len(df)
+        df = df[df['queue_exhausted'] != True]  # noqa: E712 (handles string 'True' too)
+        # Also handle string representation
+        df = df[df['queue_exhausted'].astype(str) != 'True']
+        logger.info(f"  Filtered queue_exhausted: {n_before_exh} -> {len(df)} samples")
+
+    return df.reset_index(drop=True)
+
+
+def train_test_split_by_combination(df: pd.DataFrame, train_ratio: float = 0.8,
+                                     seed: int = 42) -> tuple:
+    """
+    Split data into train/test by control combination groups.
+
+    Groups data by (batch_size, poll_interval) and randomly assigns
+    groups to train or test set. This prevents temporal leakage while
+    maintaining coverage across the control space.
+
+    Args:
+        df: Filtered experiment DataFrame
+        train_ratio: Fraction of groups for training (default 0.8)
+        seed: Random seed for reproducibility
+
+    Returns:
+        (df_train, df_test) tuple of DataFrames
+    """
+    rng = np.random.RandomState(seed)
+
+    # Get unique control combinations
+    groups = df.groupby(['batch_size', 'poll_interval']).ngroups
+    group_keys = list(df.groupby(['batch_size', 'poll_interval']).groups.keys())
+    rng.shuffle(group_keys)
+
+    n_train = int(len(group_keys) * train_ratio)
+    train_keys = set(group_keys[:n_train])
+    test_keys = set(group_keys[n_train:])
+
+    # Split
+    df['_group_key'] = list(zip(df['batch_size'], df['poll_interval']))
+    df_train = df[df['_group_key'].isin(train_keys)].drop(columns=['_group_key']).reset_index(drop=True)
+    df_test = df[df['_group_key'].isin(test_keys)].drop(columns=['_group_key']).reset_index(drop=True)
+
+    logger.info(f"Train/test split by combination (seed={seed}):")
+    logger.info(f"  Train: {len(train_keys)} groups, {len(df_train)} samples")
+    logger.info(f"  Test: {len(test_keys)} groups, {len(df_test)} samples")
+
+    return df_train, df_test
+
+
+def run_sysid(df: pd.DataFrame, output_dir: str, normalize: bool = True,
+              split_ratio: float = 0.8, seed: int = 42,
+              filter_exhausted: bool = True, exclude_settle: bool = True,
+              train_phases: list = None) -> dict:
+    """
+    Run system identification on a DataFrame.
+
+    Can be called programmatically (from select_run.py) or via CLI.
+
+    Args:
+        df: Raw experiment DataFrame
+        output_dir: Directory to save results
+        normalize: Normalize data before identification
+        split_ratio: Train/test split ratio by control combination
+        seed: Random seed for reproducibility
+        filter_exhausted: Filter queue_exhausted samples
+        exclude_settle: Exclude settle phase data
+        train_phases: Phases to use for training (default: all non-settle)
+
+    Returns:
+        dict with keys: A, B, metrics, scales, stability, controllability,
+                        report_path, json_path
+    """
+    # Filter unreliable samples
+    logger.info("Filtering data:")
+    df = filter_data(df, exclude_settle=exclude_settle,
+                     filter_exhausted=filter_exhausted)
+
+    # Split into train/test by control combination
+    df_train, df_test = train_test_split_by_combination(
+        df, train_ratio=split_ratio, seed=seed
+    )
+
+    # Optionally normalize (fit on train, apply to both)
     scales = None
-    if args.normalize:
-        df, scales = normalize_data(df)
-        logger.info("Data normalized")
+    if normalize:
+        scales = {}
+        for var in STATE_VARS + CONTROL_VARS:
+            mean = df_train[var].mean()
+            std = df_train[var].std()
+            if std == 0:
+                std = 1.0
+            scales[var] = {'mean': mean, 'std': std}
 
-    # Build regression matrices from training phases
-    train_phases = [p for p in args.train_phases if p in df['phase'].unique()]
-    if not train_phases:
-        logger.warning("No matching training phases found, using all data")
-        train_phases = df['phase'].unique().tolist()
+        for data in [df_train, df_test]:
+            for var in STATE_VARS + CONTROL_VARS:
+                data[var] = (data[var] - scales[var]['mean']) / scales[var]['std']
 
-    X_next, Z = build_regression_matrices(df, phases=train_phases)
+        logger.info("Data normalized (scales fit on training data)")
+
+    # Build regression matrices from training data
+    if train_phases:
+        phases = [p for p in train_phases if p in df_train['phase'].unique()]
+    else:
+        phases = None
+    if train_phases and not phases:
+        logger.warning("No matching training phases found, using all training data")
+        phases = None
+
+    X_next, Z = build_regression_matrices(df_train, phases=phases)
 
     # Identify system
     A, B, metrics = least_squares_identification(X_next, Z)
@@ -331,17 +430,61 @@ def main():
     stability = check_stability(A)
     controllability = check_controllability(A, B)
 
-    # Validate if validation data exists
-    val_phases = [p for p in args.val_phases if p in df['phase'].unique()]
-    if val_phases:
+    # Validate on test data
+    validation = None
+    if len(df_test) > 1:
         print("\n" + "=" * 60)
-        df_val = df[df['phase'].isin(val_phases)].reset_index(drop=True)
-        if len(df_val) > 1:
-            validation = validate_model(A, B, df_val)
+        print("VALIDATION (on held-out test combinations)")
+        print("=" * 60)
+        validation = validate_model(A, B, df_test)
 
     # Save results
     print("\n" + "=" * 60)
-    save_results(A, B, metrics, args.output_dir, scales)
+    report_path, json_path = save_results(A, B, metrics, output_dir, scales)
+
+    return {
+        'A': A, 'B': B, 'metrics': metrics, 'scales': scales,
+        'stability': stability, 'controllability': controllability,
+        'validation': validation,
+        'report_path': report_path, 'json_path': json_path,
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description='System Identification Analysis')
+    parser.add_argument('data_file', help='Path to experiment data CSV')
+    parser.add_argument('--output-dir', default='./results')
+    parser.add_argument('--normalize', action='store_true',
+                        help='Normalize data before identification')
+    parser.add_argument('--train-phases', nargs='+', default=None,
+                        help='Phases to use for training (default: all non-settle)')
+    parser.add_argument('--filter-exhausted', action='store_true', default=True,
+                        help='Filter out queue_exhausted samples (default: True)')
+    parser.add_argument('--no-filter-exhausted', dest='filter_exhausted', action='store_false',
+                        help='Keep queue_exhausted samples')
+    parser.add_argument('--exclude-settle', action='store_true', default=True,
+                        help='Exclude settle phase data (default: True)')
+    parser.add_argument('--no-exclude-settle', dest='exclude_settle', action='store_false',
+                        help='Keep settle phase data')
+    parser.add_argument('--split-ratio', type=float, default=0.8,
+                        help='Train/test split ratio by control combination (default: 0.8)')
+    parser.add_argument('--seed', type=int, default=42,
+                        help='Random seed for train/test split (default: 42)')
+
+    args = parser.parse_args()
+
+    df = load_data(args.data_file)
+
+    result = run_sysid(
+        df, output_dir=args.output_dir, normalize=args.normalize,
+        split_ratio=args.split_ratio, seed=args.seed,
+        filter_exhausted=args.filter_exhausted,
+        exclude_settle=args.exclude_settle,
+        train_phases=args.train_phases,
+    )
+
+    A = result['A']
+    B = result['B']
 
     # Print usage hint
     print("\n" + "=" * 60)
@@ -353,9 +496,6 @@ def main():
     print(f"  B = np.array({B.tolist()})")
     print("  controller = LQRController(A=A, B=B)")
 
-
-# Need json for save_results
-import json
 
 if __name__ == '__main__':
     main()

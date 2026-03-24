@@ -1,0 +1,158 @@
+2026-03-02 13:33:38,584 - sysid-experiment - INFO - Connected to PostgreSQL at localhost:5433/cqrs_write
+2026-03-02 13:33:38,584 - sysid-experiment - INFO - === Phase: vary_batch ===
+2026-03-02 13:33:38,584 - sysid-experiment - INFO - Steps: [(10, 212), (44, 212), (79, 212), (113, 212), (148, 212), (182, 212), (217, 212), (251, 212), (286, 212), (320, 212), (182, 212)]
+2026-03-02 13:33:38,584 - sysid-experiment - INFO - Step duration: 60s, Settle: 10s
+2026-03-02 13:33:38,584 - sysid-experiment - INFO - Step 1/11: batch_size=10, poll_interval=212ms
+2026-03-02 13:33:42,620 - sysid-experiment - INFO - Burst updated 5660 rows for queue pre-fill
+2026-03-02 13:33:42,622 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-03-02 13:33:42,622 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2026-03-02 13:33:42,623 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-03-02 13:33:42,730 - kafka.conn - INFO - Broker version identified as 2.5.0
+2026-03-02 13:33:42,730 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2026-03-02 13:33:42,735 - kafka.conn - INFO - <BrokerConnection node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-03-02 13:33:42,735 - kafka.conn - INFO - <BrokerConnection node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-03-02 13:33:42,736 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-03-02 13:33:42,855 - kafka.cluster - INFO - Group coordinator for message-sink-group is BrokerMetadata(nodeId='coordinator-1', host='localhost', port=29092, rack=None)
+2026-03-02 13:33:42,855 - kafka.coordinator - INFO - Discovered coordinator coordinator-1 for group message-sink-group
+2026-03-02 13:33:42,856 - kafka.conn - INFO - <BrokerConnection node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-03-02 13:33:42,856 - kafka.conn - INFO - <BrokerConnection node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-03-02 13:35:43,062 - sysid-experiment - INFO -   Queue pre-filled: 0 messages (target: 5660, multiplier: 1.00x)
+2026-03-02 13:35:43,063 - sysid-experiment - INFO -   Warm-up for 60s (cold start prevention)...
+2026-03-02 13:36:43,069 - sysid-experiment - INFO -   Warm-up done, starting measurement
+2026-03-02 13:36:43,084 - sysid-experiment - WARNING -   QUEUE EXHAUSTED at sample 1 (0s into 60s step) — remaining samples marked queue_exhausted=True
+2026-03-02 13:36:52,445 - sysid-experiment - INFO -   Sample 10: queue=0 [EXHAUSTED], cpu=0.0%, mem=36.0%, idx_rate=0.0, io=5.7ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:37:02,831 - sysid-experiment - INFO -   Sample 20: queue=0 [EXHAUSTED], cpu=1.0%, mem=38.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:37:13,124 - sysid-experiment - INFO -   Sample 30: queue=0 [EXHAUSTED], cpu=0.0%, mem=38.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:37:23,431 - sysid-experiment - INFO -   Sample 40: queue=0 [EXHAUSTED], cpu=1.0%, mem=39.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:37:33,769 - sysid-experiment - INFO -   Sample 50: queue=0 [EXHAUSTED], cpu=1.0%, mem=40.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=3%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:37:43,102 - sysid-experiment - INFO -   Collected 58 samples (attempt 1/3)
+2026-03-02 13:37:43,102 - sysid-experiment - WARNING -   Step 1 attempt 1/3 had queue exhaustion — retrying with burst_multiplier=1.50x
+2026-03-02 13:37:47,140 - sysid-experiment - INFO - Burst updated 8490 rows for queue pre-fill
+2026-03-02 13:39:47,302 - sysid-experiment - INFO -   Queue pre-filled: 0 messages (target: 8490, multiplier: 1.50x)
+2026-03-02 13:39:47,337 - sysid-experiment - WARNING -   QUEUE EXHAUSTED at sample 1 (0s into 60s step) — remaining samples marked queue_exhausted=True
+2026-03-02 13:39:56,673 - sysid-experiment - INFO -   Sample 10: queue=0 [EXHAUSTED], cpu=0.0%, mem=48.0%, idx_rate=0.0, io=3.9ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:40:07,063 - sysid-experiment - INFO -   Sample 20: queue=0 [EXHAUSTED], cpu=0.0%, mem=49.0%, idx_rate=0.0, io=4.8ops/s, os_cpu=3%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:40:17,388 - sysid-experiment - INFO -   Sample 30: queue=0 [EXHAUSTED], cpu=1.0%, mem=50.0%, idx_rate=0.0, io=4.9ops/s, os_cpu=1%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:40:27,723 - sysid-experiment - INFO -   Sample 40: queue=0 [EXHAUSTED], cpu=1.0%, mem=51.0%, idx_rate=0.0, io=4.8ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:40:38,055 - sysid-experiment - INFO -   Sample 50: queue=0 [EXHAUSTED], cpu=12.5%, mem=52.0%, idx_rate=0.0, io=7.7ops/s, os_cpu=33%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:40:47,326 - sysid-experiment - INFO -   Collected 58 samples (attempt 2/3)
+2026-03-02 13:40:47,326 - sysid-experiment - WARNING -   Step 1 attempt 2/3 had queue exhaustion — retrying with burst_multiplier=2.25x
+2026-03-02 13:40:51,359 - sysid-experiment - INFO - Burst updated 12735 rows for queue pre-fill
+2026-03-02 13:42:53,245 - sysid-experiment - INFO -   Queue pre-filled: 9 messages (target: 12735, multiplier: 2.25x)
+2026-03-02 13:42:58,486 - sysid-experiment - WARNING -   QUEUE EXHAUSTED at sample 6 (5s into 60s step) — remaining samples marked queue_exhausted=True
+2026-03-02 13:43:02,610 - sysid-experiment - INFO -   Sample 10: queue=0 [EXHAUSTED], cpu=1.0%, mem=12.0%, idx_rate=0.0, io=4.8ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:43:12,948 - sysid-experiment - INFO -   Sample 20: queue=0 [EXHAUSTED], cpu=1.9%, mem=13.0%, idx_rate=0.0, io=7.7ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:43:23,286 - sysid-experiment - INFO -   Sample 30: queue=0 [EXHAUSTED], cpu=1.0%, mem=14.0%, idx_rate=0.0, io=5.7ops/s, os_cpu=3%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:43:33,624 - sysid-experiment - INFO -   Sample 40: queue=0 [EXHAUSTED], cpu=1.0%, mem=15.0%, idx_rate=0.0, io=4.8ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:43:43,984 - sysid-experiment - INFO -   Sample 50: queue=0 [EXHAUSTED], cpu=1.0%, mem=16.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=3%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:43:53,446 - sysid-experiment - INFO -   Collected 58 samples (attempt 3/3)
+2026-03-02 13:43:53,446 - sysid-experiment - WARNING -   Step 1 attempt 3/3 had queue exhaustion — retrying with burst_multiplier=3.38x
+2026-03-02 13:43:53,446 - sysid-experiment - WARNING -   Step 1 still exhausted after 3 attempts — data may be unreliable
+2026-03-02 13:43:53,446 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 13:44:03,745 - sysid-experiment - INFO - Step 2/11: batch_size=44, poll_interval=212ms
+2026-03-02 13:44:07,779 - sysid-experiment - INFO - Burst updated 24905 rows for queue pre-fill
+2026-03-02 13:46:09,580 - sysid-experiment - INFO -   Queue pre-filled: 15 messages (target: 24905, multiplier: 1.00x)
+2026-03-02 13:46:14,779 - sysid-experiment - WARNING -   QUEUE EXHAUSTED at sample 6 (5s into 60s step) — remaining samples marked queue_exhausted=True
+2026-03-02 13:46:18,907 - sysid-experiment - INFO -   Sample 10: queue=0 [EXHAUSTED], cpu=1.0%, mem=34.0%, idx_rate=0.0, io=6.7ops/s, os_cpu=11%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:46:29,228 - sysid-experiment - INFO -   Sample 20: queue=0 [EXHAUSTED], cpu=1.0%, mem=35.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=20%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:46:39,584 - sysid-experiment - INFO -   Sample 30: queue=0 [EXHAUSTED], cpu=0.0%, mem=36.0%, idx_rate=0.0, io=19.0ops/s, os_cpu=2%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:46:49,886 - sysid-experiment - INFO -   Sample 40: queue=0 [EXHAUSTED], cpu=0.0%, mem=37.0%, idx_rate=0.0, io=0.0ops/s, os_cpu=3%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:47:00,217 - sysid-experiment - INFO -   Sample 50: queue=0 [EXHAUSTED], cpu=1.0%, mem=38.0%, idx_rate=0.0, io=2.9ops/s, os_cpu=3%, os_mem=35%, gc=0.0ms/s, wq=0
+2026-03-02 13:47:10,561 - sysid-experiment - INFO -   Collected 59 samples (attempt 1/3)
+2026-03-02 13:47:10,561 - sysid-experiment - WARNING -   Step 2 attempt 1/3 had queue exhaustion — retrying with burst_multiplier=1.50x
+2026-03-02 13:47:15,967 - sysid-experiment - INFO - Burst updated 37358 rows for queue pre-fill
+2026-03-02 13:48:08,816 - sysid-experiment - INFO -   Queue pre-filled: 30934 messages (target: 37358, multiplier: 1.50x)
+2026-03-02 13:48:18,452 - sysid-experiment - INFO -   Sample 10: queue=34678, cpu=47.0%, mem=64.0%, idx_rate=244.3, io=60.6ops/s, os_cpu=95%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:48:30,653 - sysid-experiment - INFO -   Sample 20: queue=36892, cpu=53.8%, mem=21.0%, idx_rate=119.4, io=35.2ops/s, os_cpu=100%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:48:41,415 - sysid-experiment - INFO -   Sample 30: queue=39681, cpu=45.9%, mem=49.0%, idx_rate=27.2, io=32.8ops/s, os_cpu=100%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:48:52,361 - sysid-experiment - INFO -   Sample 40: queue=37569, cpu=57.8%, mem=26.0%, idx_rate=252.6, io=54.8ops/s, os_cpu=97%, os_mem=38%, gc=0.0ms/s, wq=0
+2026-03-02 13:49:03,238 - sysid-experiment - INFO -   Sample 50: queue=35457, cpu=39.7%, mem=60.0%, idx_rate=14.8, io=25.8ops/s, os_cpu=68%, os_mem=38%, gc=0.0ms/s, wq=0
+2026-03-02 13:49:09,646 - sysid-experiment - INFO -   Collected 55 samples (attempt 2/3)
+2026-03-02 13:49:09,646 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 13:49:20,116 - sysid-experiment - INFO - Step 3/11: batch_size=79, poll_interval=212ms
+2026-03-02 13:49:25,247 - sysid-experiment - INFO - Burst updated 44716 rows for queue pre-fill
+2026-03-02 13:49:33,455 - sysid-experiment - INFO -   Queue pre-filled: 36545 messages (target: 44716, multiplier: 1.00x)
+2026-03-02 13:49:42,843 - sysid-experiment - INFO -   Sample 10: queue=3434, cpu=49.0%, mem=12.0%, idx_rate=88.4, io=33.6ops/s, os_cpu=81%, os_mem=40%, gc=0.0ms/s, wq=0
+2026-03-02 13:49:53,320 - sysid-experiment - INFO -   Sample 20: queue=5995, cpu=49.5%, mem=50.0%, idx_rate=226.2, io=43.0ops/s, os_cpu=100%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:50:03,819 - sysid-experiment - INFO -   Sample 30: queue=8579, cpu=15.6%, mem=23.0%, idx_rate=17.5, io=38.9ops/s, os_cpu=33%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:50:14,167 - sysid-experiment - INFO -   Sample 40: queue=10865, cpu=35.2%, mem=57.0%, idx_rate=16.2, io=35.2ops/s, os_cpu=72%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:50:24,701 - sysid-experiment - INFO -   Sample 50: queue=12349, cpu=27.2%, mem=34.0%, idx_rate=14.6, io=34.0ops/s, os_cpu=54%, os_mem=39%, gc=0.0ms/s, wq=0
+2026-03-02 13:50:34,010 - sysid-experiment - INFO -   Collected 58 samples (attempt 1/3)
+2026-03-02 13:50:34,010 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 13:50:44,440 - sysid-experiment - INFO - Step 4/11: batch_size=113, poll_interval=212ms
+2026-03-02 13:50:50,503 - sysid-experiment - INFO - Burst updated 63962 rows for queue pre-fill
+2026-03-02 13:51:55,410 - sysid-experiment - INFO -   Queue pre-filled: 52029 messages (target: 63962, multiplier: 1.00x)
+2026-03-02 13:52:05,076 - sysid-experiment - INFO -   Sample 10: queue=1140, cpu=49.9%, mem=14.0%, idx_rate=46.0, io=27.4ops/s, os_cpu=95%, os_mem=40%, gc=0.0ms/s, wq=0
+2026-03-02 13:52:15,659 - sysid-experiment - INFO -   Sample 20: queue=66, cpu=26.7%, mem=56.0%, idx_rate=83.0, io=27.7ops/s, os_cpu=57%, os_mem=41%, gc=0.0ms/s, wq=0
+2026-03-02 13:52:26,109 - sysid-experiment - INFO -   Sample 30: queue=419, cpu=40.0%, mem=34.0%, idx_rate=243.8, io=64.8ops/s, os_cpu=84%, os_mem=40%, gc=0.0ms/s, wq=0
+2026-03-02 13:52:36,459 - sysid-experiment - INFO -   Sample 40: queue=489, cpu=22.2%, mem=10.0%, idx_rate=23.2, io=34.8ops/s, os_cpu=47%, os_mem=40%, gc=10.6ms/s, wq=0
+2026-03-02 13:52:46,917 - sysid-experiment - INFO -   Sample 50: queue=485, cpu=48.6%, mem=48.0%, idx_rate=65.2, io=33.1ops/s, os_cpu=100%, os_mem=41%, gc=0.0ms/s, wq=0
+2026-03-02 13:52:56,381 - sysid-experiment - INFO -   Collected 58 samples (attempt 1/3)
+2026-03-02 13:52:56,382 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 13:53:06,746 - sysid-experiment - INFO - Step 5/11: batch_size=148, poll_interval=212ms
+2026-03-02 13:53:13,397 - sysid-experiment - INFO - Burst updated 83773 rows for queue pre-fill
+2026-03-02 13:54:59,142 - sysid-experiment - INFO -   Queue pre-filled: 67346 messages (target: 83773, multiplier: 1.00x)
+2026-03-02 13:55:08,489 - sysid-experiment - INFO -   Sample 10: queue=69279, cpu=40.9%, mem=16.0%, idx_rate=34.1, io=34.1ops/s, os_cpu=84%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:55:18,916 - sysid-experiment - INFO -   Sample 20: queue=68713, cpu=49.7%, mem=59.0%, idx_rate=129.3, io=33.5ops/s, os_cpu=91%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:55:29,428 - sysid-experiment - INFO -   Sample 30: queue=66003, cpu=19.2%, mem=46.0%, idx_rate=27.9, io=47.1ops/s, os_cpu=40%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:55:39,758 - sysid-experiment - INFO -   Sample 40: queue=58899, cpu=14.6%, mem=32.0%, idx_rate=22.4, io=38.9ops/s, os_cpu=29%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:55:50,371 - sysid-experiment - INFO -   Sample 50: queue=48243, cpu=33.1%, mem=35.0%, idx_rate=23.4, io=44.8ops/s, os_cpu=67%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:55:59,711 - sysid-experiment - INFO -   Collected 58 samples (attempt 1/3)
+2026-03-02 13:55:59,711 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 13:56:10,105 - sysid-experiment - INFO - Step 6/11: batch_size=182, poll_interval=212ms
+2026-03-02 13:56:17,078 - sysid-experiment - INFO - Burst updated 103018 rows for queue pre-fill
+2026-03-02 13:57:30,201 - sysid-experiment - INFO -   Queue pre-filled: 82666 messages (target: 103018, multiplier: 1.00x)
+2026-03-02 13:57:39,562 - sysid-experiment - INFO -   Sample 10: queue=2167, cpu=14.9%, mem=36.0%, idx_rate=25.1, io=27.0ops/s, os_cpu=41%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:57:49,946 - sysid-experiment - INFO -   Sample 20: queue=2253, cpu=9.6%, mem=11.0%, idx_rate=31.6, io=24.9ops/s, os_cpu=21%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:58:00,278 - sysid-experiment - INFO -   Sample 30: queue=2430, cpu=11.5%, mem=41.0%, idx_rate=26.8, io=51.8ops/s, os_cpu=28%, os_mem=43%, gc=0.0ms/s, wq=0
+2026-03-02 13:58:10,753 - sysid-experiment - INFO -   Sample 40: queue=22, cpu=28.5%, mem=20.0%, idx_rate=34.2, io=24.7ops/s, os_cpu=61%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:58:21,079 - sysid-experiment - INFO -   Sample 50: queue=215, cpu=10.6%, mem=50.0%, idx_rate=23.0, io=22.1ops/s, os_cpu=21%, os_mem=42%, gc=0.0ms/s, wq=0
+2026-03-02 13:58:30,499 - sysid-experiment - INFO -   Collected 58 samples (attempt 1/3)
+2026-03-02 13:58:30,499 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 13:58:40,821 - sysid-experiment - INFO - Step 7/11: batch_size=217, poll_interval=212ms
+2026-03-02 13:58:49,047 - sysid-experiment - INFO - Burst updated 122830 rows for queue pre-fill
+2026-03-02 14:00:49,052 - sysid-experiment - INFO -   Queue pre-filled: 74157 messages (target: 122830, multiplier: 1.00x)
+2026-03-02 14:00:58,415 - sysid-experiment - INFO -   Sample 10: queue=2163, cpu=29.3%, mem=51.0%, idx_rate=27.4, io=20.5ops/s, os_cpu=71%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:01:08,749 - sysid-experiment - INFO -   Sample 20: queue=2118, cpu=4.8%, mem=63.0%, idx_rate=0.0, io=1.0ops/s, os_cpu=30%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:01:19,076 - sysid-experiment - INFO -   Sample 30: queue=2658, cpu=10.8%, mem=30.0%, idx_rate=27.5, io=13.7ops/s, os_cpu=34%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:01:29,380 - sysid-experiment - INFO -   Sample 40: queue=44, cpu=14.7%, mem=57.0%, idx_rate=56.8, io=20.6ops/s, os_cpu=46%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:04:26,252 - sysid-experiment - INFO - Connected to PostgreSQL at localhost:5433/cqrs_write
+2026-03-02 14:04:26,252 - sysid-experiment - INFO - === Phase: vary_batch ===
+2026-03-02 14:04:26,252 - sysid-experiment - INFO - Steps: [(10, 212), (44, 212), (79, 212), (113, 212), (148, 212), (182, 212), (217, 212), (251, 212), (286, 212), (320, 212), (182, 212)]
+2026-03-02 14:04:26,253 - sysid-experiment - INFO - Step duration: 60s, Settle: 10s
+2026-03-02 14:04:26,253 - sysid-experiment - INFO - Step 1/11: batch_size=10, poll_interval=212ms
+2026-03-02 14:04:30,494 - sysid-experiment - INFO - Burst updated 5660 rows for queue pre-fill
+2026-03-02 14:04:30,495 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-03-02 14:04:30,496 - kafka.conn - INFO - Probing node bootstrap-0 broker version
+2026-03-02 14:04:30,496 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-03-02 14:04:30,608 - kafka.conn - INFO - Broker version identified as 2.5.0
+2026-03-02 14:04:30,608 - kafka.conn - INFO - Set configuration api_version=(2, 5, 0) to skip auto check_version requests on startup
+2026-03-02 14:04:30,612 - kafka.conn - INFO - <BrokerConnection node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-03-02 14:04:30,613 - kafka.conn - INFO - <BrokerConnection node_id=1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-03-02 14:04:30,613 - kafka.conn - INFO - <BrokerConnection node_id=bootstrap-0 host=localhost:29092 <connected> [IPv6 ('::1', 29092, 0, 0)]>: Closing connection. 
+2026-03-02 14:04:30,719 - kafka.cluster - INFO - Group coordinator for message-sink-group is BrokerMetadata(nodeId='coordinator-1', host='localhost', port=29092, rack=None)
+2026-03-02 14:04:30,719 - kafka.coordinator - INFO - Discovered coordinator coordinator-1 for group message-sink-group
+2026-03-02 14:04:30,720 - kafka.conn - INFO - <BrokerConnection node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: connecting to localhost:29092 [('::1', 29092, 0, 0) IPv6]
+2026-03-02 14:04:30,720 - kafka.conn - INFO - <BrokerConnection node_id=coordinator-1 host=localhost:29092 <connecting> [IPv6 ('::1', 29092, 0, 0)]>: Connection complete.
+2026-03-02 14:04:38,987 - sysid-experiment - INFO -   Queue pre-filled: 4689 messages (target: 5660, multiplier: 1.00x)
+2026-03-02 14:04:38,988 - sysid-experiment - INFO -   Warm-up for 60s (cold start prevention)...
+2026-03-02 14:05:38,993 - sysid-experiment - INFO -   Warm-up done, starting measurement
+2026-03-02 14:05:48,303 - sysid-experiment - INFO -   Sample 10: queue=2449, cpu=31.7%, mem=52.0%, idx_rate=4.8, io=59.6ops/s, os_cpu=67%, os_mem=43%, gc=0.0ms/s, wq=0
+2026-03-02 14:05:58,591 - sysid-experiment - INFO -   Sample 20: queue=1969, cpu=10.8%, mem=11.0%, idx_rate=5.9, io=34.3ops/s, os_cpu=21%, os_mem=43%, gc=0.0ms/s, wq=0
+2026-03-02 14:06:08,990 - sysid-experiment - INFO -   Sample 30: queue=1489, cpu=8.6%, mem=28.0%, idx_rate=6.7, io=33.5ops/s, os_cpu=17%, os_mem=43%, gc=0.0ms/s, wq=0
+2026-03-02 14:06:19,273 - sysid-experiment - INFO -   Sample 40: queue=1009, cpu=11.7%, mem=45.0%, idx_rate=6.8, io=34.0ops/s, os_cpu=23%, os_mem=43%, gc=0.0ms/s, wq=0
+2026-03-02 14:06:29,717 - sysid-experiment - INFO -   Sample 50: queue=529, cpu=20.0%, mem=66.0%, idx_rate=5.7, io=41.0ops/s, os_cpu=44%, os_mem=43%, gc=0.0ms/s, wq=0
+2026-03-02 14:06:39,017 - sysid-experiment - INFO -   Collected 58 samples (attempt 1/3)
+2026-03-02 14:06:39,017 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 14:06:49,320 - sysid-experiment - INFO - Step 2/11: batch_size=44, poll_interval=212ms
+2026-03-02 14:06:54,067 - sysid-experiment - INFO - Burst updated 24905 rows for queue pre-fill
+2026-03-02 14:07:30,676 - sysid-experiment - INFO -   Queue pre-filled: 20454 messages (target: 24905, multiplier: 1.00x)
+2026-03-02 14:07:39,992 - sysid-experiment - INFO -   Sample 10: queue=23848, cpu=18.5%, mem=46.0%, idx_rate=17.6, io=34.2ops/s, os_cpu=38%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:07:50,325 - sysid-experiment - INFO -   Sample 20: queue=21736, cpu=12.7%, mem=12.0%, idx_rate=10.8, io=64.5ops/s, os_cpu=24%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:08:00,697 - sysid-experiment - INFO -   Sample 30: queue=19624, cpu=38.4%, mem=39.0%, idx_rate=10.6, io=26.9ops/s, os_cpu=73%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:08:10,972 - sysid-experiment - INFO -   Sample 40: queue=17512, cpu=11.5%, mem=64.0%, idx_rate=11.5, io=34.6ops/s, os_cpu=23%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:08:21,310 - sysid-experiment - INFO -   Sample 50: queue=15400, cpu=17.5%, mem=31.0%, idx_rate=11.7, io=39.8ops/s, os_cpu=38%, os_mem=44%, gc=0.0ms/s, wq=0
+2026-03-02 14:08:31,602 - sysid-experiment - INFO -   Collected 59 samples (attempt 1/3)
+2026-03-02 14:08:31,602 - sysid-experiment - INFO -   Settling for 10s...
+2026-03-02 14:08:41,961 - sysid-experiment - INFO - Step 3/11: batch_size=79, poll_interval=212ms
+2026-03-02 14:08:47,229 - sysid-experiment - INFO - Burst updated 44716 rows for queue pre-fill

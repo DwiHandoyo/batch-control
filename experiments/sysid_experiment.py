@@ -113,14 +113,15 @@ class SysIdExperiment:
         with open(self.control_override_path, 'w') as f:
             json.dump(override, f)
 
-    def burst_fill_queue(self, batch_size: int, poll_interval_ms: int, step_duration: int):
+    def burst_fill_queue(self, batch_size: int, poll_interval_ms: int, step_duration: int,
+                         multiplier: float = 1.0):
         """
         Burst UPDATE existing rows in PostgreSQL to pre-fill Kafka queue via CDC.
-        Amount = 2 × batch_size × (step_duration / (poll_interval / 1000))
-        Pre-fills with 2× consumption need so queue won't exhaust during measurement.
+        Amount = 2 × batch_size × (step_duration / (poll_interval / 1000)) × multiplier
+        multiplier > 1.0 digunakan saat step sebelumnya mengalami queue exhaustion.
         """
         consumption_need = batch_size * (step_duration / (poll_interval_ms / 1000))
-        needed = int(2 * consumption_need)
+        needed = int(2 * consumption_need * multiplier)
 
         if needed <= 0:
             return
@@ -216,70 +217,88 @@ class SysIdExperiment:
 
             logger.info(f"Step {i+1}/{len(control_steps)}: batch_size={batch_size}, poll_interval={poll_interval}ms")
 
-            # Pre-fill queue: pause → drain → burst update → wait CDC → resume
-            self.set_pause(True)
-            time.sleep(1)
-
-            # Drain queue (seek to end) so we start from queue=0
-            self.drain_queue()
-
-            self.burst_fill_queue(batch_size, poll_interval, step_duration)
-
-            # Wait for CDC propagation
-            target = int(2 * batch_size * (step_duration / (poll_interval / 1000)))
-            deadline = time.time() + 120
-            while time.time() < deadline:
-                state = self.metrics.collect_state()
-                if state.queue_length >= target * 0.8:
-                    break
-                time.sleep(2)
-            logger.info(f"  Queue pre-filled: {state.queue_length} messages (target: {target})")
-
-            # Set control override for message-sink
-            self.set_control(batch_size, poll_interval)
-
-            # Warm-up on first step to prevent cold start
-            if i == 0:
-                warmup_duration = step_duration  # same as measurement window
-                logger.info(f"  Warm-up for {warmup_duration}s (cold start prevention)...")
-                time.sleep(warmup_duration)
-                logger.info(f"  Warm-up done, starting measurement")
-
-            # Collect samples during this step
-            step_start = time.time()
-            sample_count = 0
+            burst_multiplier = 1.5
+            max_retries = 3
             queue_exhausted = False
 
-            while self.running and (time.time() - step_start) < step_duration:
-                sample = self.collect_sample(batch_size, poll_interval, phase_name,
-                                             queue_exhausted=queue_exhausted)
-                sample_count += 1
+            for attempt in range(max_retries):
+                # Pre-fill queue: pause → drain → burst update → wait CDC → resume
+                self.set_pause(True)
+                time.sleep(1)
 
-                # Safety check: detect queue exhaustion
-                if sample['queue_length'] == 0 and not queue_exhausted:
-                    queue_exhausted = True
-                    elapsed = time.time() - step_start
-                    logger.warning(
-                        f"  QUEUE EXHAUSTED at sample {sample_count} "
-                        f"({elapsed:.0f}s into {step_duration}s step) "
-                        f"— remaining samples marked queue_exhausted=True"
-                    )
+                # Drain queue (seek to end) so we start from queue=0
+                self.drain_queue()
 
-                if sample_count % 10 == 0:
-                    exhausted_tag = " [EXHAUSTED]" if queue_exhausted else ""
-                    logger.info(
-                        f"  Sample {sample_count}: queue={sample['queue_length']}{exhausted_tag}, "
-                        f"cpu={sample['cpu_util']:.1f}%, mem={sample['mem_util']:.1f}%, "
-                        f"idx_rate={sample['indexing_time_rate']:.1f}, io={sample['io_write_ops']:.1f}ops/s, "
-                        f"os_cpu={sample['os_cpu_percent']}%, os_mem={sample['os_mem_used_percent']}%, "
-                        f"gc={sample['gc_time_rate']:.1f}ms/s, wq={sample['write_queue_size']}"
-                    )
+                self.burst_fill_queue(batch_size, poll_interval, step_duration, burst_multiplier)
 
-                time.sleep(self.sample_interval)
+                # Wait for CDC propagation
+                target = int(2 * batch_size * (step_duration / (poll_interval / 1000)) * burst_multiplier)
+                state = None
+                deadline = time.time() + 120
+                while time.time() < deadline:
+                    state = self.metrics.collect_state()
+                    if state.queue_length >= target * 0.8:
+                        break
+                    time.sleep(2)
+                pre_filled = state.queue_length if state else 0
+                logger.info(f"  Queue pre-filled: {pre_filled} messages (target: {target}, multiplier: {burst_multiplier:.2f}x)")
+
+                # Set control override for message-sink
+                self.set_control(batch_size, poll_interval)
+
+                # Warm-up on first step (first attempt only) to prevent cold start
+                if i == 0 and attempt == 0:
+                    warmup_duration = step_duration  # same as measurement window
+                    logger.info(f"  Warm-up for {warmup_duration}s (cold start prevention)...")
+                    time.sleep(warmup_duration)
+                    logger.info(f"  Warm-up done, starting measurement")
+
+                # Collect samples during this step
+                step_start = time.time()
+                sample_count = 0
+                queue_exhausted = False
+
+                while self.running and (time.time() - step_start) < step_duration:
+                    sample = self.collect_sample(batch_size, poll_interval, phase_name,
+                                                 queue_exhausted=queue_exhausted)
+                    sample_count += 1
+
+                    # Safety check: detect queue exhaustion
+                    if sample['queue_length'] == 0 and not queue_exhausted:
+                        queue_exhausted = True
+                        elapsed = time.time() - step_start
+                        logger.warning(
+                            f"  QUEUE EXHAUSTED at sample {sample_count} "
+                            f"({elapsed:.0f}s into {step_duration}s step) "
+                            f"— remaining samples marked queue_exhausted=True"
+                        )
+
+                    if sample_count % 10 == 0:
+                        exhausted_tag = " [EXHAUSTED]" if queue_exhausted else ""
+                        logger.info(
+                            f"  Sample {sample_count}: queue={sample['queue_length']}{exhausted_tag}, "
+                            f"cpu={sample['cpu_util']:.1f}%, mem={sample['mem_util']:.1f}%, "
+                            f"idx_rate={sample['indexing_time_rate']:.1f}, io={sample['io_write_ops']:.1f}ops/s, "
+                            f"os_cpu={sample['os_cpu_percent']}%, os_mem={sample['os_mem_used_percent']}%, "
+                            f"gc={sample['gc_time_rate']:.1f}ms/s, wq={sample['write_queue_size']}"
+                        )
+
+                    time.sleep(self.sample_interval)
+
+                logger.info(f"  Collected {sample_count} samples (attempt {attempt+1}/{max_retries})")
+
+                if not queue_exhausted:
+                    break  # sukses, lanjut step berikutnya
+
+                # Exhausted → retry dengan 1.5x burst
+                burst_multiplier *= 1.5
+                logger.warning(
+                    f"  Step {i+1} attempt {attempt+1}/{max_retries} had queue exhaustion — "
+                    f"retrying with burst_multiplier={burst_multiplier:.2f}x"
+                )
 
             if queue_exhausted:
-                logger.warning(f"  Step {i+1} had queue exhaustion — data may be unreliable")
-            logger.info(f"  Collected {sample_count} samples")
+                logger.warning(f"  Step {i+1} still exhausted after {max_retries} attempts — data may be unreliable")
 
             # Settling time (still collect data, marked as 'settle')
             if settle_duration > 0 and i < len(control_steps) - 1:

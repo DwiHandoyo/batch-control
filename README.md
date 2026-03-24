@@ -424,6 +424,127 @@ python sysid_analysis.py results/experiment_data.csv \
 
 ---
 
+## Menjalankan Eksperimen SysID
+
+### Prasyarat: Seed Data Tabel `orders`
+
+`burst_fill_queue` bekerja dengan UPDATE baris-baris yang sudah ada di tabel `orders`. Tabel perlu memiliki **minimal 20.000 baris** agar burst besar (ribuan UPDATE) bisa berjalan. Cek jumlah baris:
+
+```bash
+docker exec postgres-write psql -U postgres -d cqrs_write -c "SELECT COUNT(*) FROM orders;"
+```
+
+Jika hasilnya sedikit (misal hanya 3 baris dari init SQL), seed dahulu:
+
+```bash
+docker exec postgres-write psql -U postgres -d cqrs_write -c "
+INSERT INTO orders (customer_name, customer_email, product_name, quantity, unit_price, total_price, status, shipping_address, metadata)
+SELECT
+    'Customer ' || i,
+    'customer' || i || '@example.com',
+    (ARRAY['Keyboard','Monitor','Mouse','Headset','Webcam','USB Hub','SSD','RAM','CPU','GPU'])[((i-1) % 10) + 1],
+    (floor(random() * 5 + 1))::int,
+    (floor(random() * 900000 + 100000)) / 100.0,
+    0,
+    (ARRAY['pending','confirmed','processing','shipped','delivered','completed'])[(floor(random()*6+1))::int],
+    'Jl. Example No. ' || i || ', Jakarta',
+    '{\"seed\": true}'::jsonb
+FROM generate_series(1, 20000) AS s(i);
+UPDATE orders SET total_price = quantity * unit_price;
+SELECT COUNT(*) FROM orders;
+"
+```
+
+> **Catatan:** Setelah seeding, bersihkan WAL backlog (lihat langkah berikutnya) agar CDC tidak memproses 20.000 INSERT tersebut sebelum eksperimen dimulai.
+
+---
+
+### Prasyarat: Bersihkan WAL Backlog
+
+Sebelum memulai eksperimen, pastikan replication slot `cdc_slot` tidak memiliki backlog dari operasi sebelumnya (INSERT seed data, eksperimen lama, dll.). Backlog menyebabkan CDC sibuk memproses event lama sehingga burst baru tidak segera muncul di Kafka.
+
+```bash
+# 1. Drop dan recreate slot (mulai dari posisi WAL saat ini)
+docker exec postgres-write psql -U postgres -d cqrs_write -c "
+  SELECT pg_drop_replication_slot('cdc_slot');
+  SELECT pg_create_logical_replication_slot('cdc_slot', 'test_decoding');
+"
+
+# 2. Restart CDC streamer agar reconnect ke slot baru
+docker compose restart cdc-streamer
+
+# 3. Verifikasi lag = 0 (tunggu ~5 detik)
+docker exec postgres-write psql -U postgres -d cqrs_write -c "
+  SELECT pg_current_wal_lsn() - confirmed_flush_lsn AS lag_bytes
+  FROM pg_replication_slots WHERE slot_name = 'cdc_slot';
+"
+# Harus output: 0
+```
+
+---
+
+### Menjalankan Eksperimen
+
+Gunakan selalu `restart_experiment.py` — **jangan** jalankan `sysid_experiment.py` langsung. Script ini:
+- Membuat direktori `runs/run_<YYYYMMDD_HHMMSS>/` secara otomatis
+- Menyimpan log ke `runs/run_<date>/logs/experiment.log`
+- Menyimpan hasil CSV ke `runs/run_<date>/results/`
+- Membuat/memperbarui symlink `runs/latest/`
+- Menyimpan metadata eksperimen ke `runs/run_<date>/metadata.json`
+
+```bash
+cd experiments
+python restart_experiment.py
+```
+
+Untuk memantau progres:
+
+```bash
+tail -f experiments/runs/latest/logs/experiment.log
+```
+
+---
+
+### Struktur Output Run
+
+```
+experiments/runs/
+├── latest/                          # Symlink/junction ke run terbaru
+└── run_20260302_140926/
+    ├── metadata.json                # Konfigurasi grid, timestamp, parameter
+    ├── logs/
+    │   └── experiment.log           # Log lengkap eksperimen
+    └── results/
+        └── sysid_data_*.csv         # Data sampel untuk estimasi A, B
+```
+
+---
+
+### Mekanisme Queue Fill & Retry
+
+Setiap step eksperimen mengisi Kafka queue terlebih dahulu sebelum pengukuran dimulai:
+
+```
+Pause sink → Drain queue (seek_to_end) → Burst UPDATE rows → Tunggu CDC → Ukur
+```
+
+`burst_fill_queue` meng-UPDATE baris `orders` secara acak. CDC streaming mengubah UPDATE tersebut menjadi Kafka messages yang terakumulasi sebagai consumer lag (= `queue_length`).
+
+**Jika queue exhausted** (habis sebelum step selesai), step yang sama diulangi otomatis hingga **3× retry** dengan jumlah burst dikalikan 1.5×:
+
+| Attempt | Burst Multiplier | Keterangan |
+|---------|-----------------|------------|
+| 1       | 1.0×            | Normal |
+| 2       | 1.5×            | Queue exhausted pada attempt 1 |
+| 3       | 2.25×           | Queue exhausted pada attempt 2 |
+
+Log saat retry:
+```
+WARNING - Step 3 attempt 1/3 had queue exhaustion — retrying with burst_multiplier=1.50x
+```
+
+---
+
 ## Mode Kontrol
 
 ### 1. Static Mode (Baseline)

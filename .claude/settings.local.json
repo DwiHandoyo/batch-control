@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose up -d --build)",
+      "Bash(docker compose down)",
+      "Bash(docker compose up -d)",
+      "Bash(docker compose up -d message-sink)",
+      "Bash(pip install -r requirements.txt -q)",
+      "Bash(python sysid_experiment.py --preset 10x10 --dry-run)",
+      "Bash(taskkill /PID 8480 /F)",
+      "Bash(kill 8480)",
+      "Bash(docker exec postgres-write psql -U postgres -d cqrs_write -c \":*)",
+      "Bash(docker compose -f \"/c/Users/user/Documents/IF ITB/tesis/project/batch-control/docker-compose.yml\" restart cdc-streamer)",
+      "Bash(docker exec postgres-write psql -U postgres -d cqrs_write -c \"SELECT slot_name, confirmed_flush_lsn, pg_current_wal_lsn\\(\\), pg_current_wal_lsn\\(\\) - confirmed_flush_lsn AS lag_bytes FROM pg_replication_slots WHERE slot_name=''cdc_slot'';\")",
+      "Bash(for i in 1 2 3 4 5)",
+      "Bash(do docker exec postgres-write psql -U postgres -d cqrs_write -c \"SELECT pg_current_wal_lsn\\(\\) - confirmed_flush_lsn AS lag_bytes FROM pg_replication_slots WHERE slot_name=''cdc_slot'';\" -t -A)",
+      "Bash(done)",
+      "Bash(docker exec postgres-write psql -U postgres -d cqrs_write -c \"SELECT pg_current_wal_lsn\\(\\) - confirmed_flush_lsn AS lag_bytes FROM pg_replication_slots WHERE slot_name=''cdc_slot'';\" -t -A)",
+      "Bash(docker exec postgres-write psql -U postgres -d cqrs_write -c \"SELECT pid, application_name, state, left\\(query,80\\) as query FROM pg_stat_activity WHERE state = ''active'' AND pid != pg_backend_pid\\(\\);\")",
+      "Bash(docker exec postgres-write psql -U postgres -d cqrs_write -c \"SELECT pid, application_name, state, left\\(query,80\\) as q FROM pg_stat_activity WHERE state = ''active'';\")",
+      "Bash(tasklist /FI \"PID eq 8480\")",
+      "Bash(taskkill //PID 8480 //F)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(cmd //c \"taskkill /PID 8480 /F\")",
+      "Bash(cmd //c \"taskkill /PID 6684 /F\")",
+      "Bash(python restart_experiment.py)",
+      "Bash(python experiments/sysid_visualize.py \"experiments/runs/run_20260302_140926/results/sysid_data_vary_both_20260302_193901.csv\")",
+      "Bash(pip install seaborn --quiet)",
+      "Bash(pip install scipy --quiet)",
+      "Bash(taskkill /PID 43676 /F)",
+      "Bash(docker ps --format \"table {{.Names}}\\\\t{{.Status}}\")",
+      "Bash(curl -s \"http://localhost:9200/_cluster/health\")",
+      "Bash(python experiments/sysid_visualize.py \"experiments/runs/run_20260303_030816/results/sysid_data_vary_both_20260303_080245.csv\")",
+      "Bash(python experiments/sysid_visualize.py \"experiments/runs/run_20260303_151634/results/sysid_data_vary_both_20260303_201353.csv\")"
+    ]
+  }
+}

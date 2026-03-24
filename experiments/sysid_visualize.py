@@ -22,7 +22,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 
+# Full list of all computed state variables — used for step aggregation (do not remove entries)
 STATE_VARS = ['queue_length', 'queue_length_mean', 'cpu_util', 'mem_util', 'indexing_time_rate', 'io_write_ops', 'os_cpu_percent', 'os_mem_used_percent', 'gc_time_rate', 'write_queue_size']
+
+# Variables shown in plots — edit this list to select a subset of STATE_VARS
+DISPLAY_VARS = ['queue_length', 'cpu_util', 'indexing_time_rate', 'io_write_ops', 'os_cpu_percent', 'os_mem_used_percent']
+
 CONTROL_VARS = ['batch_size', 'poll_interval']
 # Variables that accumulate over time — use delta per step instead of mean
 DELTA_VARS = ['queue_length']
@@ -111,7 +116,7 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
     width = max(14, n_batch * 0.7)
     height = max(11, n_poll * 0.6)
 
-    n_vars = len(STATE_VARS)
+    n_vars = len(DISPLAY_VARS)
     n_cols = 2
     n_rows = (n_vars + n_cols - 1) // n_cols
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(width, height * n_rows / 2))
@@ -129,7 +134,7 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
     elif n_batch * n_poll > 50:
         annot_fontsize = 6  # Smaller font for medium-large grids
 
-    for idx, state_var in enumerate(STATE_VARS):
+    for idx, state_var in enumerate(DISPLAY_VARS):
         ax = axes[idx // n_cols][idx % n_cols]
 
         pivot_table = df_steps.pivot_table(
@@ -156,10 +161,10 @@ def plot_heatmaps(df_steps: pd.DataFrame, output_dir: str):
 def plot_scatter_regression(df_steps: pd.DataFrame, output_dir: str):
     """Scatter plots of each control variable vs each state variable with regression line.
     Uses step-aggregated data (delta for accumulating vars, mean for instantaneous)."""
-    fig, axes = plt.subplots(len(STATE_VARS), len(CONTROL_VARS), figsize=(14, 16))
+    fig, axes = plt.subplots(len(DISPLAY_VARS), len(CONTROL_VARS), figsize=(14, 16))
     fig.suptitle('Control vs State Variable Relationships (with Linear Regression)', fontsize=14, fontweight='bold')
 
-    for i, state_var in enumerate(STATE_VARS):
+    for i, state_var in enumerate(DISPLAY_VARS):
         for j, ctrl_var in enumerate(CONTROL_VARS):
             ax = axes[i][j]
             x = df_steps[ctrl_var].values
@@ -195,11 +200,11 @@ def plot_scatter_separated(df_steps: pd.DataFrame, output_dir: str):
         other_values = sorted(df_steps[other_var].unique())
         n_cols = len(other_values)
 
-        fig, axes = plt.subplots(len(STATE_VARS), n_cols, figsize=(4 * n_cols, 3.5 * len(STATE_VARS)))
+        fig, axes = plt.subplots(len(DISPLAY_VARS), n_cols, figsize=(4 * n_cols, 3.5 * len(DISPLAY_VARS)))
         fig.suptitle(f'{CONTROL_LABELS[ctrl_var]} vs State — separated by {CONTROL_LABELS[other_var]}',
                      fontsize=14, fontweight='bold')
 
-        for i, state_var in enumerate(STATE_VARS):
+        for i, state_var in enumerate(DISPLAY_VARS):
             for j, other_val in enumerate(other_values):
                 ax = axes[i][j]
                 subset = df_steps[df_steps[other_var] == other_val]
@@ -219,7 +224,7 @@ def plot_scatter_separated(df_steps: pd.DataFrame, output_dir: str):
 
                 if j == 0:
                     ax.set_ylabel(STATE_LABELS[state_var], fontsize=8)
-                if i == len(STATE_VARS) - 1:
+                if i == len(DISPLAY_VARS) - 1:
                     ax.set_xlabel(CONTROL_LABELS[ctrl_var], fontsize=8)
                 ax.tick_params(labelsize=7)
                 ax.grid(True, alpha=0.3)
@@ -231,9 +236,52 @@ def plot_scatter_separated(df_steps: pd.DataFrame, output_dir: str):
         print(f"Saved: {path}")
 
 
+def plot_scatter_inv_poll(df_steps: pd.DataFrame, output_dir: str):
+    """Scatter plots with X = 1/poll_interval (polls/s), separated by batch_size."""
+    df_steps = df_steps.copy()
+    df_steps['inv_poll'] = 1000.0 / df_steps['poll_interval']  # polls/s
+
+    batch_values = sorted(df_steps['batch_size'].unique())
+    n_cols = len(batch_values)
+
+    fig, axes = plt.subplots(len(DISPLAY_VARS), n_cols, figsize=(3.5 * n_cols, 3.2 * len(DISPLAY_VARS)))
+    fig.suptitle('1/Poll Interval (polls/s) vs State Variables — separated by Batch Size',
+                 fontsize=14, fontweight='bold')
+
+    for i, state_var in enumerate(DISPLAY_VARS):
+        for j, bs in enumerate(batch_values):
+            ax = axes[i][j]
+            sub = df_steps[df_steps['batch_size'] == bs].sort_values('inv_poll')
+            x = sub['inv_poll'].values
+            y = sub[state_var].values
+
+            ax.plot(x, y, 'o-', markersize=6, linewidth=1.5)
+
+            if len(x) >= 3:
+                slope, intercept, r_value, _, _ = stats.linregress(x, y)
+                x_line = np.linspace(x.min(), x.max(), 100)
+                ax.plot(x_line, slope * x_line + intercept, 'r--', alpha=0.5, linewidth=1.2)
+                ax.set_title(f'BS={int(bs)}  r={r_value:.2f}', fontsize=8)
+            else:
+                ax.set_title(f'BS={int(bs)}', fontsize=8)
+
+            if j == 0:
+                ax.set_ylabel(STATE_LABELS.get(state_var, state_var), fontsize=8)
+            if i == len(DISPLAY_VARS) - 1:
+                ax.set_xlabel('1/poll_interval\n(polls/s)', fontsize=8)
+            ax.tick_params(labelsize=7)
+            ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    path = os.path.join(output_dir, 'scatter_by_inv_poll_interval.png')
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    print(f"Saved: {path}")
+
+
 def plot_correlation_matrix(df_steps: pd.DataFrame, output_dir: str):
     """Pearson correlation heatmap using step-aggregated data (bias-free)."""
-    all_vars = CONTROL_VARS + STATE_VARS
+    all_vars = CONTROL_VARS + DISPLAY_VARS
     labels = [CONTROL_LABELS.get(v, STATE_LABELS.get(v, v)) for v in all_vars]
 
     corr = df_steps[all_vars].corr()
@@ -260,7 +308,7 @@ def plot_correlation_matrix(df_steps: pd.DataFrame, output_dir: str):
 def plot_timeseries(df: pd.DataFrame, output_dir: str):
     """Time-series of state variables with control step indicators."""
     # Only plot vars that exist in raw data (exclude computed vars like queue_length_mean)
-    raw_vars = [v for v in STATE_VARS if v in df.columns]
+    raw_vars = [v for v in DISPLAY_VARS if v in df.columns]
     fig, axes = plt.subplots(len(raw_vars) + 1, 1, figsize=(16, 14), sharex=True)
     fig.suptitle('Step Response: State Variables Over Time', fontsize=14, fontweight='bold')
 
@@ -320,7 +368,7 @@ def plot_stall_detection(df_steps: pd.DataFrame, output_dir: str):
     # IQR outlier detection
     outlier_flags = {}
     outlier_stats = {}
-    for var in STATE_VARS:
+    for var in DISPLAY_VARS:
         Q1 = df_steps[var].quantile(0.25)
         Q3 = df_steps[var].quantile(0.75)
         IQR = Q3 - Q1
@@ -367,7 +415,7 @@ def plot_stall_detection(df_steps: pd.DataFrame, output_dir: str):
         lines.append(f"  {var:25s}: {mn:10.1f} vs {ms:10.1f}")
     lines.append("")
     lines.append("Outlier per variabel (IQR):")
-    for var in STATE_VARS:
+    for var in DISPLAY_VARS:
         s = outlier_stats[var]
         lines.append(f"  {var:25s}: {s['count']:3d} ({s['pct']:.1f}%)")
     ax_sum.text(0.05, 0.95, '\n'.join(lines), transform=ax_sum.transAxes,
@@ -389,7 +437,7 @@ def plot_stall_detection(df_steps: pd.DataFrame, output_dir: str):
         ms = stall[var].mean() if len(stall) > 0 else 0
         print(f"    {var:25s}: {mn:10.1f} vs {ms:10.1f}")
     print(f"\n  Outlier per variabel (IQR):")
-    for var in STATE_VARS:
+    for var in DISPLAY_VARS:
         s = outlier_stats[var]
         print(f"    {var:25s}: {s['count']:3d} ({s['pct']:.1f}%)")
 
@@ -399,7 +447,7 @@ def plot_nonlinearity_check(df_steps: pd.DataFrame, output_dir: str):
     x = df_steps['batch_size'].values
     results = {}
 
-    for var in STATE_VARS:
+    for var in DISPLAY_VARS:
         y = df_steps[var].values
         ss_tot = np.sum((y - y.mean()) ** 2)
         r2 = {}
@@ -413,7 +461,7 @@ def plot_nonlinearity_check(df_steps: pd.DataFrame, output_dir: str):
         results[var] = {'r2': r2, 'coeffs': coeffs_all}
 
     # --- Figure 1: scatter + polynomial fits ---
-    n_vars = len(STATE_VARS)
+    n_vars = len(DISPLAY_VARS)
     n_cols = 2
     n_rows = (n_vars + 1) // 2
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(14, 3.5 * n_rows))
@@ -425,7 +473,7 @@ def plot_nonlinearity_check(df_steps: pd.DataFrame, output_dir: str):
                   2: ('darkorange', '-', 'Kuadratik'),
                   3: ('green', '-.', 'Kubik')}
 
-    for idx, var in enumerate(STATE_VARS):
+    for idx, var in enumerate(DISPLAY_VARS):
         ax = axes[idx // n_cols][idx % n_cols]
         y = df_steps[var].values
         ax.scatter(x, y, alpha=0.4, s=25, c='gray', zorder=1)
@@ -457,13 +505,13 @@ def plot_nonlinearity_check(df_steps: pd.DataFrame, output_dir: str):
     fig2.suptitle('Perbandingan R² per Derajat Polinomial (batch_size -> state)',
                   fontsize=13, fontweight='bold')
 
-    var_names = [STATE_LABELS.get(v, v) for v in STATE_VARS]
-    y_pos = np.arange(len(STATE_VARS))
+    var_names = [STATE_LABELS.get(v, v) for v in DISPLAY_VARS]
+    y_pos = np.arange(len(DISPLAY_VARS))
     bar_height = 0.25
 
     for i, degree in enumerate([1, 2, 3]):
         color, _, name = fit_styles[degree]
-        r2_vals = [results[v]['r2'][degree] for v in STATE_VARS]
+        r2_vals = [results[v]['r2'][degree] for v in DISPLAY_VARS]
         ax2.barh(y_pos + i * bar_height, r2_vals, bar_height,
                  label=name, color=color, alpha=0.8)
 
@@ -483,7 +531,7 @@ def plot_nonlinearity_check(df_steps: pd.DataFrame, output_dir: str):
     # Console output
     print(f"\n  {'Variabel':30s} | {'Linear R²':>10s} | {'Quad R²':>10s} | {'Cubic R²':>10s} | {'Gain (Q-L)':>10s}")
     print(f"  {'-'*30}-+-{'-'*10}-+-{'-'*10}-+-{'-'*10}-+-{'-'*10}")
-    for var in STATE_VARS:
+    for var in DISPLAY_VARS:
         r = results[var]['r2']
         gain = r[2] - r[1]
         marker = ' ***' if gain > 0.05 else ''
@@ -497,7 +545,19 @@ def main():
     parser.add_argument('--output-dir', default=None, help='Output directory (default: same as data file)')
     parser.add_argument('--batch-max', type=int, default=None, help='Filter: max batch_size to include')
     parser.add_argument('--poll-max', type=int, default=None, help='Filter: max poll_interval to include')
+    parser.add_argument('--vars', nargs='+', default=None,
+                        help=f'Variables to display (subset of STATE_VARS). Default: DISPLAY_VARS. '
+                             f'All available: {STATE_VARS}')
     args = parser.parse_args()
+
+    # Override DISPLAY_VARS if --vars specified
+    if args.vars is not None:
+        global DISPLAY_VARS
+        invalid = [v for v in args.vars if v not in STATE_VARS]
+        if invalid:
+            print(f"WARNING: Unknown variables ignored: {invalid}")
+        DISPLAY_VARS = [v for v in args.vars if v in STATE_VARS]
+        print(f"DISPLAY_VARS overridden: {DISPLAY_VARS}")
 
     if args.output_dir is None:
         # Auto-detect: if CSV is inside a runs/run_*/results/ directory, output to viz/
@@ -532,6 +592,9 @@ def main():
 
     print("\n--- Generating separated scatter plots ---")
     plot_scatter_separated(df_steps, args.output_dir)
+
+    print("\n--- Generating 1/poll_interval scatter plots ---")
+    plot_scatter_inv_poll(df_steps, args.output_dir)
 
     print("\n--- Generating correlation matrix ---")
     plot_correlation_matrix(df_steps, args.output_dir)
