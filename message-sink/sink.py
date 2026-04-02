@@ -26,7 +26,7 @@ from kafka.errors import KafkaError
 from elasticsearch import Elasticsearch, helpers
 
 from metrics_collector import MetricsCollector, SystemState
-from lqr_controller import create_controller, BaseController, ControlOutput, StaticController
+from controllers import create_controller, BaseController, ControlOutput, StaticController
 
 # Configure logging
 logging.basicConfig(
@@ -60,6 +60,7 @@ class SinkMetrics:
     messages_indexed: int
     cycle_duration_ms: float
     indexing_duration_ms: float
+    avg_latency_ms: float  # mean(synced_at - updated_at) per batch
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -76,7 +77,8 @@ class SinkMetrics:
             'os_cpu_percent', 'os_mem_used_percent',
             'gc_time_rate', 'write_queue_size',
             'batch_size', 'poll_interval_ms', 'control_mode',
-            'messages_consumed', 'messages_indexed', 'cycle_duration_ms', 'indexing_duration_ms'
+            'messages_consumed', 'messages_indexed', 'cycle_duration_ms', 'indexing_duration_ms',
+            'avg_latency_ms'
         ])
 
 
@@ -117,12 +119,17 @@ class MessageSink:
         self.index_worker = None
         self.last_index_count = 0
         self.last_index_duration = 0.0
+        self.last_avg_latency_ms = 0.0
 
         # Metrics log file
         self.metrics_log_path = os.getenv('METRICS_LOG_PATH', '/app/logs/sink_metrics.csv')
 
         # External control override file (used by sysid experiment)
         self.control_override_path = os.getenv('CONTROL_OVERRIDE_PATH', '/app/logs/control_override.json')
+
+        # Model file paths (for runtime controller switching)
+        self.sysid_json_path = os.getenv('SYSID_JSON', None)
+        self.ann_model_json_path = os.getenv('ANN_MODEL_JSON', None)
 
         # Register signal handlers
         signal.signal(signal.SIGINT, self._signal_handler)
@@ -207,27 +214,63 @@ class MessageSink:
         return True
 
     def _init_metrics_log(self):
-        """Initialize the metrics log file."""
+        """Initialize the metrics log file with header."""
         try:
             log_dir = os.path.dirname(self.metrics_log_path)
             if log_dir and not os.path.exists(log_dir):
                 os.makedirs(log_dir, exist_ok=True)
 
-            # Write header if file doesn't exist
-            if not os.path.exists(self.metrics_log_path):
-                with open(self.metrics_log_path, 'w') as f:
-                    f.write(SinkMetrics.csv_header() + '\n')
-                logger.info(f"Created metrics log: {self.metrics_log_path}")
+            # Always write fresh file with header on startup
+            with open(self.metrics_log_path, 'w') as f:
+                f.write(SinkMetrics.csv_header() + '\n')
+            logger.info(f"Initialized metrics log: {self.metrics_log_path}")
 
         except Exception as e:
             logger.warning(f"Failed to initialize metrics log: {e}")
 
+    def _switch_controller(self, mode: str):
+        """Switch the internal controller to a new mode at runtime.
+
+        Supports Q-variant modes like 'lqr_q1', 'ann_q2', etc.
+        The Q-variant parsing is handled by create_controller().
+        """
+        if mode == self.control_mode:
+            return
+        kwargs = {}
+
+        # Determine base mode for sysid/ann path logic
+        base_mode = mode
+        q_key = None
+        if '_q' in mode:
+            parts = mode.rsplit('_', 1)
+            base_mode = parts[0]
+            q_key = parts[1].upper()  # e.g. "Q1"
+
+        if base_mode in ('lqr', 'rule_based') and self.sysid_json_path:
+            kwargs['sysid_json'] = self.sysid_json_path
+        if base_mode == 'ann':
+            # Use per-Q env var if available, else fallback to default
+            if q_key:
+                ann_path = os.getenv(f'ANN_MODEL_{q_key}', self.ann_model_json_path)
+            else:
+                ann_path = self.ann_model_json_path
+            if ann_path:
+                kwargs['ann_model_json'] = ann_path
+
+        self.controller = create_controller(mode, **kwargs)
+        self.control_mode = mode
+        logger.info(f"Controller switched to '{mode}'")
+
     def _check_control_override(self):
         """
         Check for external control override file.
-        Used during system identification experiments to inject known control values.
-        File format: {"batch_size": 100, "poll_interval": 1000}
-        Returns 'pause' string if paused, ControlOutput if override, None otherwise.
+
+        Supports three override modes:
+        1. {"pause": true} / {"pause": true, "seek_to_end": true} — pause/drain
+        2. {"controller_mode": "pid"} — switch internal controller, then run autonomously
+        3. {"batch_size": 100, "poll_interval": 1000} — direct control injection (sysid)
+
+        Returns 'pause', 'seek_to_end', ControlOutput, or None.
         """
         try:
             if os.path.exists(self.control_override_path):
@@ -237,6 +280,14 @@ class MessageSink:
                     if override.get('seek_to_end', False):
                         return 'seek_to_end'
                     return 'pause'
+                # Controller mode switch: switch internal controller and remove override
+                if 'controller_mode' in override:
+                    self._switch_controller(override['controller_mode'])
+                    try:
+                        os.remove(self.control_override_path)
+                    except OSError:
+                        pass
+                    return None  # let the newly-switched controller run
                 return ControlOutput(
                     batch_size=int(override['batch_size']),
                     poll_interval_ms=int(override['poll_interval']),
@@ -255,12 +306,13 @@ class MessageSink:
                 continue
             try:
                 start = time.time()
-                actions = self.process_messages(messages)
+                actions, avg_latency = self.process_messages(messages)
                 indexed = self.bulk_index(actions)
                 duration = (time.time() - start) * 1000
                 self.total_messages_indexed += indexed
                 self.last_index_count = indexed
                 self.last_index_duration = duration
+                self.last_avg_latency_ms = avg_latency
             except Exception as e:
                 logger.error(f"Index worker error: {e}", exc_info=True)
             finally:
@@ -290,16 +342,40 @@ class MessageSink:
         except Exception as e:
             logger.warning(f"Failed to log metrics: {e}")
 
-    def process_messages(self, messages: List[Dict]) -> List[Dict]:
+    def process_messages(self, messages: List[Dict]) -> tuple:
         """
         Process messages from Kafka and prepare for Elasticsearch indexing.
+
+        Returns:
+            (actions, avg_latency_ms): ES bulk actions and mean end-to-end latency
         """
         actions = []
+        latencies = []
+        now = datetime.utcnow()
         for msg in messages:
             try:
                 # Extract data from CDC message
                 data = msg.get('data', {})
                 operation = msg.get('operation', 'INSERT')
+
+                # Compute end-to-end latency: now - updated_at (PostgreSQL timestamp)
+                updated_at_str = data.get('updated_at')
+                if updated_at_str:
+                    try:
+                        # Parse ISO format (with or without timezone)
+                        ua = updated_at_str.replace('Z', '+00:00')
+                        if '+' in ua or ua.endswith('Z'):
+                            from datetime import timezone
+                            updated_at = datetime.fromisoformat(ua).replace(tzinfo=None)
+                        else:
+                            updated_at = datetime.fromisoformat(ua)
+                        latency_ms = (now - updated_at).total_seconds() * 1000
+                        if latency_ms >= 0:
+                            latencies.append(latency_ms)
+                    except (ValueError, TypeError):
+                        pass
+
+                synced_at = now.isoformat()
 
                 # Prepare Elasticsearch document
                 doc = {
@@ -309,7 +385,7 @@ class MessageSink:
                         **data,
                         '_operation': operation,
                         '_source_lsn': msg.get('lsn'),
-                        'synced_at': datetime.utcnow().isoformat(),
+                        'synced_at': synced_at,
                     }
                 }
 
@@ -324,7 +400,8 @@ class MessageSink:
             except Exception as e:
                 logger.warning(f"Failed to process message: {e}")
 
-        return actions
+        avg_latency_ms = sum(latencies) / len(latencies) if latencies else 0.0
+        return actions, avg_latency_ms
 
     def bulk_index(self, actions: List[Dict]) -> int:
         """
@@ -390,6 +467,8 @@ class MessageSink:
                 override = self._check_control_override()
                 if override == 'seek_to_end':
                     self.consumer.seek_to_end()
+                    # Must poll after seek to update internal offsets before commit
+                    self.consumer.poll(timeout_ms=0)
                     self.consumer.commit()
                     logger.info("Seeked to end of topic (queue drained)")
                     time.sleep(0.5)
@@ -397,14 +476,24 @@ class MessageSink:
                 if override == 'pause':
                     time.sleep(0.5)
                     continue
-                control = override if override else self.controller.compute_control(state.to_dict())
+                state_dict = state.to_dict()
+                state_dict['avg_latency_ms'] = self.last_avg_latency_ms
+                control = override if override else self.controller.compute_control(state_dict)
 
-                # 3. Poll until batch_size fulfilled
+                # 3. Poll until batch_size fulfilled (with timeout + override check)
                 messages = []
+                poll_deadline = time.time() + (control.poll_interval_ms / 1000)
                 while len(messages) < control.batch_size:
+                    # Check for override (pause/seek) inside polling loop
+                    inner_override = self._check_control_override()
+                    if inner_override in ('pause', 'seek_to_end'):
+                        break
+                    if time.time() > poll_deadline:
+                        break  # don't block forever
+                    remaining = control.batch_size - len(messages)
                     batch = self.consumer.poll(
-                        timeout_ms=1000,
-                        max_records=control.batch_size - len(messages),
+                        timeout_ms=500,
+                        max_records=remaining,
                     )
                     for tp, records in batch.items():
                         for record in records:
@@ -440,6 +529,7 @@ class MessageSink:
                     messages_indexed=messages_indexed,
                     cycle_duration_ms=cycle_duration,
                     indexing_duration_ms=index_duration,
+                    avg_latency_ms=self.last_avg_latency_ms,
                 )
                 self._log_metrics(metrics)
 

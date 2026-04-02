@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY metrics_collector.py .
-COPY lqr_controller.py .
+COPY controllers.py .
 COPY sink.py .
 
 # Create logs directory

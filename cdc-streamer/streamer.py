@@ -278,13 +278,15 @@ class CDCStreamer:
                 parsed['lsn'] = str(lsn)
                 parsed['xid'] = xid
 
-                # Send to Kafka
+                # Send to Kafka (async, no wait per message)
                 key = f"{parsed['table']}:{parsed.get('data', {}).get('id', 'unknown')}"
                 self.send_to_kafka(key, parsed)
                 count += 1
                 self.last_lsn = lsn
 
+            # Flush all pending messages at once
             if count > 0:
+                self.kafka_producer.flush()
                 logger.info(f"Processed {count} changes, last LSN: {self.last_lsn}")
 
             return count
@@ -296,13 +298,11 @@ class CDCStreamer:
     def send_to_kafka(self, key: str, message: Dict[str, Any]) -> bool:
         """Send message to Kafka topic."""
         try:
-            future = self.kafka_producer.send(
+            self.kafka_producer.send(
                 self.kafka_topic,
                 key=key,
                 value=message
             )
-            # Wait for send to complete (with timeout)
-            future.get(timeout=10)
             self.messages_sent += 1
             logger.debug(f"Sent message to Kafka: {key}")
             return True

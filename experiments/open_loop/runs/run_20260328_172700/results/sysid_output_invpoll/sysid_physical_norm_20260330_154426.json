@@ -1,0 +1,164 @@
+{
+  "A": [
+    [
+      1.0,
+      -0.0035374006309217745,
+      -0.0009742721545010024,
+      0.0018374578828828595,
+      0.006127588986213163
+    ],
+    [
+      0.26070416150859094,
+      0.5642911913622588,
+      0.07258700744754273,
+      -1.2335668153423685e-05,
+      0.08816149763110809
+    ],
+    [
+      0.0020499458789637703,
+      -0.018834423638845906,
+      0.32169717932741465,
+      -0.014513579063299134,
+      0.030814301339849942
+    ],
+    [
+      0.38484009406123326,
+      0.10812273621109962,
+      -0.019432530512043866,
+      -0.003196401095364681,
+      -0.06786536726435738
+    ],
+    [
+      0.05318593054500745,
+      0.06113214226647545,
+      -0.0009222992232022756,
+      0.012792937403542648,
+      0.8730480002453913
+    ]
+  ],
+  "B": [
+    [
+      -8.310801003173303,
+      -0.20582681849537607
+    ],
+    [
+      0.7225555847472755,
+      0.375803203877062
+    ],
+    [
+      0.13594817889218222,
+      0.03994137144559878
+    ],
+    [
+      -0.4295655138439153,
+      0.6580647037256451
+    ],
+    [
+      2.895171042420611,
+      0.8785832523417533
+    ]
+  ],
+  "state_vars": [
+    "queue_length",
+    "cpu_util",
+    "mem_util",
+    "io_write_ops",
+    "avg_latency_ms"
+  ],
+  "control_vars": [
+    "batch_size",
+    "inv_poll_interval"
+  ],
+  "fit_metrics": {
+    "method": "local_lin_physical_norm",
+    "B_info": {
+      "queue_length/batch_size": {
+        "r": -0.9827,
+        "slope": -277.0267,
+        "slice": "poll=112"
+      },
+      "queue_length/inv_poll_interval": {
+        "r": -0.9961,
+        "slope": -686.0894,
+        "slice": "batch=10"
+      },
+      "cpu_util/batch_size": {
+        "r": 0.9558,
+        "slope": 0.0723,
+        "slice": "poll=127"
+      },
+      "cpu_util/inv_poll_interval": {
+        "r": 0.9973,
+        "slope": 3.758,
+        "slice": "batch=63"
+      },
+      "mem_util/batch_size": {
+        "r": 0.5272,
+        "slope": 0.0091,
+        "slice": "poll=100"
+      },
+      "mem_util/inv_poll_interval": {
+        "r": 0.7885,
+        "slope": 0.2663,
+        "slice": "batch=223"
+      },
+      "io_write_ops/batch_size": {
+        "r": -0.6423,
+        "slope": -0.043,
+        "slice": "poll=127"
+      },
+      "io_write_ops/inv_poll_interval": {
+        "r": 0.9905,
+        "slope": 6.5806,
+        "slice": "batch=223"
+      },
+      "avg_latency_ms/batch_size": {
+        "r": 0.9993,
+        "slope": 289.5171,
+        "slice": "poll=212"
+      },
+      "avg_latency_ms/inv_poll_interval": {
+        "r": 0.9993,
+        "slope": 8785.8325,
+        "slice": "batch=143"
+      }
+    }
+  },
+  "timestamp": "2026-03-30T15:44:26.319137",
+  "normalization": {
+    "queue_length": {
+      "mean": 15000.0,
+      "std": 10000.0
+    },
+    "cpu_util": {
+      "mean": 30.0,
+      "std": 30.0
+    },
+    "mem_util": {
+      "mean": 50.0,
+      "std": 20.0
+    },
+    "io_write_ops": {
+      "mean": 40.0,
+      "std": 30.0
+    },
+    "avg_latency_ms": {
+      "mean": 30000.0,
+      "std": 30000.0
+    },
+    "batch_size": {
+      "mean": 250.0,
+      "std": 300.0
+    },
+    "inv_poll_interval": {
+      "mean": 3.0,
+      "std": 3.0
+    }
+  },
+  "resource_settings": {
+    "es_cpus": "1.0",
+    "es_memory": "1024M",
+    "es_java_opts": "-Xms512m -Xmx512m",
+    "es_image": "docker.elastic.co/elasticsearch/elasticsearch:8.10.0"
+  }
+}

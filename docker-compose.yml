@@ -41,7 +41,7 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
     volumes:
@@ -49,7 +49,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
+          cpus: '1.0'
+          memory: 1024M
     healthcheck:
       test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
       interval: 10s
@@ -126,7 +127,7 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: ${KAFKA_TOPIC:-cdc.postgres.changes}
       REPLICATION_SLOT_NAME: ${REPLICATION_SLOT_NAME:-cdc_slot}
-      POLL_INTERVAL_SEC: ${CDC_POLL_INTERVAL_SEC:-1}
+      POLL_INTERVAL_SEC: ${CDC_POLL_INTERVAL_SEC:-0.1}
     restart: unless-stopped
     networks:
       - cqrs_network
@@ -156,18 +157,27 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       # Control parameters
       CONTROL_MODE: ${CONTROL_MODE:-static}
-      DEFAULT_BATCH_SIZE: ${DEFAULT_BATCH_SIZE:-100}
+      DEFAULT_BATCH_SIZE: ${DEFAULT_BATCH_SIZE:-250}
       DEFAULT_POLL_INTERVAL_MS: ${DEFAULT_POLL_INTERVAL_MS:-1000}
       MIN_BATCH_SIZE: ${MIN_BATCH_SIZE:-1}
       MAX_BATCH_SIZE: ${MAX_BATCH_SIZE:-1000}
       MIN_POLL_INTERVAL_MS: ${MIN_POLL_INTERVAL_MS:-100}
-      MAX_POLL_INTERVAL_MS: ${MAX_POLL_INTERVAL_MS:-10000}
+      MAX_POLL_INTERVAL_MS: ${MAX_POLL_INTERVAL_MS:-2000}
+      # Model files (for runtime controller switching)
+      SYSID_JSON: ${SYSID_JSON:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/sysid_local_lin_v2_20260330_123518.json}
+      ANN_MODEL_JSON: ${ANN_MODEL_JSON:-}
+      ANN_MODEL_Q1: ${ANN_MODEL_Q1:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q1_20260330_123638.json}
+      ANN_MODEL_Q2: ${ANN_MODEL_Q2:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q2_20260330_123711.json}
+      ANN_MODEL_Q3: ${ANN_MODEL_Q3:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q3_20260330_123744.json}
+      ANN_MODEL_Q4: ${ANN_MODEL_Q4:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q4_20260330_123819.json}
       # Logging
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       METRICS_LOG_INTERVAL_SEC: ${METRICS_LOG_INTERVAL_SEC:-5}
     volumes:
       - ./message-sink/logs:/app/logs
       - ./init:/app/init:ro
+      - ./experiments/open_loop/runs:/app/models/open_loop:ro
+      - ./experiments/closed_loop/runs:/app/models/closed_loop:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
     networks:
