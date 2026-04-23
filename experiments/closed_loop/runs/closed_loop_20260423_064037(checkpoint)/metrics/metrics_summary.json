@@ -1,0 +1,1246 @@
+{
+  "per_test": {
+    "step": {
+      "static": {
+        "backlog_mean": 1813.578947368421,
+        "backlog_max": 4400.0,
+        "backlog_recovery_time": 10.5,
+        "rise_time": 10.5,
+        "overshoot_abs": 4400.0,
+        "overshoot_pct": 4400.0,
+        "settling_time": 31.6,
+        "peak_backlog": 4400.0,
+        "peak_time": 6.3,
+        "throughput": 226.02564102564102,
+        "total_indexed": 8815,
+        "cpu_mean": 23.513213677155175,
+        "mem_mean": 84.33564838610198,
+        "io_mean": 43.265716651287285,
+        "cpu_efficiency": 9.612707311261397,
+        "mem_efficiency": 2.6800723697630184,
+        "costs": {
+          "Q1_backlog": 534.3167994439206,
+          "Q2_resource": 817.352002887777,
+          "Q4_balanced": 901.1125348877769
+        },
+        "samples": 38
+      },
+      "rule_based": {
+        "backlog_mean": 2306.3684210526317,
+        "backlog_max": 8358.0,
+        "backlog_recovery_time": 1.1000000000000014,
+        "rise_time": 1.1000000000000014,
+        "overshoot_abs": 8358.0,
+        "overshoot_pct": 8358.0,
+        "settling_time": 29.5,
+        "peak_backlog": 8358.0,
+        "peak_time": 13.7,
+        "throughput": 369.309462915601,
+        "total_indexed": 14440,
+        "cpu_mean": 20.885670415123247,
+        "mem_mean": 84.32903289794922,
+        "io_mean": 48.556890106352206,
+        "cpu_efficiency": 17.682432767309457,
+        "mem_efficiency": 4.379386911296859,
+        "costs": {
+          "Q1_backlog": 649.1959444587599,
+          "Q2_resource": 834.6211057465111,
+          "Q4_balanced": 989.2113353465112
+        },
+        "samples": 38
+      },
+      "pid": {
+        "backlog_mean": 2053.2368421052633,
+        "backlog_max": 5816.0,
+        "backlog_recovery_time": 5.300000000000001,
+        "rise_time": 5.300000000000001,
+        "overshoot_abs": 5816.0,
+        "overshoot_pct": 5816.0,
+        "settling_time": 30.7,
+        "peak_backlog": 5816.0,
+        "peak_time": 21.2,
+        "throughput": 267.65306122448976,
+        "total_indexed": 10492,
+        "cpu_mean": 18.973246660929767,
+        "mem_mean": 84.25905328047902,
+        "io_mean": 45.66235820502879,
+        "cpu_efficiency": 14.106866684848846,
+        "mem_efficiency": 3.1765495908615806,
+        "costs": {
+          "Q1_backlog": 523.0693849892529,
+          "Q2_resource": 722.8839726112686,
+          "Q4_balanced": 830.6355490112687
+        },
+        "samples": 38
+      },
+      "ann_cw_q1": {
+        "backlog_mean": 1713.578947368421,
+        "backlog_max": 4800.0,
+        "backlog_recovery_time": 5.199999999999999,
+        "rise_time": 5.199999999999999,
+        "overshoot_abs": 4800.0,
+        "overshoot_pct": 4800.0,
+        "settling_time": 31.7,
+        "peak_backlog": 4800.0,
+        "peak_time": 22.2,
+        "throughput": 276.8797953964194,
+        "total_indexed": 10826,
+        "cpu_mean": 18.372289664383942,
+        "mem_mean": 84.19831928453948,
+        "io_mean": 50.95712599424726,
+        "cpu_efficiency": 15.070511104185975,
+        "mem_efficiency": 3.2884242553670564,
+        "costs": {
+          "Q1_backlog": 443.5799846901831,
+          "Q2_resource": 656.9231056387739,
+          "Q4_balanced": 733.6687016387738
+        },
+        "samples": 38
+      },
+      "ann_cw_q2": {
+        "backlog_mean": 1783.342105263158,
+        "backlog_max": 4900.0,
+        "backlog_recovery_time": 1.0,
+        "rise_time": 1.0,
+        "overshoot_abs": 4900.0,
+        "overshoot_pct": 4900.0,
+        "settling_time": 29.8,
+        "peak_backlog": 4900.0,
+        "peak_time": 29.8,
+        "throughput": 249.2875318066158,
+        "total_indexed": 9797,
+        "cpu_mean": 17.969047239417534,
+        "mem_mean": 84.12154348273026,
+        "io_mean": 58.52994997504738,
+        "cpu_efficiency": 13.873163584309015,
+        "mem_efficiency": 2.9634208014477683,
+        "costs": {
+          "Q1_backlog": 448.18291349765826,
+          "Q2_resource": 651.0544433994055,
+          "Q4_balanced": 732.8248845994054
+        },
+        "samples": 38
+      },
+      "ann_cw_q4": {
+        "backlog_mean": 1809.8684210526317,
+        "backlog_max": 4400.0,
+        "backlog_recovery_time": 1.0,
+        "rise_time": 1.0,
+        "overshoot_abs": 4400.0,
+        "overshoot_pct": 4400.0,
+        "settling_time": 30.9,
+        "peak_backlog": 4400.0,
+        "peak_time": 10.8,
+        "throughput": 270.2278481012658,
+        "total_indexed": 10674,
+        "cpu_mean": 19.043275790599868,
+        "mem_mean": 83.9686443931178,
+        "io_mean": 50.2813082994567,
+        "cpu_efficiency": 14.190197688291398,
+        "mem_efficiency": 3.2181994845139372,
+        "costs": {
+          "Q1_backlog": 463.1467543555393,
+          "Q2_resource": 672.5389338251031,
+          "Q4_balanced": 757.123769425103
+        },
+        "samples": 38
+      },
+      "lqr_q1": {
+        "backlog_mean": 1702.3947368421052,
+        "backlog_max": 4400.0,
+        "backlog_recovery_time": 5.300000000000001,
+        "rise_time": 5.300000000000001,
+        "overshoot_abs": 4400.0,
+        "overshoot_pct": 4400.0,
+        "settling_time": 31.7,
+        "peak_backlog": 4400.0,
+        "peak_time": 16.9,
+        "throughput": 404.24552429667517,
+        "total_indexed": 15806,
+        "cpu_mean": 19.345962966666317,
+        "mem_mean": 83.93066807797081,
+        "io_mean": 40.42962193996072,
+        "cpu_efficiency": 20.895601061224117,
+        "mem_efficiency": 4.816422096403842,
+        "costs": {
+          "Q1_backlog": 422.10223043263545,
+          "Q2_resource": 611.1228832426546,
+          "Q4_balanced": 688.8166756426546
+        },
+        "samples": 38
+      },
+      "lqr_q2": {
+        "backlog_mean": 1815.1842105263158,
+        "backlog_max": 4800.0,
+        "backlog_recovery_time": 5.300000000000001,
+        "rise_time": 5.300000000000001,
+        "overshoot_abs": 4800.0,
+        "overshoot_pct": 4800.0,
+        "settling_time": 34.0,
+        "peak_backlog": 4800.0,
+        "peak_time": 14.8,
+        "throughput": 327.4809160305344,
+        "total_indexed": 12870,
+        "cpu_mean": 17.268269110687495,
+        "mem_mean": 83.91792899683902,
+        "io_mean": 43.311763453471606,
+        "cpu_efficiency": 18.964316222513197,
+        "mem_efficiency": 3.9023951132405776,
+        "costs": {
+          "Q1_backlog": 395.0211332546465,
+          "Q2_resource": 538.4290162784024,
+          "Q4_balanced": 622.3000278784025
+        },
+        "samples": 38
+      },
+      "lqr_q4": {
+        "backlog_mean": 1822.5263157894738,
+        "backlog_max": 4400.0,
+        "backlog_recovery_time": 1.0,
+        "rise_time": 1.0,
+        "overshoot_abs": 4400.0,
+        "overshoot_pct": 4400.0,
+        "settling_time": 30.7,
+        "peak_backlog": 4400.0,
+        "peak_time": 5.3,
+        "throughput": 442.4552429667519,
+        "total_indexed": 17300,
+        "cpu_mean": 16.40337451200941,
+        "mem_mean": 83.90409569991262,
+        "io_mean": 42.86654880055345,
+        "cpu_efficiency": 26.97342809815242,
+        "mem_efficiency": 5.273344993183839,
+        "costs": {
+          "Q1_backlog": 387.1281882194521,
+          "Q2_resource": 511.27626641771303,
+          "Q4_balanced": 598.9362384177134
+        },
+        "samples": 38
+      }
+    },
+    "ramp": {
+      "static": {
+        "backlog_mean": 2246.3947368421054,
+        "backlog_max": 8704.0,
+        "backlog_recovery_time": 6.299999999999997,
+        "rise_time": 6.299999999999997,
+        "overshoot_abs": 8704.0,
+        "overshoot_pct": 8704.0,
+        "settling_time": 34.9,
+        "peak_backlog": 8704.0,
+        "peak_time": 29.6,
+        "throughput": 222.9923273657289,
+        "total_indexed": 8719,
+        "cpu_mean": 22.526783282961834,
+        "mem_mean": 83.92305876079358,
+        "io_mean": 47.79757229486916,
+        "cpu_efficiency": 9.898986666879752,
+        "mem_efficiency": 2.6571043841636577,
+        "costs": {
+          "Q1_backlog": 644.4634942549866,
+          "Q2_resource": 830.5596009097543,
+          "Q4_balanced": 983.3487301097545
+        },
+        "samples": 38
+      },
+      "rule_based": {
+        "backlog_mean": 2631.315789473684,
+        "backlog_max": 9256.0,
+        "backlog_recovery_time": 11.699999999999996,
+        "rise_time": 11.699999999999996,
+        "overshoot_abs": 9256.0,
+        "overshoot_pct": 9256.0,
+        "settling_time": 31.7,
+        "peak_backlog": 9256.0,
+        "peak_time": 21.1,
+        "throughput": 221.6624040920716,
+        "total_indexed": 8667,
+        "cpu_mean": 21.22619101153798,
+        "mem_mean": 83.86473404733758,
+        "io_mean": 66.50323119873565,
+        "cpu_efficiency": 10.442872391545988,
+        "mem_efficiency": 2.6430943424557207,
+        "costs": {
+          "Q1_backlog": 819.8765749496512,
+          "Q2_resource": 961.4556563865399,
+          "Q4_balanced": 1187.554776386539
+        },
+        "samples": 38
+      },
+      "pid": {
+        "backlog_mean": 1770.9473684210527,
+        "backlog_max": 8180.0,
+        "backlog_recovery_time": 5.400000000000002,
+        "rise_time": 5.400000000000002,
+        "overshoot_abs": 8180.0,
+        "overshoot_pct": 8180.0,
+        "settling_time": 34.0,
+        "peak_backlog": 8180.0,
+        "peak_time": 29.7,
+        "throughput": 269.69465648854964,
+        "total_indexed": 10599,
+        "cpu_mean": 19.169466293340253,
+        "mem_mean": 83.89663696289062,
+        "io_mean": 43.174463082841655,
+        "cpu_efficiency": 14.068970536871202,
+        "mem_efficiency": 3.2146062852059454,
+        "costs": {
+          "Q1_backlog": 535.5682293569272,
+          "Q2_resource": 746.193699498666,
+          "Q4_balanced": 854.507924298666
+        },
+        "samples": 38
+      },
+      "ann_cw_q1": {
+        "backlog_mean": 1656.7105263157894,
+        "backlog_max": 8013.0,
+        "backlog_recovery_time": 1.1000000000000014,
+        "rise_time": 1.1000000000000014,
+        "overshoot_abs": 8013.0,
+        "overshoot_pct": 8013.0,
+        "settling_time": 30.7,
+        "peak_backlog": 8013.0,
+        "peak_time": 30.7,
+        "throughput": 413.0357142857143,
+        "total_indexed": 16191,
+        "cpu_mean": 18.695209330559436,
+        "mem_mean": 83.87661984092311,
+        "io_mean": 45.044439701292106,
+        "cpu_efficiency": 22.093131292761758,
+        "mem_efficiency": 4.924324741138359,
+        "costs": {
+          "Q1_backlog": 519.5782535990719,
+          "Q2_resource": 731.0797445549279,
+          "Q4_balanced": 833.7719769549278
+        },
+        "samples": 38
+      },
+      "ann_cw_q2": {
+        "backlog_mean": 2096.7894736842104,
+        "backlog_max": 7790.0,
+        "backlog_recovery_time": 10.599999999999998,
+        "rise_time": 10.599999999999998,
+        "overshoot_abs": 7790.0,
+        "overshoot_pct": 7790.0,
+        "settling_time": 32.9,
+        "peak_backlog": 7790.0,
+        "peak_time": 23.3,
+        "throughput": 321.9847328244275,
+        "total_indexed": 12654,
+        "cpu_mean": 20.347066459249024,
+        "mem_mean": 83.87988241095292,
+        "io_mean": 42.79252310810853,
+        "cpu_efficiency": 15.824626781914557,
+        "mem_efficiency": 3.8386407273072574,
+        "costs": {
+          "Q1_backlog": 579.0861785262432,
+          "Q2_resource": 731.705124944513,
+          "Q4_balanced": 873.860848144513
+        },
+        "samples": 38
+      },
+      "ann_cw_q4": {
+        "backlog_mean": 1754.342105263158,
+        "backlog_max": 7509.0,
+        "backlog_recovery_time": 5.199999999999999,
+        "rise_time": 5.199999999999999,
+        "overshoot_abs": 7509.0,
+        "overshoot_pct": 7509.0,
+        "settling_time": 34.0,
+        "peak_backlog": 7509.0,
+        "peak_time": 29.8,
+        "throughput": 244.35114503816794,
+        "total_indexed": 9603,
+        "cpu_mean": 23.58318537755142,
+        "mem_mean": 83.88543379934211,
+        "io_mean": 43.55491821691212,
+        "cpu_efficiency": 10.36124429869271,
+        "mem_efficiency": 2.912915079186064,
+        "costs": {
+          "Q1_backlog": 616.9668230029654,
+          "Q2_resource": 933.0141451185253,
+          "Q4_balanced": 1033.3206223185255
+        },
+        "samples": 38
+      },
+      "lqr_q1": {
+        "backlog_mean": 1770.578947368421,
+        "backlog_max": 8412.0,
+        "backlog_recovery_time": 1.0,
+        "rise_time": 1.0,
+        "overshoot_abs": 8412.0,
+        "overshoot_pct": 8412.0,
+        "settling_time": 30.8,
+        "peak_backlog": 8412.0,
+        "peak_time": 30.8,
+        "throughput": 348.2908163265306,
+        "total_indexed": 13653,
+        "cpu_mean": 17.65544885725987,
+        "mem_mean": 83.93711290861431,
+        "io_mean": 59.906744983850366,
+        "cpu_efficiency": 19.727100632919587,
+        "mem_efficiency": 4.149425733831574,
+        "costs": {
+          "Q1_backlog": 508.02930191348116,
+          "Q2_resource": 647.3409122795824,
+          "Q4_balanced": 770.2467322795824
+        },
+        "samples": 38
+      },
+      "lqr_q2": {
+        "backlog_mean": 1763.3157894736842,
+        "backlog_max": 6876.0,
+        "backlog_recovery_time": 1.1000000000000014,
+        "rise_time": 1.1000000000000014,
+        "overshoot_abs": 6876.0,
+        "overshoot_pct": 6876.0,
+        "settling_time": 31.1,
+        "peak_backlog": 6876.0,
+        "peak_time": 31.1,
+        "throughput": 378.78787878787875,
+        "total_indexed": 15000,
+        "cpu_mean": 18.702525333130378,
+        "mem_mean": 83.93015610544305,
+        "io_mean": 44.39962044753935,
+        "cpu_efficiency": 20.25330120082122,
+        "mem_efficiency": 4.513132065571287,
+        "costs": {
+          "Q1_backlog": 479.1271797381202,
+          "Q2_resource": 624.1269373923285,
+          "Q4_balanced": 735.5026477923287
+        },
+        "samples": 38
+      },
+      "lqr_q4": {
+        "backlog_mean": 1612.657894736842,
+        "backlog_max": 6286.0,
+        "backlog_recovery_time": 5.399999999999999,
+        "rise_time": 5.399999999999999,
+        "overshoot_abs": 6286.0,
+        "overshoot_pct": 6286.0,
+        "settling_time": 30.8,
+        "peak_backlog": 6286.0,
+        "peak_time": 26.5,
+        "throughput": 396.8877551020408,
+        "total_indexed": 15558,
+        "cpu_mean": 19.23977972242357,
+        "mem_mean": 83.98009852359169,
+        "io_mean": 43.40608057354072,
+        "cpu_efficiency": 20.628497874093444,
+        "mem_efficiency": 4.725973916195717,
+        "costs": {
+          "Q1_backlog": 452.33150194638927,
+          "Q2_resource": 629.2035393651399,
+          "Q4_balanced": 721.0232885651399
+        },
+        "samples": 38
+      }
+    },
+    "impulse": {
+      "static": {
+        "backlog_mean": 2776.315789473684,
+        "backlog_max": 8000.0,
+        "backlog_recovery_time": 10.8,
+        "rise_time": 10.8,
+        "overshoot_abs": 8000.0,
+        "overshoot_pct": 8000.0,
+        "settling_time": 11.8,
+        "peak_backlog": 8000.0,
+        "peak_time": 2.1,
+        "throughput": 243.93782383419688,
+        "total_indexed": 4708,
+        "cpu_mean": 14.146267317693733,
+        "mem_mean": 83.78625167043586,
+        "io_mean": 26.673344374339603,
+        "cpu_efficiency": 17.243971031784948,
+        "mem_efficiency": 2.9114302044886777,
+        "costs": {
+          "Q1_backlog": 383.8945653366507,
+          "Q2_resource": 346.2141306730829,
+          "Q4_balanced": 486.7391306730828
+        },
+        "samples": 19
+      },
+      "rule_based": {
+        "backlog_mean": 1899.7894736842106,
+        "backlog_max": 10000.0,
+        "backlog_recovery_time": 3.0999999999999996,
+        "rise_time": 3.0999999999999996,
+        "overshoot_abs": 10000.0,
+        "overshoot_pct": 10000.0,
+        "settling_time": 4.2,
+        "peak_backlog": 10000.0,
+        "peak_time": 2.2,
+        "throughput": 701.3612565445026,
+        "total_indexed": 13396,
+        "cpu_mean": 10.4017923066786,
+        "mem_mean": 83.82291291889392,
+        "io_mean": 21.312611933688085,
+        "cpu_efficiency": 67.42696218748618,
+        "mem_efficiency": 8.367178282424181,
+        "costs": {
+          "Q1_backlog": 374.3310540476226,
+          "Q2_resource": 344.068545295245,
+          "Q4_balanced": 478.93303169524495
+        },
+        "samples": 19
+      },
+      "pid": {
+        "backlog_mean": 2138.5263157894738,
+        "backlog_max": 8866.0,
+        "backlog_recovery_time": 4.2,
+        "rise_time": 4.2,
+        "overshoot_abs": 8866.0,
+        "overshoot_pct": 8866.0,
+        "settling_time": 5.3,
+        "peak_backlog": 8866.0,
+        "peak_time": 2.2,
+        "throughput": 467.90575916230364,
+        "total_indexed": 8937,
+        "cpu_mean": 13.845711359743627,
+        "mem_mean": 83.92942328202098,
+        "io_mean": 20.27413281488026,
+        "cpu_efficiency": 33.79427369277237,
+        "mem_efficiency": 5.5749907584857255,
+        "costs": {
+          "Q1_backlog": 433.57045822165526,
+          "Q2_resource": 457.78240718717785,
+          "Q4_balanced": 594.2352263871778
+        },
+        "samples": 19
+      },
+      "ann_cw_q1": {
+        "backlog_mean": 1575.3157894736842,
+        "backlog_max": 10000.0,
+        "backlog_recovery_time": 5.4,
+        "rise_time": 5.4,
+        "overshoot_abs": 10000.0,
+        "overshoot_pct": 10000.0,
+        "settling_time": 6.4,
+        "peak_backlog": 10000.0,
+        "peak_time": 2.1,
+        "throughput": 506.7015706806282,
+        "total_indexed": 9678,
+        "cpu_mean": 10.072322845065498,
+        "mem_mean": 83.85814867521587,
+        "io_mean": 21.625130872160103,
+        "cpu_efficiency": 50.30632739585634,
+        "mem_efficiency": 6.042365335813608,
+        "costs": {
+          "Q1_backlog": 247.98594947515943,
+          "Q2_resource": 276.29404275689467,
+          "Q4_balanced": 349.5199839568947
+        },
+        "samples": 19
+      },
+      "ann_cw_q2": {
+        "backlog_mean": 1685.1,
+        "backlog_max": 10000.0,
+        "backlog_recovery_time": 2.1,
+        "rise_time": 2.1,
+        "overshoot_abs": 10000.0,
+        "overshoot_pct": 10000.0,
+        "settling_time": 4.2,
+        "peak_backlog": 10000.0,
+        "peak_time": 3.1,
+        "throughput": 507.6,
+        "total_indexed": 10152,
+        "cpu_mean": 14.40788896459254,
+        "mem_mean": 83.89013290405273,
+        "io_mean": 36.67254922593933,
+        "cpu_efficiency": 35.23069904601775,
+        "mem_efficiency": 6.050771198330977,
+        "costs": {
+          "Q1_backlog": 429.22270700290204,
+          "Q2_resource": 495.7321522416201,
+          "Q4_balanced": 616.6365562416202
+        },
+        "samples": 20
+      },
+      "ann_cw_q4": {
+        "backlog_mean": 2426.7894736842104,
+        "backlog_max": 9993.0,
+        "backlog_recovery_time": 4.2,
+        "rise_time": 4.2,
+        "overshoot_abs": 9993.0,
+        "overshoot_pct": 9993.0,
+        "settling_time": 5.3,
+        "peak_backlog": 9993.0,
+        "peak_time": 2.2,
+        "throughput": 489.7382198952879,
+        "total_indexed": 9354,
+        "cpu_mean": 11.492709517442552,
+        "mem_mean": 83.89772114000823,
+        "io_mean": 28.616014211201577,
+        "cpu_efficiency": 42.61294685574445,
+        "mem_efficiency": 5.837324461745682,
+        "costs": {
+          "Q1_backlog": 481.1891153666988,
+          "Q2_resource": 437.854627418631,
+          "Q4_balanced": 612.6958134186311
+        },
+        "samples": 19
+      },
+      "lqr_q1": {
+        "backlog_mean": 792.0,
+        "backlog_max": 6144.0,
+        "backlog_recovery_time": 6.6,
+        "rise_time": 6.6,
+        "overshoot_abs": 6144.0,
+        "overshoot_pct": 6144.0,
+        "settling_time": 6.6,
+        "peak_backlog": 6144.0,
+        "peak_time": 1.0,
+        "throughput": 260.15625,
+        "total_indexed": 4995,
+        "cpu_mean": 12.781311755358592,
+        "mem_mean": 83.91894290321751,
+        "io_mean": 23.795729312133687,
+        "cpu_efficiency": 20.35442488060186,
+        "mem_efficiency": 3.1000896936944784,
+        "costs": {
+          "Q1_backlog": 200.51716847732507,
+          "Q2_resource": 336.69057012687205,
+          "Q4_balanced": 358.138480526872
+        },
+        "samples": 19
+      },
+      "lqr_q2": {
+        "backlog_mean": 1883.9473684210527,
+        "backlog_max": 10000.0,
+        "backlog_recovery_time": 2.2,
+        "rise_time": 2.2,
+        "overshoot_abs": 10000.0,
+        "overshoot_pct": 10000.0,
+        "settling_time": 4.3,
+        "peak_backlog": 10000.0,
+        "peak_time": 3.2,
+        "throughput": 302.93193717277484,
+        "total_indexed": 5786,
+        "cpu_mean": 15.862600072735416,
+        "mem_mean": 83.867725573088,
+        "io_mean": 23.774264451259704,
+        "cpu_efficiency": 19.097243565602668,
+        "mem_efficiency": 3.6120204178993682,
+        "costs": {
+          "Q1_backlog": 522.9741211856979,
+          "Q2_resource": 648.8793177995877,
+          "Q4_balanced": 781.2355325995877
+        },
+        "samples": 19
+      },
+      "lqr_q4": {
+        "backlog_mean": 1948.6315789473683,
+        "backlog_max": 8634.0,
+        "backlog_recovery_time": 4.300000000000001,
+        "rise_time": 4.300000000000001,
+        "overshoot_abs": 8634.0,
+        "overshoot_pct": 8634.0,
+        "settling_time": 5.4,
+        "peak_backlog": 8634.0,
+        "peak_time": 2.1,
+        "throughput": 278.79581151832457,
+        "total_indexed": 5325,
+        "cpu_mean": 13.414558898526014,
+        "mem_mean": 83.87152019299958,
+        "io_mean": 24.541803931096382,
+        "cpu_efficiency": 20.783077075233425,
+        "mem_efficiency": 3.3240820111138816,
+        "costs": {
+          "Q1_backlog": 418.14407227355827,
+          "Q2_resource": 471.03901585763185,
+          "Q4_balanced": 592.7886030576323
+        },
+        "samples": 19
+      }
+    },
+    "periodic_step": {
+      "static": {
+        "backlog_mean": 1928.2368421052631,
+        "backlog_max": 5114.0,
+        "backlog_recovery_time": 5.200000000000003,
+        "rise_time": 5.200000000000003,
+        "overshoot_abs": 5114.0,
+        "overshoot_pct": 5114.0,
+        "settling_time": 29.6,
+        "peak_backlog": 5114.0,
+        "peak_time": 25.4,
+        "throughput": 230.6377551020408,
+        "total_indexed": 9041,
+        "cpu_mean": 21.05982568547805,
+        "mem_mean": 84.55590699848376,
+        "io_mean": 62.31639677770482,
+        "cpu_efficiency": 10.95155100267894,
+        "mem_efficiency": 2.72763622659948,
+        "costs": {
+          "Q1_backlog": 582.5964505904752,
+          "Q2_resource": 866.5504431793292,
+          "Q4_balanced": 966.0979291793293
+        },
+        "samples": 38
+      },
+      "rule_based": {
+        "backlog_mean": 2384.7631578947367,
+        "backlog_max": 8408.0,
+        "backlog_recovery_time": 1.1000000000000014,
+        "rise_time": 1.1000000000000014,
+        "overshoot_abs": 8408.0,
+        "overshoot_pct": 8408.0,
+        "settling_time": 30.9,
+        "peak_backlog": 8408.0,
+        "peak_time": 16.0,
+        "throughput": 239.26208651399492,
+        "total_indexed": 9403,
+        "cpu_mean": 22.326538473223444,
+        "mem_mean": 84.5094781172903,
+        "io_mean": 51.9647870775552,
+        "cpu_efficiency": 10.71648821876018,
+        "mem_efficiency": 2.831186416533353,
+        "costs": {
+          "Q1_backlog": 657.5388561654373,
+          "Q2_resource": 817.4521032974668,
+          "Q4_balanced": 983.3272820974668
+        },
+        "samples": 38
+      },
+      "pid": {
+        "backlog_mean": 2147.0526315789475,
+        "backlog_max": 6156.0,
+        "backlog_recovery_time": 10.600000000000001,
+        "rise_time": 10.600000000000001,
+        "overshoot_abs": 6156.0,
+        "overshoot_pct": 6156.0,
+        "settling_time": 33.0,
+        "peak_backlog": 6156.0,
+        "peak_time": 8.5,
+        "throughput": 253.95939086294416,
+        "total_indexed": 10006,
+        "cpu_mean": 17.770477021938213,
+        "mem_mean": 84.4053770366468,
+        "io_mean": 42.092920726411684,
+        "cpu_efficiency": 14.291084620262207,
+        "mem_efficiency": 3.008805834167189,
+        "costs": {
+          "Q1_backlog": 489.05858956927875,
+          "Q2_resource": 624.5047012013799,
+          "Q4_balanced": 742.3755044013799
+        },
+        "samples": 38
+      },
+      "ann_cw_q1": {
+        "backlog_mean": 1786.421052631579,
+        "backlog_max": 4850.0,
+        "backlog_recovery_time": 5.299999999999997,
+        "rise_time": 5.299999999999997,
+        "overshoot_abs": 4850.0,
+        "overshoot_pct": 4850.0,
+        "settling_time": 30.6,
+        "peak_backlog": 4850.0,
+        "peak_time": 21.1,
+        "throughput": 268.3333333333333,
+        "total_indexed": 10465,
+        "cpu_mean": 20.8667704747889,
+        "mem_mean": 83.80236374704461,
+        "io_mean": 46.99673395361199,
+        "cpu_efficiency": 12.859360946991387,
+        "mem_efficiency": 3.2019780986523356,
+        "costs": {
+          "Q1_backlog": 464.640136585355,
+          "Q2_resource": 661.9359590107102,
+          "Q4_balanced": 751.0507038107103
+        },
+        "samples": 38
+      },
+      "ann_cw_q2": {
+        "backlog_mean": 2834.7894736842104,
+        "backlog_max": 9461.0,
+        "backlog_recovery_time": 5.400000000000002,
+        "rise_time": 5.400000000000002,
+        "overshoot_abs": 9461.0,
+        "overshoot_pct": 9461.0,
+        "settling_time": 31.9,
+        "peak_backlog": 9461.0,
+        "peak_time": 12.7,
+        "throughput": 280.63613231552165,
+        "total_indexed": 11029,
+        "cpu_mean": 20.792536542489565,
+        "mem_mean": 83.75724993254009,
+        "io_mean": 58.2555571005413,
+        "cpu_efficiency": 13.49696472780228,
+        "mem_efficiency": 3.350589143525511,
+        "costs": {
+          "Q1_backlog": 813.9597296391706,
+          "Q2_resource": 935.6539375643572,
+          "Q4_balanced": 1166.409042364356
+        },
+        "samples": 38
+      },
+      "ann_cw_q4": {
+        "backlog_mean": 3005.1052631578946,
+        "backlog_max": 4950.0,
+        "backlog_recovery_time": 5.299999999999999,
+        "rise_time": 5.299999999999999,
+        "overshoot_abs": 4950.0,
+        "overshoot_pct": 4950.0,
+        "settling_time": 39.5,
+        "peak_backlog": 4950.0,
+        "peak_time": 15.1,
+        "throughput": 198.91139240506328,
+        "total_indexed": 7857,
+        "cpu_mean": 20.71970275451227,
+        "mem_mean": 83.72774626079358,
+        "io_mean": 55.88920089824404,
+        "cpu_efficiency": 9.600108397392187,
+        "mem_efficiency": 2.3756926620895524,
+        "costs": {
+          "Q1_backlog": 599.4735604482214,
+          "Q2_resource": 676.8623802957707,
+          "Q4_balanced": 850.8906050957706
+        },
+        "samples": 38
+      },
+      "lqr_q1": {
+        "backlog_mean": 1703.6842105263158,
+        "backlog_max": 4900.0,
+        "backlog_recovery_time": 1.1000000000000014,
+        "rise_time": 1.1000000000000014,
+        "overshoot_abs": 4900.0,
+        "overshoot_pct": 4900.0,
+        "settling_time": 30.9,
+        "peak_backlog": 4900.0,
+        "peak_time": 16.0,
+        "throughput": 298.0964467005076,
+        "total_indexed": 11745,
+        "cpu_mean": 17.748759597892295,
+        "mem_mean": 84.6093027215255,
+        "io_mean": 38.81515645260078,
+        "cpu_efficiency": 16.795339700015276,
+        "mem_efficiency": 3.52321124405944,
+        "costs": {
+          "Q1_backlog": 389.1143165669473,
+          "Q2_resource": 529.3562283523418,
+          "Q4_balanced": 612.313634752342
+        },
+        "samples": 38
+      },
+      "lqr_q2": {
+        "backlog_mean": 1716.421052631579,
+        "backlog_max": 4850.0,
+        "backlog_recovery_time": 1.0999999999999979,
+        "rise_time": 1.0999999999999979,
+        "overshoot_abs": 4850.0,
+        "overshoot_pct": 4850.0,
+        "settling_time": 31.6,
+        "peak_backlog": 4850.0,
+        "peak_time": 16.8,
+        "throughput": 314.2564102564103,
+        "total_indexed": 12256,
+        "cpu_mean": 19.0063727476635,
+        "mem_mean": 84.5806222212942,
+        "io_mean": 41.91339822889706,
+        "cpu_efficiency": 16.534265345029738,
+        "mem_efficiency": 3.715465812419767,
+        "costs": {
+          "Q1_backlog": 449.64299483640326,
+          "Q2_resource": 660.1945367859872,
+          "Q4_balanced": 739.8916007859872
+        },
+        "samples": 38
+      },
+      "lqr_q4": {
+        "backlog_mean": 1782.0,
+        "backlog_max": 5150.0,
+        "backlog_recovery_time": 1.0,
+        "rise_time": 1.0,
+        "overshoot_abs": 5150.0,
+        "overshoot_pct": 5150.0,
+        "settling_time": 28.7,
+        "peak_backlog": 5150.0,
+        "peak_time": 9.6,
+        "throughput": 297.43654822335026,
+        "total_indexed": 11719,
+        "cpu_mean": 19.084469360621338,
+        "mem_mean": 84.59258832429585,
+        "io_mean": 41.17817435020855,
+        "cpu_efficiency": 15.585266878683942,
+        "mem_efficiency": 3.516106483030068,
+        "costs": {
+          "Q1_backlog": 439.0361454382798,
+          "Q2_resource": 604.0871167000525,
+          "Q4_balanced": 695.4154271000525
+        },
+        "samples": 38
+      }
+    },
+    "step_low": {
+      "static": {
+        "backlog_mean": 172.86666666666667,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 44.8,
+        "throughput": 36.1314791403287,
+        "total_indexed": 2858,
+        "cpu_mean": 6.941936477377267,
+        "mem_mean": 84.67268371582031,
+        "io_mean": 36.123491926830326,
+        "cpu_efficiency": 5.204812700040657,
+        "mem_efficiency": 0.42671942773886434,
+        "costs": {
+          "Q1_backlog": 239.31257865960174,
+          "Q2_resource": 473.82157531898486,
+          "Q4_balanced": 475.42276931898476
+        },
+        "samples": 75
+      },
+      "rule_based": {
+        "backlog_mean": 170.52631578947367,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 36.2,
+        "throughput": 38.55708908406525,
+        "total_indexed": 3073,
+        "cpu_mean": 6.343921530817417,
+        "mem_mean": 84.72602743851512,
+        "io_mean": 33.955818942274554,
+        "cpu_efficiency": 6.077800442007856,
+        "mem_efficiency": 0.4550796284181477,
+        "costs": {
+          "Q1_backlog": 240.77538449697403,
+          "Q2_resource": 476.8292478739472,
+          "Q4_balanced": 478.4030878739474
+        },
+        "samples": 76
+      },
+      "pid": {
+        "backlog_mean": 168.0921052631579,
+        "backlog_max": 500.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 500.0,
+        "overshoot_pct": 500.0,
+        "settling_time": 0.0,
+        "peak_backlog": 500.0,
+        "peak_time": 41.7,
+        "throughput": 35.1063829787234,
+        "total_indexed": 2805,
+        "cpu_mean": 6.402999208592507,
+        "mem_mean": 84.82112382587634,
+        "io_mean": 37.54946068860578,
+        "cpu_efficiency": 5.482802954529868,
+        "mem_efficiency": 0.4138872652853665,
+        "costs": {
+          "Q1_backlog": 235.41575581748285,
+          "Q2_resource": 466.1089236796685,
+          "Q4_balanced": 467.6831176796685
+        },
+        "samples": 76
+      },
+      "ann_cw_q1": {
+        "backlog_mean": 175.46666666666667,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 17.0,
+        "throughput": 33.924050632911396,
+        "total_indexed": 2680,
+        "cpu_mean": 6.873618845394599,
+        "mem_mean": 84.8496805826823,
+        "io_mean": 36.10209370177037,
+        "cpu_efficiency": 4.9353988628044,
+        "mem_efficiency": 0.39981353376874407,
+        "costs": {
+          "Q1_backlog": 243.49684787863617,
+          "Q2_resource": 482.1900903100708,
+          "Q4_balanced": 483.79129031007085
+        },
+        "samples": 75
+      },
+      "ann_cw_q2": {
+        "backlog_mean": 172.71052631578948,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 35.2,
+        "throughput": 44.9875,
+        "total_indexed": 3599,
+        "cpu_mean": 5.958674617548038,
+        "mem_mean": 84.35685007195724,
+        "io_mean": 31.70509929242307,
+        "cpu_efficiency": 7.54991720264667,
+        "mem_efficiency": 0.5332999034651627,
+        "costs": {
+          "Q1_backlog": 217.26774750882566,
+          "Q2_resource": 429.66944768670606,
+          "Q4_balanced": 431.2914620867061
+        },
+        "samples": 76
+      },
+      "ann_cw_q4": {
+        "backlog_mean": 174.98666666666668,
+        "backlog_max": 465.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 465.0,
+        "overshoot_pct": 465.0,
+        "settling_time": 0.0,
+        "peak_backlog": 465.0,
+        "peak_time": 40.6,
+        "throughput": 36.35443037974684,
+        "total_indexed": 2872,
+        "cpu_mean": 6.54257994437003,
+        "mem_mean": 84.43710835774739,
+        "io_mean": 47.084250302217484,
+        "cpu_efficiency": 5.556589401865891,
+        "mem_efficiency": 0.43055039528021916,
+        "costs": {
+          "Q1_backlog": 249.0322166138118,
+          "Q2_resource": 493.16227826605495,
+          "Q4_balanced": 494.79632866605516
+        },
+        "samples": 75
+      },
+      "lqr_q1": {
+        "backlog_mean": 177.5,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 11.6,
+        "throughput": 36.39899623588457,
+        "total_indexed": 2901,
+        "cpu_mean": 6.3867162195910545,
+        "mem_mean": 84.4432931197317,
+        "io_mean": 35.07461495812318,
+        "cpu_efficiency": 5.699172310839766,
+        "mem_efficiency": 0.43104662183501796,
+        "costs": {
+          "Q1_backlog": 227.3750357587178,
+          "Q2_resource": 449.70682654308183,
+          "Q4_balanced": 451.38790654308184
+        },
+        "samples": 76
+      },
+      "lqr_q2": {
+        "backlog_mean": 167.64473684210526,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 22.4,
+        "throughput": 40.852130325814535,
+        "total_indexed": 3260,
+        "cpu_mean": 6.256710414412254,
+        "mem_mean": 84.50641130146228,
+        "io_mean": 35.64192722055644,
+        "cpu_efficiency": 6.529330529939849,
+        "mem_efficiency": 0.4834204848680829,
+        "costs": {
+          "Q1_backlog": 227.51284602063203,
+          "Q2_resource": 450.404842840724,
+          "Q4_balanced": 451.945123240724
+        },
+        "samples": 76
+      },
+      "lqr_q4": {
+        "backlog_mean": 169.4078947368421,
+        "backlog_max": 470.0,
+        "backlog_recovery_time": 0.0,
+        "rise_time": 0.0,
+        "overshoot_abs": 470.0,
+        "overshoot_pct": 470.0,
+        "settling_time": 0.0,
+        "peak_backlog": 470.0,
+        "peak_time": 44.5,
+        "throughput": 40.753768844221106,
+        "total_indexed": 3244,
+        "cpu_mean": 6.2833409421782935,
+        "mem_mean": 84.58324231599507,
+        "io_mean": 40.197256332512666,
+        "cpu_efficiency": 6.4860031023706775,
+        "mem_efficiency": 0.4818184752479557,
+        "costs": {
+          "Q1_backlog": 232.93315674839815,
+          "Q2_resource": 461.28346686244385,
+          "Q4_balanced": 462.81108006244403
+        },
+        "samples": 76
+      }
+    }
+  },
+  "sensitivity": {
+    "cost_table": {
+      "Q1_backlog": {
+        "static": 476.916777657127,
+        "rule_based": 548.343562823689,
+        "pid": 443.3364835909194,
+        "lqr": 349.42761062982134,
+        "ann": 383.85623444568114
+      },
+      "Q2_resource": {
+        "static": 666.8995505937856,
+        "rule_based": 686.885331719942,
+        "pid": 603.4947408356321,
+        "lqr": 584.4069302194059,
+        "ann": 648.7630211673204
+      },
+      "Q4_balanced": {
+        "static": 762.5442188337855,
+        "rule_based": 823.4859026799419,
+        "pid": 697.8874643556322,
+        "lqr": 614.1949274405964,
+        "ann": 749.7654277848171
+      }
+    },
+    "regret": {
+      "ann": {
+        "Q1_backlog": 0.09852863016120667,
+        "Q2_resource": 0.11012205300808642,
+        "Q4_balanced": 0.22072878541858812,
+        "mean_regret": 0.14312648952929374,
+        "max_regret": 0.22072878541858812
+      },
+      "lqr": {
+        "Q1_backlog": 0.0,
+        "Q2_resource": 0.0,
+        "Q4_balanced": 0.0,
+        "mean_regret": 0.0,
+        "max_regret": 0.0
+      },
+      "pid": {
+        "Q1_backlog": 0.26875057981775735,
+        "Q2_resource": 0.032661848498374224,
+        "Q4_balanced": 0.13626380351884357,
+        "mean_regret": 0.14589207727832507,
+        "max_regret": 0.26875057981775735
+      },
+      "rule_based": {
+        "Q1_backlog": 0.5692622624621281,
+        "Q2_resource": 0.1753545281573958,
+        "Q4_balanced": 0.3407566000446782,
+        "mean_regret": 0.3617911302214007,
+        "max_regret": 0.5692622624621281
+      },
+      "static": {
+        "Q1_backlog": 0.3648514403241187,
+        "Q2_resource": 0.14115612958834906,
+        "Q4_balanced": 0.24153454345735723,
+        "mean_regret": 0.24918070445660834,
+        "max_regret": 0.3648514403241187
+      }
+    },
+    "q_configs": {
+      "Q1_backlog": [
+        [
+          20.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          5.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.05,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "Q2_resource": [
+        [
+          10.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          10.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          2.0
+        ]
+      ],
+      "Q4_balanced": [
+        [
+          20.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          10.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          2.0
+        ]
+      ]
+    },
+    "r_matrix": [
+      [
+        1e-06,
+        0.0
+      ],
+      [
+        0.0,
+        1e-06
+      ]
+    ]
+  }
+}

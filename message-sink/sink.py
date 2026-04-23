@@ -345,6 +345,7 @@ class MessageSink:
     def process_messages(self, messages: List[Dict]) -> tuple:
         """
         Process messages from Kafka and prepare for Elasticsearch indexing.
+        Supports both Debezium format and legacy custom CDC format.
 
         Returns:
             (actions, avg_latency_ms): ES bulk actions and mean end-to-end latency
@@ -354,18 +355,26 @@ class MessageSink:
         now = datetime.utcnow()
         for msg in messages:
             try:
-                # Extract data from CDC message
-                data = msg.get('data', {})
-                operation = msg.get('operation', 'INSERT')
+                # Detect format: Debezium has 'after'/'op', legacy has 'data'/'operation'
+                if 'after' in msg or 'op' in msg:
+                    # Debezium format
+                    data = msg.get('after') or {}
+                    op = msg.get('op', 'c')  # c=create, u=update, d=delete, r=read
+                    operation = {'c': 'INSERT', 'u': 'UPDATE', 'd': 'DELETE', 'r': 'READ'}.get(op, 'INSERT')
+                else:
+                    # Legacy custom CDC format
+                    data = msg.get('data', {})
+                    operation = msg.get('operation', 'INSERT')
 
-                # Compute end-to-end latency: now - updated_at (PostgreSQL timestamp)
+                if data is None:
+                    continue  # DELETE in Debezium has after=null
+
+                # Compute end-to-end latency: now - updated_at
                 updated_at_str = data.get('updated_at')
                 if updated_at_str:
                     try:
-                        # Parse ISO format (with or without timezone)
-                        ua = updated_at_str.replace('Z', '+00:00')
-                        if '+' in ua or ua.endswith('Z'):
-                            from datetime import timezone
+                        ua = str(updated_at_str).replace('Z', '+00:00')
+                        if '+' in ua:
                             updated_at = datetime.fromisoformat(ua).replace(tzinfo=None)
                         else:
                             updated_at = datetime.fromisoformat(ua)
@@ -380,11 +389,10 @@ class MessageSink:
                 # Prepare Elasticsearch document
                 doc = {
                     '_index': self.es_index,
-                    '_id': data.get('id', msg.get('lsn', str(time.time()))),
+                    '_id': data.get('id', str(time.time())),
                     '_source': {
                         **data,
                         '_operation': operation,
-                        '_source_lsn': msg.get('lsn'),
                         'synced_at': synced_at,
                     }
                 }

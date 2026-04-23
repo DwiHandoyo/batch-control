@@ -1,0 +1,271 @@
+{
+  "run_id": "closed_loop_20260423_064037",
+  "experiment_type": "closed_loop_fixed_count",
+  "start_time": "2026-04-22T23:40:37.320393",
+  "controller_modes": [
+    "static",
+    "rule_based",
+    "pid",
+    "ann_cw_q1",
+    "ann_cw_q2",
+    "ann_cw_q4",
+    "lqr_q1",
+    "lqr_q2",
+    "lqr_q4"
+  ],
+  "load_patterns": [
+    "step",
+    "ramp",
+    "impulse",
+    "periodic_step",
+    "step_low"
+  ],
+  "pattern_kwargs": {
+    "step_rate": 1000,
+    "step_duration": 30,
+    "ramp_peak_rate": 2000,
+    "ramp_duration": 30,
+    "impulse_rate": 10000,
+    "impulse_burst_sec": 1,
+    "periodic_high_rate": 1500,
+    "periodic_low_rate": 500,
+    "periodic_half_period": 3,
+    "periodic_duration": 30,
+    "step_low_rate": 100,
+    "step_low_duration": 60
+  },
+  "max_test_duration_sec": 600,
+  "sample_interval_sec": 1.0,
+  "repeats": 1,
+  "randomize_order": false,
+  "seed": 42,
+  "schedule": [
+    {
+      "mode": "static",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "rule_based",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "pid",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q1",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q2",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q4",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q1",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q2",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q4",
+      "pattern": "step",
+      "trial": 1
+    },
+    {
+      "mode": "rule_based",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "pid",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q1",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q2",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q4",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q1",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q2",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q4",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "static",
+      "pattern": "ramp",
+      "trial": 1
+    },
+    {
+      "mode": "pid",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q1",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q2",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q4",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q1",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q2",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q4",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "static",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "rule_based",
+      "pattern": "impulse",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q1",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q2",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q4",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q1",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q2",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q4",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "static",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "rule_based",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "pid",
+      "pattern": "periodic_step",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q2",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q4",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q1",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q2",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "lqr_q4",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "static",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "rule_based",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "pid",
+      "pattern": "step_low",
+      "trial": 1
+    },
+    {
+      "mode": "ann_cw_q1",
+      "pattern": "step_low",
+      "trial": 1
+    }
+  ],
+  "end_time": "2026-04-23T00:31:28.403352",
+  "total_samples": 1879
+}

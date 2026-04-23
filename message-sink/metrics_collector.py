@@ -37,6 +37,7 @@ class SystemState:
     os_mem_used_percent: int    # OS-level RAM used (%) — for comparison
     gc_time_rate: float         # ms of GC per second
     write_queue_size: int       # write thread pool queue depth
+    container_mem_pct: float    # ES container memory (working_set / limit %) via cAdvisor
     timestamp: datetime         # When this state was captured
 
     def to_dict(self) -> Dict[str, Any]:
@@ -50,15 +51,19 @@ class SystemState:
             'os_mem_used_percent': self.os_mem_used_percent,
             'gc_time_rate': self.gc_time_rate,
             'write_queue_size': self.write_queue_size,
+            'container_mem_pct': self.container_mem_pct,
             'timestamp': self.timestamp.isoformat(),
         }
 
     def to_vector(self) -> list:
-        """Convert state to vector format for LQR controller."""
+        """Convert state to vector format for LQR controller.
+        State vector: [queue_length, cpu_util, container_mem_pct, io_write_ops, ...]
+        container_mem_pct replaces mem_util (JVM heap) for stability.
+        """
         return [
             self.queue_length,
             self.cpu_util,
-            self.mem_util,
+            self.container_mem_pct,   # replaces mem_util (JVM heap zigzag)
             self.indexing_time_rate,
             self.io_write_ops,
             self.os_cpu_percent,
@@ -89,6 +94,10 @@ class MetricsCollector:
 
         # Elasticsearch stats configuration
         self.es_url = os.getenv('ELASTICSEARCH_URL', 'http://localhost:9200')
+
+        # cAdvisor configuration for container-level memory
+        self.cadvisor_url = os.getenv('CADVISOR_URL', 'http://cadvisor:8080')
+        self.es_container_name = os.getenv('ES_CONTAINER_NAME', 'elasticsearch-read')
 
         # Cache for indexing_time rate calculation
         self._last_indexing_time_ms: Optional[int] = None
@@ -231,6 +240,43 @@ class MetricsCollector:
             logger.warning(f"Error fetching ES native stats: {e}")
             return (0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, 0)
 
+    def get_container_memory_pct(self) -> float:
+        """
+        Fetch ES container memory utilization from cAdvisor v2.1 API.
+
+        Returns working_set / memory_limit * 100 (%).
+        working_set = RSS + active file cache — the memory Docker uses for
+        limit enforcement, more stable than JVM heap (no GC zigzag).
+
+        Uses v2.1 API: GET /api/v2.1/stats/{name}?type=docker&count=1
+
+        Falls back to 0.0 if cAdvisor is unavailable.
+        """
+        try:
+            url = (f"{self.cadvisor_url}/api/v2.1/stats/{self.es_container_name}"
+                   f"?type=docker&count=1")
+            response = requests.get(url, timeout=2)
+            if response.status_code != 200:
+                return 0.0
+            data = response.json()
+            if not data:
+                return 0.0
+            # v2.1 returns dict keyed by container id/name
+            container = next(iter(data.values()))
+            stats = container.get('stats', [])
+            if not stats:
+                return 0.0
+            latest = stats[-1]
+            working_set = latest.get('memory', {}).get('working_set', 0)
+            # Get limit from spec
+            spec = container.get('spec', {})
+            limit = spec.get('memory', {}).get('limit', 0)
+            if limit and limit > 0:
+                return min(working_set / limit * 100.0, 100.0)
+            return 0.0
+        except Exception:
+            return 0.0
+
     def collect_state(self) -> SystemState:
         """
         Collect current system state from all sources.
@@ -242,6 +288,9 @@ class MetricsCollector:
         # Get ES-native metrics
         cpu_util, mem_util, indexing_time_rate, io_write_ops, os_cpu_percent, os_mem_used_percent, gc_time_rate, write_queue_size = self.get_es_native_stats()
 
+        # Get container memory from cAdvisor (observation only, not in control state vector)
+        container_mem_pct = self.get_container_memory_pct()
+
         state = SystemState(
             queue_length=queue_length,
             cpu_util=cpu_util,
@@ -252,6 +301,7 @@ class MetricsCollector:
             os_mem_used_percent=os_mem_used_percent,
             gc_time_rate=gc_time_rate,
             write_queue_size=write_queue_size,
+            container_mem_pct=container_mem_pct,
             timestamp=datetime.utcnow(),
         )
 
