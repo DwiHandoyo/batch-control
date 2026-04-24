@@ -773,6 +773,10 @@ def plot_bar_cost_by_pattern(analysis, output_dir):
                 ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(),
                         f'{val:,.0f}', ha='center', va='bottom', fontsize=8)
 
+        # Hide unused subplots
+        for idx in range(len(patterns), len(axes_flat)):
+            axes_flat[idx].set_visible(False)
+
         qs = q_short(q_name)
         fig.suptitle(f'Cost J ({Q_LABELS.get(q_name, q_name)}) by Controller and Load Pattern',
                      fontsize=14, fontweight='bold', y=1.02)
