@@ -31,11 +31,22 @@ from abc import ABC, abstractmethod
 logger = logging.getLogger('controllers')
 
 # Q matrix presets for LQR (4-dim state)
-# State order: [queue_length, cpu_util, mem_util, io_write_ops]
+# State order: [queue_length, cpu_util, container_mem_pct, io_write_ops]
+#
+# Derivation via Bryson's rule (in z-score normalized state space):
+#   Q_ii = (std_i / max_dev_i)^2 × priority_multiplier_i
+#   max_dev_i = acceptable deviation per dimension; multipliers express priority.
+#
+#   Q_base = [1.000, 0.694, 0.040, 0.640]  (queue, cpu, mem, io)
+#
+#   Multipliers per preset:
+#     Q1 (backlog):  [4, 1, 1, 1] → priority %  = [74, 13,  1, 12]
+#     Q2 (resource): [1, 4, 4, 4] → priority %  = [15, 43,  2, 39]
+#     Q4 (balanced): [4, 4, 4, 4] → priority %  = [42, 29,  2, 27]
 Q_PRESETS = {
-    'Q1': np.diag([20.0,  5.0, 0.05,  1.0]),   # backlog priority
-    'Q2': np.diag([10.0, 10.0, 0.10,  2.0]),   # resource priority
-    'Q4': np.diag([20.0, 10.0, 0.10,  2.0]),   # balanced aggressive
+    'Q1': np.diag([4.000, 0.694, 0.040, 0.640]),  # backlog priority  (74/13/1/12 %)
+    'Q2': np.diag([1.000, 2.778, 0.160, 2.560]),  # resource priority (15/43/2/39 %)
+    'Q4': np.diag([4.000, 2.778, 0.160, 2.560]),  # balanced          (42/29/2/27 %)
 }
 
 
@@ -527,6 +538,7 @@ class LQRController(BaseController):
         A = np.array(data['A'])
         B = np.array(data['B'])
         normalization = data.get('normalization', None)
+        ctrl_vars_sysid = data.get('control_vars', [])
 
         # Trim A and B to match STATE_KEYS dimension (4×4 and 4×2).
         # sysid may include extra states (e.g. avg_latency as 5th row/col).
@@ -539,6 +551,31 @@ class LQRController(BaseController):
 
         logger.info(f"Loading sysid from {json_path}")
         logger.info(f"  Fit R²: {data.get('fit_metrics', {}).get('r_squared', 'N/A')}")
+
+        # Convert B's 2nd column from poll_interval convention (raw ms) to
+        # inv_poll_interval convention (1/s). Sysid was fit with poll_interval
+        # but the controller uses inv_poll_interval as control variable.
+        # Relation: inv_poll = 1000 / poll → d(poll)/d(inv_poll) = -1000/inv_poll²
+        # In normalized space, multiply by std ratio (std_inv_poll / std_poll).
+        # Without this fix, sign of B[:, 1] is inverted → LQR drives wrong direction
+        # on the inv_poll axis (manifests as CPU/IO oscillation when those weights
+        # dominate Q, e.g. Q2_resource).
+        if (normalization is not None and 'inv_poll_interval' in normalization
+                and 'poll_interval' in normalization
+                and len(ctrl_vars_sysid) >= 2 and ctrl_vars_sysid[1] == 'poll_interval'):
+            ip_mean = normalization['inv_poll_interval']['mean']
+            ip_std  = normalization['inv_poll_interval']['std']
+            p_std   = normalization['poll_interval']['std']
+            if ip_mean > 0 and p_std > 0:
+                scale = -(1000.0 / (ip_mean ** 2)) * (ip_std / p_std)
+                logger.info(
+                    f"B col 2 convention conversion (poll_interval → inv_poll_interval):\n"
+                    f"  ip_mean={ip_mean}, ip_std={ip_std}, p_std={p_std}\n"
+                    f"  scale = -(1000/{ip_mean}²) × ({ip_std}/{p_std}) = {scale:.4f}\n"
+                    f"  B[:,1] before: {B[:,1]}\n"
+                    f"  B[:,1] after:  {scale * B[:,1]}"
+                )
+                B[:, 1] = scale * B[:, 1]
 
         # Override B[queue,:] from capacity benchmark if provided
         if capacity_json and normalization:

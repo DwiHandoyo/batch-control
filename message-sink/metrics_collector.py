@@ -98,6 +98,10 @@ class MetricsCollector:
         # cAdvisor configuration for container-level memory
         self.cadvisor_url = os.getenv('CADVISOR_URL', 'http://cadvisor:8080')
         self.es_container_name = os.getenv('ES_CONTAINER_NAME', 'elasticsearch-read')
+        # Resolved container ID for cAdvisor (name lookup fails on Docker Desktop;
+        # cAdvisor's ?type=docker&name=X returns 404 even when the container is
+        # tracked under /docker/<id>, so we resolve via docker.sock once).
+        self._es_container_id: Optional[str] = None
 
         # Cache for indexing_time rate calculation
         self._last_indexing_time_ms: Optional[int] = None
@@ -240,6 +244,35 @@ class MetricsCollector:
             logger.warning(f"Error fetching ES native stats: {e}")
             return (0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, 0)
 
+    def _resolve_es_container_id(self) -> Optional[str]:
+        """Resolve ES container name → ID via docker.sock (mounted into sink).
+
+        Cached after first success. Returns None on failure.
+        """
+        if self._es_container_id:
+            return self._es_container_id
+        try:
+            import urllib.request, socket, json as _json
+            class UnixHTTPConnection(__import__('http.client', fromlist=['HTTPConnection']).HTTPConnection):
+                def __init__(self, sock_path):
+                    super().__init__('localhost')
+                    self._sock_path = sock_path
+                def connect(self):
+                    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+                    s.connect(self._sock_path)
+                    self.sock = s
+            conn = UnixHTTPConnection('/var/run/docker.sock')
+            conn.request('GET', f'/containers/{self.es_container_name}/json')
+            resp = conn.getresponse()
+            if resp.status != 200:
+                return None
+            data = _json.loads(resp.read())
+            self._es_container_id = data.get('Id')
+            return self._es_container_id
+        except Exception as e:
+            logger.warning(f"Failed to resolve ES container ID via docker.sock: {e}")
+            return None
+
     def get_container_memory_pct(self) -> float:
         """
         Fetch ES container memory utilization from cAdvisor v2.1 API.
@@ -248,27 +281,28 @@ class MetricsCollector:
         working_set = RSS + active file cache — the memory Docker uses for
         limit enforcement, more stable than JVM heap (no GC zigzag).
 
-        Uses v2.1 API: GET /api/v2.1/stats/{name}?type=docker&count=1
+        Uses v2.1 API by container ID (name lookup with ?type=docker fails on
+        Docker Desktop). Container ID resolved once via docker.sock.
 
-        Falls back to 0.0 if cAdvisor is unavailable.
+        Returns 0.0 on any failure (logged at debug level).
         """
         try:
-            url = (f"{self.cadvisor_url}/api/v2.1/stats/{self.es_container_name}"
-                   f"?type=docker&count=1")
+            es_id = self._resolve_es_container_id()
+            if not es_id:
+                return 0.0
+            url = f"{self.cadvisor_url}/api/v2.1/stats/docker/{es_id}?count=1"
             response = requests.get(url, timeout=2)
             if response.status_code != 200:
                 return 0.0
             data = response.json()
             if not data:
                 return 0.0
-            # v2.1 returns dict keyed by container id/name
             container = next(iter(data.values()))
             stats = container.get('stats', [])
             if not stats:
                 return 0.0
             latest = stats[-1]
             working_set = latest.get('memory', {}).get('working_set', 0)
-            # Get limit from spec
             spec = container.get('spec', {})
             limit = spec.get('memory', {}).get('limit', 0)
             if limit and limit > 0:
