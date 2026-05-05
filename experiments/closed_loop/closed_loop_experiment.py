@@ -33,6 +33,10 @@ from datetime import datetime
 from typing import Dict, List, Optional, Callable
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'message-sink'))
+# Experiment runs on host (not inside Docker network), so default cAdvisor
+# hostname `cadvisor` won't resolve. Override to localhost mapping unless the
+# user already set it explicitly.
+os.environ.setdefault('CADVISOR_URL', 'http://localhost:8080')
 from metrics_collector import MetricsCollector, SystemState
 
 logging.basicConfig(
@@ -43,8 +47,63 @@ logger = logging.getLogger('closed-loop')
 
 RUNS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'runs')
 
+
+def snapshot_docker_config() -> Dict:
+    """Capture per-container resource limits, env, and image tags via
+    `docker inspect`, plus Q_PRESETS from controllers.py. Saved as
+    docker_config.json so we can later tell which run used which setup
+    (Full vs Half ES, Bryson vs DCS Q, etc.).
+    """
+    import subprocess
+    snap: Dict = {'captured_at': datetime.utcnow().isoformat()}
+
+    targets = ['elasticsearch-read', 'message-sink', 'postgres-write',
+               'kafka', 'kafka-connect', 'cadvisor']
+    keep_env_keys = ('CONTROL_MODE', 'BATCH', 'POLL', 'SYSID', 'CAPACITY',
+                     'ANN', 'KAFKA_TOPIC', 'METRICS', 'ELASTICSEARCH_INDEX',
+                     'ES_JAVA_OPTS', 'discovery', 'POSTGRES_DB',
+                     'BOOTSTRAP_SERVERS')
+    snap['containers'] = {}
+    for name in targets:
+        try:
+            raw = subprocess.check_output(
+                ['docker', 'inspect', name],
+                stderr=subprocess.DEVNULL, timeout=5).decode()
+            data = json.loads(raw)[0]
+        except Exception as e:
+            snap['containers'][name] = {'error': str(e)}
+            continue
+        hc = data.get('HostConfig', {})
+        cfg = data.get('Config', {})
+        env = [e for e in cfg.get('Env', [])
+               if any(k in e for k in keep_env_keys)]
+        snap['containers'][name] = {
+            'image': cfg.get('Image'),
+            'memory_bytes': hc.get('Memory'),
+            'memory_mib': (hc.get('Memory') or 0) // (1024 * 1024),
+            'nano_cpus': hc.get('NanoCpus'),
+            'cpus': (hc.get('NanoCpus') or 0) / 1e9,
+            'env': sorted(env),
+        }
+
+    # Q_PRESETS snapshot from controllers.py
+    try:
+        from controllers import Q_PRESETS  # type: ignore
+        snap['q_presets'] = {k: np.diag(v).tolist()
+                             for k, v in Q_PRESETS.items()}
+    except Exception as e:
+        snap['q_presets'] = {'error': str(e)}
+
+    return snap
+
 STATE_VARS = ['queue_length', 'cpu_util', 'container_mem_pct', 'io_write_ops', 'indexing_time_rate']
 CONTROL_VARS = ['batch_size', 'poll_interval']
+
+# Q-session label mapping. Used by --q-sessions to phase the schedule:
+# each q produces modes [static, rule_based, pid, lqr_<q>, ann_cw_<q>] and
+# tags samples with the corresponding label so downstream metrics/viz can
+# slice by Q context.
+Q_SESSION_LABELS = {'q1': 'Q1_backlog', 'q2': 'Q2_resource', 'q4': 'Q4_balanced'}
 
 STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered']
 
@@ -263,6 +322,7 @@ class ClosedLoopExperiment:
         repeats: int = 1,
         randomize_order: bool = False,
         seed: int = 42,
+        q_sessions: Optional[List[str]] = None,
     ):
         self.sample_interval = sample_interval
         self.running = True
@@ -315,6 +375,17 @@ class ClosedLoopExperiment:
         self.repeats = repeats
         self.randomize_order = randomize_order
         self.seed = seed
+
+        # When q_sessions is set, the runner builds a phased schedule and
+        # tags each sample with the active Q label. controller_modes is
+        # auto-derived per phase and the user-supplied list is ignored.
+        self.q_sessions = q_sessions
+        self.current_q_session: Optional[str] = None
+        if self.q_sessions:
+            unknown = [q for q in self.q_sessions if q not in Q_SESSION_LABELS]
+            if unknown:
+                raise ValueError(f"Unknown q_sessions: {unknown}. "
+                                 f"Allowed: {list(Q_SESSION_LABELS)}")
 
         self.data: List[Dict] = []
 
@@ -480,6 +551,8 @@ class ClosedLoopExperiment:
             # Load injection info
             'injection_rate': injector.current_rate if injector else 0,
             'total_injected': injector.total_injected if injector else 0,
+            # Q-session tag (empty when not running phased schedule)
+            'q_session': self.current_q_session or '',
         }
         self.data.append(sample)
         return sample
@@ -617,27 +690,47 @@ class ClosedLoopExperiment:
         #   Step:          static[0], rule[1], pid[2], ann1[3], ...
         #   Ramp:          rule[1],   pid[2],  ann1[3], ...
         #   Impulse:       pid[2],    ann1[3], ...
+        # When q_sessions is set, build a phased schedule: for each q,
+        # use modes [static, rule_based, pid, lqr_<q>, ann_cw_<q>] and tag
+        # each test with the active q so collect_sample() can stamp rows.
+        # Schedule items are 4-tuples (mode, pattern, trial, q_session_label).
+        # Otherwise behave like before: 4-tuples with q_session_label=None.
         schedule = []
-        modes_base = list(self.controller_modes)
-        n_modes = len(modes_base)
-        for trial in range(1, self.repeats + 1):
-            for pat_idx, pattern in enumerate(self.load_patterns):
-                if self.randomize_order:
-                    rng = np.random.RandomState(self.seed + trial + pat_idx)
-                    modes = list(modes_base)
-                    rng.shuffle(modes)
-                else:
-                    # Rolling: shift by pattern index
-                    modes = [modes_base[(j + pat_idx) % n_modes] for j in range(n_modes)]
-                for mode in modes:
-                    schedule.append((mode, pattern, trial))
+        if self.q_sessions:
+            phase_groups = [
+                (Q_SESSION_LABELS[q],
+                 ['static', 'rule_based', 'pid', f'lqr_{q}', f'ann_cw_{q}'])
+                for q in self.q_sessions
+            ]
+        else:
+            phase_groups = [(None, list(self.controller_modes))]
+
+        for q_label, modes_base in phase_groups:
+            n_modes = len(modes_base)
+            for trial in range(1, self.repeats + 1):
+                for pat_idx, pattern in enumerate(self.load_patterns):
+                    if self.randomize_order:
+                        rng = np.random.RandomState(self.seed + trial + pat_idx)
+                        modes = list(modes_base)
+                        rng.shuffle(modes)
+                    else:
+                        modes = [modes_base[(j + pat_idx) % n_modes]
+                                 for j in range(n_modes)]
+                    for mode in modes:
+                        schedule.append((mode, pattern, trial, q_label))
 
         total_tests = len(schedule)
         est_time = total_tests * (self.max_test_duration // 2 + 60)  # rough estimate
-        logger.info(f"Experiment plan: {total_tests} tests "
-                    f"({len(self.controller_modes)} controllers × "
-                    f"{len(self.load_patterns)} patterns × "
-                    f"{self.repeats} repeats)")
+        if self.q_sessions:
+            logger.info(f"Experiment plan: {total_tests} tests "
+                        f"({len(self.q_sessions)} Q sessions × 5 ctrl × "
+                        f"{len(self.load_patterns)} patterns × "
+                        f"{self.repeats} repeats)")
+        else:
+            logger.info(f"Experiment plan: {total_tests} tests "
+                        f"({len(self.controller_modes)} controllers × "
+                        f"{len(self.load_patterns)} patterns × "
+                        f"{self.repeats} repeats)")
         logger.info(f"Estimated time: ~{est_time // 60} min")
 
         # Save metadata
@@ -647,6 +740,7 @@ class ClosedLoopExperiment:
             'start_time': datetime.utcnow().isoformat(),
             'controller_modes': self.controller_modes,
             'load_patterns': self.load_patterns,
+            'q_sessions': self.q_sessions,
             'pattern_kwargs': self.pattern_kwargs,
             'max_test_duration_sec': self.max_test_duration,
             'sample_interval_sec': self.sample_interval,
@@ -654,19 +748,34 @@ class ClosedLoopExperiment:
             'randomize_order': self.randomize_order,
             'seed': self.seed,
             'schedule': [
-                {'mode': m, 'pattern': p, 'trial': t}
-                for m, p, t in schedule
+                {'mode': m, 'pattern': p, 'trial': t, 'q_session': q}
+                for m, p, t, q in schedule
             ],
         }
         with open(os.path.join(output_dir, 'metadata.json'), 'w') as f:
             json.dump(metadata, f, indent=2)
 
+        # Snapshot docker container config (resource limits, env, Q_PRESETS).
+        # Useful to tell apart Full ES vs Half ES, Bryson vs DCS Q, etc.
+        try:
+            docker_snap = snapshot_docker_config()
+            with open(os.path.join(output_dir, 'docker_config.json'), 'w') as f:
+                json.dump(docker_snap, f, indent=2)
+            es = docker_snap.get('containers', {}).get('elasticsearch-read', {})
+            logger.info(f"Docker config: ES={es.get('cpus')}cpu/"
+                        f"{es.get('memory_mib')}MiB, "
+                        f"Q_PRESETS={list(docker_snap.get('q_presets', {}).keys())}")
+        except Exception as e:
+            logger.warning(f"Could not snapshot docker config: {e}")
+
         # Run tests
-        for i, (mode, pattern, trial) in enumerate(schedule):
+        for i, (mode, pattern, trial, q_label) in enumerate(schedule):
             if not self.running:
                 break
+            self.current_q_session = q_label
+            q_str = f", q_session={q_label}" if q_label else ""
             logger.info(f"\n[{i+1}/{total_tests}] mode={mode}, "
-                        f"pattern={pattern}, trial={trial}")
+                        f"pattern={pattern}, trial={trial}{q_str}")
             self.run_controller_test(mode, pattern, trial)
 
         # Save data
@@ -859,7 +968,14 @@ Examples:
                             'ann_cw_q1', 'ann_cw_q2', 'ann_cw_q4',
                             'lqr_q1', 'lqr_q2', 'lqr_q4',
                         ],
-                        help='Controller modes to test (default: 9 modes)')
+                        help='Controller modes to test (default: 9 modes). '
+                             'Ignored when --q-sessions is set.')
+    parser.add_argument('--q-sessions', nargs='+', default=None,
+                        choices=list(Q_SESSION_LABELS.keys()),
+                        help='Run phased Q-session schedule (e.g. q1 q2 q4). '
+                             'Each phase tests static/rule_based/pid/lqr_<q>/'
+                             'ann_cw_<q>; samples are tagged with q_session. '
+                             'Overrides --modes.')
     parser.add_argument('--load-patterns', nargs='+',
                         default=['step', 'ramp', 'impulse', 'periodic_step', 'step_low'],
                         help='Load patterns to test (default: all 5)')
@@ -913,9 +1029,18 @@ Examples:
             parser.error(f"Unknown load pattern '{p}'. "
                          f"Choose from: {list(LOAD_PATTERNS.keys())}")
 
+    # When --q-sessions is set, build effective mode list from phases for
+    # validation purposes only — runner derives modes per phase at runtime.
+    if args.q_sessions:
+        effective_modes = ['static', 'rule_based', 'pid']
+        for q in args.q_sessions:
+            effective_modes += [f'lqr_{q}', f'ann_cw_{q}']
+    else:
+        effective_modes = args.modes
+
     # Validate model files for requested modes
-    has_lqr = any(m.startswith('lqr') or m == 'rule_based' for m in args.modes)
-    has_ann = any(m.startswith('ann') for m in args.modes)
+    has_lqr = any(m.startswith('lqr') or m == 'rule_based' for m in effective_modes)
+    has_ann = any(m.startswith('ann') for m in effective_modes)
     if has_lqr and not args.sysid_json:
         logger.warning("No --sysid-json provided; LQR/rule_based will use defaults")
     if has_ann:
@@ -925,13 +1050,13 @@ Examples:
             'Q4': args.ann_model_q4,
         }
         # Check that requested ann_qN (specialized) modes have model files
-        for mode in args.modes:
+        for mode in effective_modes:
             if mode.startswith('ann_q'):
                 q_key = mode.split('_')[1].upper()  # "Q1"
                 if not ann_q_models.get(q_key) and not args.ann_model:
                     parser.error(f"Mode '{mode}' requires --ann-model-{q_key.lower()} <path>")
         # Check ann_cw_* modes need a universal model
-        has_ann_cw = any(m.startswith('ann_cw') for m in args.modes)
+        has_ann_cw = any(m.startswith('ann_cw') for m in effective_modes)
         if has_ann_cw and not args.ann_universal:
             parser.error("ann_cw_* modes require --ann-universal <path>")
 
@@ -984,6 +1109,7 @@ Examples:
         repeats=args.repeats,
         randomize_order=args.randomize_order,
         seed=args.seed,
+        q_sessions=args.q_sessions,
     )
 
     experiment.run(output_dir)

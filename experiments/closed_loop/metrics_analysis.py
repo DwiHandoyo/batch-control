@@ -36,11 +36,15 @@ CONTROL_VARS = ['batch_size', 'inv_poll_interval']
 X_TARGET = np.array([0.0, 5.0, 70.0, 30.0])  # container_mem_pct target
 
 # Q matrix configurations (4-dim state: [queue, cpu, mem, io])
-# MUST match controllers.py Q_PRESETS exactly
+# MUST match controllers.py Q_PRESETS exactly.
+# Bryson's rule (z-score normalized space):
+#   Q_ii = (std_i / max_dev_i)^2 × priority_multiplier_i
+#   Q_base = [1.000, 0.694, 0.040, 0.640]
+#   Multipliers: Q1=[4,1,1,1], Q2=[1,4,4,4], Q4=[4,4,4,4]
 Q_CONFIGS = {
-    'Q1_backlog':  np.diag([20.0,  5.0, 0.05,  1.0]),  # backlog priority
-    'Q2_resource': np.diag([10.0, 10.0, 0.10,  2.0]),  # resource priority
-    'Q4_balanced': np.diag([20.0, 10.0, 0.10,  2.0]),  # balanced aggressive
+    'Q1_backlog':  np.diag([4.000, 0.694, 0.040, 0.640]),  # backlog priority  (74/13/1/12%)
+    'Q2_resource': np.diag([1.000, 2.778, 0.160, 2.560]),  # resource priority (15/43/2/39%)
+    'Q4_balanced': np.diag([4.000, 2.778, 0.160, 2.560]),  # balanced          (42/29/2/27%)
 }
 
 R_MATRIX = np.diag([1e-6, 1e-6])  # near-zero: no control effort penalty
@@ -340,7 +344,7 @@ def analyze_experiment(
                     total_j += results[pattern][actual_mode]['costs'][q_name]
                     count += 1
             if count > 0:
-                cost_table[q_name][generic_name] = total_j / count  # mean J across patterns
+                cost_table[q_name][generic_name] = total_j  # total J across all patterns
 
     regret = compute_regret_table(cost_table)
 
@@ -363,6 +367,24 @@ def format_report(analysis: Dict, test_duration: int = 300,
     lines.append("  CLOSED-LOOP EXPERIMENT — FULL METRICS REPORT")
     lines.append(f"  Generated: {datetime.utcnow().isoformat()}")
     lines.append("=" * 100)
+
+    # Cost matrix interpretation: show diag(Q) + relative priority %
+    # State variables order: queue_length, cpu_util, container_mem_pct, io_write_ops
+    # Cost J = (x_norm)' Q (x_norm), so diag(Q) values weight pre-normalized
+    # state errors. Percentages express relative priority within each preset.
+    lines.append("")
+    lines.append("  COST MATRIX INTERPRETATION (relative priority per Q preset)")
+    lines.append(f"  State order: {', '.join(STATE_VARS)}")
+    lines.append(f"  {'Preset':<14s} {'diag(Q)':<32s} {'Priority share':<40s}")
+    lines.append("  " + "-" * 86)
+    for q_name, Q in Q_CONFIGS.items():
+        diag = np.diag(Q)
+        weights_pct = diag / diag.sum() * 100
+        q_str = '[' + ', '.join(f'{v:g}' for v in diag) + ']'
+        w_str = '[' + ', '.join(f'{v:.0f}%' for v in weights_pct) + ']'
+        lines.append(f"  {q_name:<14s} {q_str:<32s} {w_str:<40s}")
+    lines.append("  Note: cost J computed in z-score normalized space; diag(Q) values")
+    lines.append("        are dimensionless priority weights (rescaling preserves LQR optimum).")
 
     per_test = analysis['per_test']
 

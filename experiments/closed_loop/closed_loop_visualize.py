@@ -826,8 +826,15 @@ def plot_cost_decomposition(df, output_dir, normalization=None):
         fig, axes = plt.subplots(1, n_ctrl, figsize=(4 * n_ctrl, 5), sharey=True)
         if n_ctrl == 1:
             axes = [axes]
-        fig.suptitle(f'Cost Decomposition - {Q_LABELS.get(q_name, q_name)} (Q={list(np.diag(Q).astype(int))})',
-                     fontsize=14, fontweight='bold')
+        diag = np.diag(Q)
+        weights_pct = diag / diag.sum() * 100
+        q_str = ', '.join(f'{v:g}' for v in diag)
+        w_str = ', '.join(f'{v:.0f}%' for v in weights_pct)
+        fig.suptitle(
+            f'Cost Decomposition — {Q_LABELS.get(q_name, q_name)}\n'
+            f'Q diag = [{q_str}]   →   prioritas relatif (queue, cpu, mem, io) = [{w_str}]',
+            fontsize=13, fontweight='bold'
+        )
 
         for idx, ctrl in enumerate(CONTROLLER_ORDER):
             ax = axes[idx]
@@ -858,6 +865,112 @@ def plot_cost_decomposition(df, output_dir, normalization=None):
         fig.savefig(path, dpi=150)
         plt.close(fig)
         print(f"  Saved {path}")
+
+
+
+# ─── State variable adaptation across Q ──────────────────────────────
+
+# State variables to display: latency replaces queue_length.
+# Prefer avg_latency_ms (direct measurement from sink). If that column is
+# all-zero (Debezium unwrap stripping envelope), fall back to Little's law:
+#   latency_proxy_ms = queue_length * cycle_duration_ms / max(messages_indexed, 1)
+# Selection happens in plot_state_across_q based on data validity.
+STATE_SPEC = [
+    ('latency_ms',        'Latency (ms)',    'Mean latency (ms)'),
+    ('cpu_util',          'CPU (%)',         'ES CPU util'),
+    ('container_mem_pct', 'Memory (%)',      'ES container mem'),
+    ('io_write_ops',      'IO write ops/s',  'ES IO write ops'),
+]
+
+
+def plot_state_across_q(df, output_dir):
+    """For each state variable, show how mean changes across Q1/Q2/Q4 for
+    Q-aware controllers (LQR, ANN), with non-adaptive baselines as horizontal
+    reference lines.
+
+    Layout: 2×2 subplots, one per state variable (latency, cpu, mem, io).
+    Each subplot:
+      - X-axis: Q preset (Q1, Q2, Q4)
+      - LQR line: 3 points = LQR_Q1, LQR_Q2, LQR_Q4 means
+      - ANN line: 3 points = ANN_Q1, ANN_Q2, ANN_Q4 means
+      - Static / Rule-Based / PID: horizontal dashed lines (Q-agnostic)
+
+    Metric is Q-fair: raw mean of each variable, no Q weights involved.
+    """
+    # Resolve latency_ms: prefer real avg_latency_ms (direct sink measurement).
+    # Fall back to Little's law proxy only when avg_latency_ms is all-zero
+    # (e.g., Debezium unwrap format strips the envelope).
+    df = df.copy()
+    avg_lat_valid = ('avg_latency_ms' in df.columns and
+                     (df['avg_latency_ms'].astype(float) > 0).any())
+    if avg_lat_valid:
+        df['latency_ms'] = df['avg_latency_ms'].astype(float)
+        latency_source = 'avg_latency_ms'
+    else:
+        mi = df['messages_indexed'].astype(float).clip(lower=1)
+        df['latency_ms'] = (df['queue_length'].astype(float) *
+                            df['cycle_duration_ms'].astype(float) / mi)
+        latency_source = "Little's law proxy"
+    print(f"  state_across_q latency source: {latency_source}")
+
+    q_names = list(Q_ORDER)
+    q_labels_short = [q_short(q) for q in q_names]
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+    axes = axes.flatten()
+
+    for idx, (col, ylabel, title) in enumerate(STATE_SPEC):
+        ax = axes[idx]
+        # Annotate latency title when proxy is used so the reader knows.
+        if col == 'latency_ms' and not avg_lat_valid:
+            title = 'Mean latency (approx., Little\'s law)'
+
+        # All 5 controllers as lines.
+        # If df has 'q_session' column (from 3-session experiment), filter
+        # non-adaptive controllers to their session so their values can differ
+        # per Q. This makes the comparison fair: static tested alongside
+        # lqr_q1 in Q1-session, alongside lqr_q2 in Q2-session, etc.
+        has_q_session = 'q_session' in df.columns
+        for ctrl in CONTROLLER_ORDER:
+            ys = []
+            for q in q_names:
+                actual = resolve_controller(ctrl, q)
+                if has_q_session and ctrl not in ('lqr', 'ann'):
+                    sub = df[(df['controller_mode'] == actual) &
+                             (df['q_session'] == q)]
+                else:
+                    sub = df[df['controller_mode'] == actual]
+                ys.append(float(sub[col].astype(float).mean()) if len(sub) else np.nan)
+
+            linestyle = '-' if ctrl in ('lqr', 'ann') else '--'
+            marker = 'o' if ctrl in ('lqr', 'ann') else 's'
+            ax.plot(q_labels_short, ys, marker=marker, markersize=8,
+                    linewidth=2.0, linestyle=linestyle,
+                    color=CONTROLLER_COLORS[ctrl],
+                    label=CONTROLLER_LABELS[ctrl])
+            for x, y in zip(q_labels_short, ys):
+                if not np.isnan(y):
+                    ax.annotate(f'{y:.1f}' if y < 100 else f'{y:.0f}',
+                                xy=(x, y), xytext=(0, 7),
+                                textcoords='offset points',
+                                ha='center', fontsize=8,
+                                color=CONTROLLER_COLORS[ctrl])
+
+        ax.set_title(title, fontweight='bold', fontsize=11)
+        ax.set_xlabel('Q preset')
+        ax.set_ylabel(ylabel)
+        ax.grid(alpha=0.3)
+        ax.legend(loc='best', fontsize=8, ncol=2)
+
+    fig.suptitle(
+        'Adaptasi state variable terhadap Q\n'
+        'Garis = LQR/ANN bergeser saat Q berubah; dashed = baseline tidak Q-aware',
+        fontsize=13, fontweight='bold', y=1.00)
+    fig.tight_layout(rect=[0, 0, 1, 0.95])
+    path = os.path.join(output_dir, 'state_across_q.png')
+    fig.savefig(path)
+    plt.close(fig)
+    print(f"  Saved {path}")
 
 
 # ─── Main ─────────────────────────────────────────────────────────────
@@ -917,9 +1030,13 @@ def main():
     print("\nGenerating cost decomposition plots...")
     plot_cost_decomposition(df, output_dir, normalization=normalization)
 
+    print("\nGenerating state-across-Q adaptation plot...")
+    plot_state_across_q(df, output_dir)
+
     n_perf = (10 + len(TIMESERIES_VARS)) * len(Q_ORDER)
     n_cost = 4 + len(Q_ORDER) * 2  # cost_J, heatmap, regret + cost_by_pattern + decomposition
-    print(f"\nAll {n_perf + n_cost} plots saved to {output_dir}")
+    n_adapt = 1
+    print(f"\nAll {n_perf + n_cost + n_adapt} plots saved to {output_dir}")
 
 
 if __name__ == '__main__':
