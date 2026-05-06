@@ -1,0 +1,101 @@
+{
+  "captured_at": "2026-05-05T16:46:02Z",
+  "note": "manually_reconstructed",
+  "containers": {
+    "elasticsearch-read": {
+      "image": "docker.elastic.co/elasticsearch/elasticsearch:8.10.0",
+      "memory_bytes": 536870912,
+      "memory_mib": 512,
+      "nano_cpus": 500000000,
+      "cpus": 0.5,
+      "env": [
+        "ES_JAVA_OPTS=-Xms256m -Xmx256m",
+        "discovery.type=single-node"
+      ]
+    },
+    "message-sink": {
+      "image": "batch-control-message-sink",
+      "memory_bytes": 0,
+      "memory_mib": 0,
+      "nano_cpus": 0,
+      "cpus": 0.0,
+      "env": [
+        "ANN_MODEL_JSON=",
+        "ANN_MODEL_Q1=/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q1_4s_20260412_163403.json",
+        "ANN_MODEL_Q2=/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q2_4s_20260412_163430.json",
+        "ANN_MODEL_Q4=/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q4_4s_20260412_163527.json",
+        "ANN_UNIVERSAL_JSON=",
+        "CAPACITY_JSON=/app/capacity/capacity_benchmark_20260414_222623.json",
+        "CONTROL_MODE=static",
+        "DEFAULT_BATCH_SIZE=250",
+        "DEFAULT_POLL_INTERVAL_MS=200",
+        "ELASTICSEARCH_INDEX=cqrs_read",
+        "KAFKA_BOOTSTRAP_SERVERS=kafka:9092",
+        "KAFKA_TOPIC=cdc.public.orders",
+        "MAX_BATCH_SIZE=2500",
+        "MAX_POLL_INTERVAL_MS=1099",
+        "METRICS_LOG_INTERVAL_SEC=5",
+        "MIN_BATCH_SIZE=3",
+        "MIN_POLL_INTERVAL_MS=100",
+        "SYSID_JSON=/app/models/open_loop/run_20260420_190323/results/sysid_output/sysid_matrices_20260420_232421.json"
+      ]
+    },
+    "postgres-write": {
+      "image": "postgres:15",
+      "memory_bytes": 0,
+      "memory_mib": 0,
+      "nano_cpus": 0,
+      "cpus": 0.0,
+      "env": [
+        "POSTGRES_DB=cqrs_write"
+      ]
+    },
+    "kafka": {
+      "image": "confluentinc/cp-kafka:7.5.0",
+      "memory_bytes": 0,
+      "memory_mib": 0,
+      "nano_cpus": 0,
+      "cpus": 0.0,
+      "env": []
+    },
+    "kafka-connect": {
+      "image": "batch-control-kafka-connect",
+      "memory_bytes": 0,
+      "memory_mib": 0,
+      "nano_cpus": 0,
+      "cpus": 0.0,
+      "env": [
+        "BOOTSTRAP_SERVERS=kafka:9092",
+        "SPANNER_MD5=58cab861ba1c0200387671c885996b8f"
+      ]
+    },
+    "cadvisor": {
+      "image": "gcr.io/cadvisor/cadvisor:v0.49.1",
+      "memory_bytes": 0,
+      "memory_mib": 0,
+      "nano_cpus": 0,
+      "cpus": 0.0,
+      "env": []
+    }
+  },
+  "q_presets": {
+    "Q1": [
+      4.0,
+      0.694,
+      0.04,
+      0.64
+    ],
+    "Q2": [
+      1.0,
+      2.778,
+      0.16,
+      2.56
+    ],
+    "Q4": [
+      4.0,
+      2.778,
+      0.16,
+      2.56
+    ]
+  }
+}
