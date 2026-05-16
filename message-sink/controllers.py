@@ -39,14 +39,16 @@ logger = logging.getLogger('controllers')
 #
 #   Q_base = [1.000, 0.694, 0.040, 0.640]  (queue, cpu, mem, io)
 #
-#   Multipliers per preset:
-#     Q1 (backlog):  [4, 1, 1, 1] → priority %  = [74, 13,  1, 12]
-#     Q2 (resource): [1, 4, 4, 4] → priority %  = [15, 43,  2, 39]
-#     Q4 (balanced): [4, 4, 4, 4] → priority %  = [42, 29,  2, 27]
+#   Multipliers per preset (IO multiplier reduced: R²(IO)=0.206, model unreliable):
+#     Q1 (backlog):  [4, 1, 1, 0.5] → priority %  = [79, 14,  1,  6]
+#     Q2 (resource): [1, 4, 4, 1]   → priority %  = [20, 55,  3, 13]
+#     Q4 (balanced): [4, 4, 4, 1]   → priority %  = [52, 36,  2, 10]
+#   Uniform scale ×100 applied so J values are in interpretable range (hundreds–thousands).
+#   Equivalent to m_i × 100 — preserves relative priorities between states.
 Q_PRESETS = {
-    'Q1': np.diag([4.000, 0.694, 0.040, 0.640]),  # backlog priority  (74/13/1/12 %)
-    'Q2': np.diag([1.000, 2.778, 0.160, 2.560]),  # resource priority (15/43/2/39 %)
-    'Q4': np.diag([4.000, 2.778, 0.160, 2.560]),  # balanced          (42/29/2/27 %)
+    'Q1': np.diag([ 40.0,  6.94, 0.4,  3.2]),  # backlog priority  (79/14/1/6 %)
+    'Q2': np.diag([ 10.0, 27.78, 1.6,  6.4]),  # resource priority (20/55/3/13 %)
+    'Q4': np.diag([ 40.0, 27.78, 1.6,  6.4]),  # balanced          (52/36/2/10 %)
 }
 
 
@@ -577,8 +579,94 @@ class LQRController(BaseController):
                 )
                 B[:, 1] = scale * B[:, 1]
 
+        # Override B[queue,:] from open-loop raw CSV (step-delta regression).
+        # Computes B[queue,batch] as slope of (delta_queue ~ batch_size) per step,
+        # which correctly gives a negative value unlike the level-based sysid.
+        sysid_csv = os.getenv('SYSID_CSV', kwargs.pop('sysid_csv', None))
+        if sysid_csv and normalization:
+            try:
+                import csv as _csv
+                # Read CSV with pure Python + numpy (no pandas dependency)
+                with open(sysid_csv) as f:
+                    reader = _csv.DictReader(f)
+                    _rows = list(reader)
+                batches  = np.array([float(r['batch_size'])   for r in _rows])
+                polls    = np.array([float(r['poll_interval']) for r in _rows])
+                queues   = np.array([float(r['queue_length'])  for r in _rows])
+                phases   = np.array([r.get('phase', '')        for r in _rows])
+                inv_polls = 1000.0 / polls
+
+                # Identify step boundaries
+                step_ids = np.zeros(len(batches), dtype=int)
+                for i in range(1, len(batches)):
+                    step_ids[i] = step_ids[i-1] + (1 if batches[i]!=batches[i-1] or polls[i]!=polls[i-1] else 0)
+
+                # Helper: compute (slope, r) of y~x per-step aggregated
+                def _linreg_steps(x_arr, y_arr, phase_filter=None, fixed_col=None, fixed_val=None):
+                    sx, sy = [], []
+                    for sid in np.unique(step_ids):
+                        mask = step_ids == sid
+                        if phase_filter is not None and phases[mask][0] not in phase_filter:
+                            continue
+                        if fixed_col is not None:
+                            col_vals = {'batch': batches, 'poll': polls}[fixed_col]
+                            if abs(col_vals[mask][0] - fixed_val) > 1:
+                                continue
+                        idx = np.where(mask)[0]
+                        sx.append(x_arr[idx[0]])
+                        sy.append(y_arr[idx[-1]] - y_arr[idx[0]])
+                    sx, sy = np.array(sx), np.array(sy)
+                    if len(sx) < 3:
+                        return None, None
+                    xm, ym = sx.mean(), sy.mean()
+                    denom = np.sum((sx-xm)**2)
+                    if denom == 0:
+                        return None, None
+                    sl = np.sum((sx-xm)*(sy-ym)) / denom
+                    ss_res = np.sum((sy-(sl*sx+(ym-sl*xm)))**2)
+                    ss_tot = np.sum((sy-ym)**2)
+                    r = (1-ss_res/ss_tot)**0.5 * np.sign(sl) if ss_tot>0 else 0
+                    return sl, r
+
+                norm_b = normalization['batch_size']
+                norm_q = normalization['queue_length']
+                ip_norm = normalization.get('inv_poll_interval', {'std': 2.0})
+                b_std, q_std, ip_std = norm_b['std'], norm_q['std'], ip_norm['std']
+
+                # B[queue,batch]: vary_both at poll=900ms (highest r=-0.9937)
+                # Find poll value nearest to 900ms available in data
+                poll_vals = np.unique(polls[phases == 'vary_both']) if any(phases == 'vary_both') else np.unique(polls)
+                target_poll = min(poll_vals, key=lambda p: abs(p - 900)) if len(poll_vals) > 0 else 900
+                slope_b, r_b = _linreg_steps(batches, queues, phase_filter=['vary_both'], fixed_col='poll', fixed_val=target_poll)
+                if slope_b is None:
+                    slope_b, r_b = _linreg_steps(batches, queues)
+                B_q_batch = slope_b * b_std / q_std
+
+                # B[queue,inv_poll]: vary_both at batch=13 (highest r=-0.9955)
+                batch_vals = np.unique(batches[phases == 'vary_both']) if any(phases == 'vary_both') else np.unique(batches)
+                target_batch = min(batch_vals, key=lambda b: abs(b - 13)) if len(batch_vals) > 0 else 13
+                slope_ip, r_ip = _linreg_steps(inv_polls, queues, phase_filter=['vary_both'], fixed_col='batch', fixed_val=target_batch)
+                if slope_ip is None:
+                    slope_ip, r_ip = 0.0, 0.0
+                B_q_invp = slope_ip * ip_std / q_std
+
+                svar = data.get('state_vars', cls.STATE_KEYS)
+                q_idx = svar.index('queue_length') if 'queue_length' in svar else 0
+                B_orig = B[q_idx, :].copy()
+                B[q_idx, 0] = B_q_batch
+                B[q_idx, 1] = B_q_invp
+
+                logger.info(
+                    f"B[queue,:] replaced from open-loop step-delta (best linearity):\n"
+                    f"  batch: poll={target_poll:.0f}ms  slope={slope_b:.4f}  r={r_b:.3f}  B={B_q_batch:.4f}\n"
+                    f"  inv_poll: batch={target_batch:.0f}  slope={slope_ip:.4f}  r={r_ip:.3f}  B={B_q_invp:.4f}\n"
+                    f"  B[queue,:] {B_orig} -> [{B_q_batch:.4f}, {B_q_invp:.4f}]"
+                )
+            except Exception as e:
+                logger.warning(f"Failed to override B from sysid CSV: {e}. Falling back.")
+
         # Override B[queue,:] from capacity benchmark if provided
-        if capacity_json and normalization:
+        if capacity_json and normalization and not sysid_csv:
             try:
                 from scipy.interpolate import interp1d as _interp1d
                 with open(capacity_json) as f:

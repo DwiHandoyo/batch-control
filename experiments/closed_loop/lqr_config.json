@@ -1,0 +1,73 @@
+{
+  "_description": "LQR controller configuration used in closed-loop experiments (thesis 2026).",
+
+  "sysid": {
+    "run": "run_20260420_190323",
+    "matrices_json": "experiments/open_loop/runs/run_20260420_190323/results/sysid_output/sysid_matrices_20260420_232421.json",
+    "raw_csv": "experiments/open_loop/runs/run_20260420_190323/results/sysid_data_vary_batch_vary_poll_vary_both_20260420_190323.csv",
+    "state_vars": ["queue_length", "cpu_util", "container_mem_pct", "io_write_ops"],
+    "control_vars": ["batch_size", "inv_poll_interval"],
+    "fit_r2": {"queue_length": 0.994, "cpu_util": 0.694, "container_mem_pct": 0.316, "io_write_ops": 0.206},
+    "note": "A matrix trimmed 5x5 -> 4x4 (avg_latency dropped). B[:,1] converted from poll_interval to inv_poll_interval convention."
+  },
+
+  "B_override": {
+    "method": "open_loop_step_delta_best_linearity",
+    "B_queue_batch": {
+      "value_normalized": -1.809,
+      "source": "vary_both phase, poll=900ms (r=-0.997)",
+      "raw_slope": -36.19,
+      "normalization": "b_std=250, q_std=5000"
+    },
+    "B_queue_inv_poll": {
+      "value_normalized": -0.367,
+      "source": "vary_both phase, batch=13 (r=-0.997)",
+      "raw_slope": -918.54,
+      "normalization": "ip_std=2.0, q_std=5000"
+    },
+    "rationale": "Sysid level-regression gives B[queue,batch]=+0.0044 (wrong sign due to multicollinearity). Step-delta regression on vary_both slices with best linearity gives correct negative values."
+  },
+
+  "Q_presets": {
+    "_description": "Bryson rule: Q_ii = (std_i/max_dev_i)^2 * multiplier_i. Q_base=[1.000,0.694,0.040,0.640]. Scale x10 applied for interpretable J range.",
+    "Q1_backlog":  [40.0, 6.94, 0.4, 3.2],
+    "Q2_resource": [10.0, 27.78, 1.6, 6.4],
+    "Q3_balanced": [40.0, 27.78, 1.6, 6.4],
+    "state_order": ["queue_length", "cpu_util", "container_mem_pct", "io_write_ops"],
+    "priority_pct": {
+      "Q1": {"queue": 79, "cpu": 14, "mem": 1, "io": 6},
+      "Q2": {"queue": 20, "cpu": 55, "mem": 3, "io": 13},
+      "Q3": {"queue": 52, "cpu": 36, "mem": 2, "io": 10}
+    }
+  },
+
+  "R_matrix": {
+    "method": "Bryson rule from operational bounds",
+    "values": [0.01235, 0.16],
+    "control_order": ["batch_size", "inv_poll_interval"],
+    "R_base": 1.0,
+    "bounds": {"batch": [3, 2500], "poll_ms": [100, 1099]}
+  },
+
+  "normalization_CL_override": {
+    "_note": "Applied after B computation. Used in compute_control() for x_error scaling.",
+    "queue_length":      {"mean": 0.0,   "std": 1000.0},
+    "cpu_util":          {"mean": 5.0,   "std": 25.0},
+    "container_mem_pct": {"mean": 50.0,  "std": 20.0},
+    "io_write_ops":      {"mean": 30.0,  "std": 40.0},
+    "batch_size":        {"mean": 250.0, "std": 250.0},
+    "inv_poll_interval": {"mean": 5.0,   "std": 2.0}
+  },
+
+  "x_target": [0.0, 5.0, 50.0, 30.0],
+  "u_nominal": {"batch_size": 250, "inv_poll_interval": 5.0},
+
+  "ann_model": {
+    "path": "experiments/open_loop/runs/run_20260328_172700/results/sysid_output_invpoll/ann_universal_mle_20260415_201452.json",
+    "type": "universal_MLE_boltzmann",
+    "input_dim": 8,
+    "note": "Trained with mem_util; container_mem_pct aliased as mem_util via _NORM_ALIASES"
+  },
+
+  "run_command": "CADVISOR_URL=http://localhost:8080 python closed_loop_experiment.py --sysid-json ../../open_loop/runs/run_20260420_190323/results/sysid_output/sysid_matrices_20260420_232421.json --sysid-csv ../../open_loop/runs/run_20260420_190323/results/sysid_data_vary_batch_vary_poll_vary_both_20260420_190323.csv --ann-universal ../../open_loop/runs/run_20260328_172700/results/sysid_output_invpoll/ann_universal_mle_20260415_201452.json --modes static rule_based pid ann_cw_q1 ann_cw_q2 ann_cw_q4 lqr_q1 lqr_q2 lqr_q4 --load-patterns step ramp impulse periodic_step step_low"
+}

@@ -194,7 +194,8 @@ services:
       MAX_POLL_INTERVAL_MS: ${MAX_POLL_INTERVAL_MS:-1099}
       # Model files (for runtime controller switching)
       SYSID_JSON: ${SYSID_JSON:-/app/models/open_loop/run_20260420_190323/results/sysid_output/sysid_matrices_20260420_232421.json}
-      CAPACITY_JSON: ${CAPACITY_JSON:-/app/capacity/capacity_benchmark_20260414_222623.json}
+      SYSID_CSV: ${SYSID_CSV:-/app/models/open_loop/run_20260420_190323/results/sysid_data_vary_batch_vary_poll_vary_both_20260420_190323.csv}
+      CAPACITY_JSON: ${CAPACITY_JSON:-}
       ANN_MODEL_JSON: ${ANN_MODEL_JSON:-}
       ANN_MODEL_Q1: ${ANN_MODEL_Q1:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q1_4s_20260412_163403.json}
       ANN_MODEL_Q2: ${ANN_MODEL_Q2:-/app/models/open_loop/run_20260328_172700/results/sysid_output_invpoll/ann_model_Q2_4s_20260412_163430.json}

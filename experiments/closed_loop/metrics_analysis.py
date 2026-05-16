@@ -42,9 +42,9 @@ X_TARGET = np.array([0.0, 5.0, 70.0, 30.0])  # container_mem_pct target
 #   Q_base = [1.000, 0.694, 0.040, 0.640]
 #   Multipliers: Q1=[4,1,1,1], Q2=[1,4,4,4], Q4=[4,4,4,4]
 Q_CONFIGS = {
-    'Q1_backlog':  np.diag([4.000, 0.694, 0.040, 0.640]),  # backlog priority  (74/13/1/12%)
-    'Q2_resource': np.diag([1.000, 2.778, 0.160, 2.560]),  # resource priority (15/43/2/39%)
-    'Q4_balanced': np.diag([4.000, 2.778, 0.160, 2.560]),  # balanced          (42/29/2/27%)
+    'Q1_backlog':  np.diag([ 40.0,  6.94, 0.4,  3.2]),  # backlog priority  (79/14/1/6%)
+    'Q2_resource': np.diag([ 10.0, 27.78, 1.6,  6.4]),  # resource priority (20/55/3/13%)
+    'Q4_balanced': np.diag([ 40.0, 27.78, 1.6,  6.4]),  # balanced          (52/36/2/10%)
 }
 
 R_MATRIX = np.diag([1e-6, 1e-6])  # near-zero: no control effort penalty

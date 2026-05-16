@@ -1,0 +1,38 @@
+System Identification Report
+Generated: 2026-04-20T23:24:21.333881
+============================================================
+
+Model: x[k+1] = A·x[k] + B·u[k]
+
+State variables: ['queue_length', 'cpu_util', 'mem_util', 'io_write_ops', 'avg_latency_ms']
+Control variables: ['batch_size', 'poll_interval']
+
+A matrix (state transition):
+[[ 0.996072 -0.005303 -0.00302  -0.000293  0.004165]
+ [ 0.440393  0.43668  -0.004998 -0.051522  0.003669]
+ [-0.028951  0.06047   0.559833  0.013322  0.00872 ]
+ [ 0.23015   0.259753 -0.003016  0.047217 -0.003785]
+ [-0.17545   0.05772   0.000414 -0.032932  0.883524]]
+
+B matrix (input):
+[[ 0.004371  0.002099]
+ [ 0.026975 -0.010797]
+ [-0.028301  0.014071]
+ [-0.042867 -0.044308]
+ [ 0.179416 -0.031937]]
+
+Fit Quality (R²):
+  queue_length: R²=0.9939, RMSE=0.077902
+  cpu_util: R²=0.6944, RMSE=0.552827
+  mem_util: R²=0.3156, RMSE=0.827240
+  io_write_ops: R²=0.2060, RMSE=0.891071
+  avg_latency_ms: R²=0.8240, RMSE=0.419415
+
+Normalization Scales:
+  queue_length: mean=62988.6616, std=109485.1513
+  cpu_util: mean=12.9385, std=21.5709
+  mem_util: mean=47.5971, std=16.7483
+  io_write_ops: mean=26.8235, std=32.6205
+  avg_latency_ms: mean=38818.2181, std=21870.1416
+  batch_size: mean=344.2439, std=586.7552
+  poll_interval: mean=850.7105, std=147.0801

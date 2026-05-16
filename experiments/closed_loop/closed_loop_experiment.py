@@ -534,7 +534,9 @@ class ClosedLoopExperiment:
             # State variables
             'queue_length': state.queue_length,
             'cpu_util': state.cpu_util,
-            'container_mem_pct': state.container_mem_pct,
+            # Prefer mem_util from sink_metrics.csv (read by container via cAdvisor),
+            # as host-side cAdvisor lookup fails on Windows (no AF_UNIX socket).
+            'container_mem_pct': float(sink['mem_util']) if 'mem_util' in sink and sink['mem_util'] else state.container_mem_pct,
             'io_write_ops': state.io_write_ops,
             'indexing_time_rate': state.indexing_time_rate,
             'os_cpu_percent': state.os_cpu_percent,
@@ -962,6 +964,8 @@ Examples:
                         help='Path to universal cost-weighted ANN model (for ann_cw_* modes)')
     parser.add_argument('--capacity-json', default=None,
                         help='Path to capacity_benchmark_*.json (for LQR B-matrix override from benchmark)')
+    parser.add_argument('--sysid-csv', default=None,
+                        help='Path to raw open-loop CSV (for LQR B-matrix via step-delta regression, overrides --capacity-json)')
     parser.add_argument('--modes', nargs='+',
                         default=[
                             'static', 'rule_based', 'pid',
@@ -1069,6 +1073,8 @@ Examples:
         os.environ['ANN_UNIVERSAL_JSON'] = args.ann_universal
     if args.capacity_json:
         os.environ['CAPACITY_JSON'] = args.capacity_json
+    if args.sysid_csv:
+        os.environ['SYSID_CSV'] = args.sysid_csv
     # Per-Q ANN model env vars
     for q_key, path in [('Q1', args.ann_model_q1), ('Q2', args.ann_model_q2),
                         ('Q4', args.ann_model_q4)]:
